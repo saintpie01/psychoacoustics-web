@@ -1,6 +1,6 @@
 <?php
 
-
+echo "test";
 
 //ini_set('error_log', 'error.txt');
 session_start();
