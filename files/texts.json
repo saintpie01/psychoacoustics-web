@@ -1,0 +1,16 @@
+{
+  "indexTitle": "Welcome to PSYCHOACOUSTICS-WEB",
+  "indexButtonPuretoneintensitydiscrimination": "Pure tone intensity discrimination",
+  "indexButtonPuretonefrequencydiscrimination": "Pure tone frequency discrimination",
+  "indexButtonPuretonedurationdiscrimination": "Pure tone duration discrimination",
+  "indexButtonWhitenoiseamplitudemodulationdetection": "White noise amplitude modulation detection",
+  "indexButtonWhitenoisegapdetection": "White noise gap detection",
+  "indexButtonWhitenoisedurationdiscrimination":  "White noise duration discrimination",
+
+  "answerPuretoneintensitydiscrimination": "Which is the loudest tone?",
+  "answerPuretonefrequencydiscrimination": "Which is the highest pitch tone?",
+  "answerPuretonedurationdiscrimination": "Which is the longest tone?",
+  "answerWhitenoiseamplitudemodulationdetection": "Which is the modulated noise?",
+  "answerWhitenoisegapdetection": "Which is the noise with the gap?",
+  "answerWhitenoisedurationdiscrimination":  "Which is the longest noise?"
+}

@@ -1,0 +1,50 @@
+mysqli_sql_exception: Duplicate entry '639-1' for key 'PRIMARY' in C:\xampp\htdocs\acoustic-web2\php\soundSettingsValidation.php:362
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\soundSettingsValidation.php(362): mysqli->query('INSERT INTO tes...')
+#1 {main}mysqli_sql_exception: Duplicate entry '640-1' for key 'PRIMARY' in C:\xampp\htdocs\acoustic-web2\php\soundSettingsValidation.php:362
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\soundSettingsValidation.php(362): mysqli->query('INSERT INTO tes...')
+#1 {main}111mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in C:\xampp\htdocs\acoustic-web2\php\dbconnect.php:5
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\dbconnect.php(5): mysqli->__construct(NULL, NULL, Object(SensitiveParameterValue), NULL)
+#1 C:\xampp\htdocs\acoustic-web2\php\soundSettingsValidation.php(325): connectdb()
+#2 {main}
+11mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in C:\xampp\htdocs\acoustic-web2\php\dbconnect.php:5
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\dbconnect.php(5): mysqli->__construct(NULL, NULL, Object(SensitiveParameterValue), NULL)
+#1 C:\xampp\htdocs\acoustic-web2\php\soundSettingsValidation.php(325): connectdb()
+#2 {main}
+mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in C:\xampp\htdocs\acoustic-web2\php\dbconnect.php:5
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\dbconnect.php(5): mysqli->__construct(NULL, NULL, Object(SensitiveParameterValue), NULL)
+#1 C:\xampp\htdocs\acoustic-web2\php\soundSettingsValidation.php(325): connectdb()
+#2 {main}
+mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in C:\xampp\htdocs\acoustic-web2\php\dbconnect.php:5
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\dbconnect.php(5): mysqli->__construct(NULL, NULL, Object(SensitiveParameterValue), NULL)
+#1 C:\xampp\htdocs\acoustic-web2\php\personalInfoValidation.php(44): connectdb()
+#2 {main}
+
+
+
+
+
+mysqli_sql_exception: Duplicate entry '706-1' for key 'PRIMARY' in C:\xampp\htdocs\acoustic-web2\php\soundSettingsValidation.php:238
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\soundSettingsValidation.php(238): mysqli->query('INSERT INTO tes...')
+#1 {main}mysqli_sql_exception: Column 'DeviceInfo' cannot be null in C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php:66
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php(66): mysqli->query('INSERT INTO tes...')
+#1 {main}mysqli_sql_exception: Column 'DeviceInfo' cannot be null in C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php:66
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php(66): mysqli->query('INSERT INTO tes...')
+#1 {main}mysqli_sql_exception: Column 'DeviceInfo' cannot be null in C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php:66
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php(66): mysqli->query('INSERT INTO tes...')
+#1 {main}mysqli_sql_exception: Column 'DeviceInfo' cannot be null in C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php:66
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php(66): mysqli->query('INSERT INTO tes...')
+#1 {main}mysqli_sql_exception: Column 'DeviceInfo' cannot be null in C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php:66
+Stack trace:
+#0 C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php(66): mysqli->query('INSERT INTO tes...')
+#1 {main}
