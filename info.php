@@ -6,7 +6,23 @@
     include "php/config.php";
     if (!isset($_GET["test"]) && !isset($_SESSION['test']))
         header("Location: index.php");
+
+        /*if (isset($_GET['test'])) {
+            // Echo the value of 'test' parameter
+            echo htmlspecialchars($_GET['test']);
+        } else {
+            echo "No 'testGet' parameter found.";
+        }*/
+        
+        /*if (isset($_SESSION['test'])) {
+            // Echo the value of 'test' parameter
+            echo htmlspecialchars(($_SESSION['test']));
+        } else {
+            echo "No 'testSes' parameter found.";
+        }*/
     ?>
+    
+    
 
     <!-- Required meta tags -->
     <meta charset="utf-8">

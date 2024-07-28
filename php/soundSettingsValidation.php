@@ -1,6 +1,19 @@
 <?php
 
-echo "test";
+if (isset($_GET['test'])) {
+    // Echo the value of 'test' parameter
+    echo htmlspecialchars($_GET['test']);
+} else {
+    echo "No 'testGet' parameter found.";
+}
+
+if (isset($_SESSION['test'])) {
+    // Echo the value of 'test' parameter
+    echo htmlspecialchars($_SESSION['test']);
+} else {
+    echo "No 'testSes' parameter found.";
+}
+
 
 //ini_set('error_log', 'error.txt');
 session_start();
@@ -16,9 +29,8 @@ ini_set('display_startup_errors', 1);
 $deviceInfo = str_replace(";", " ", $_SERVER['HTTP_USER_AGENT']);
 
 
-//the variable test is only set in the case the user manually select the test from the 
-//index page.
-if (isset($_SESSION['test'])) {
+if (isset($_SESSION['test'])) { 
+    
     try {
 
         $conn=connectdb();

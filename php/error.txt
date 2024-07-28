@@ -44,7 +44,8 @@ Stack trace:
 #1 {main}mysqli_sql_exception: Column 'DeviceInfo' cannot be null in C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php:66
 Stack trace:
 #0 C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php(66): mysqli->query('INSERT INTO tes...')
-#1 {main}mysqli_sql_exception: Column 'DeviceInfo' cannot be null in C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php:66
+#1 {main}
+mysqli_sql_exception: Column 'DeviceInfo' cannot be null in C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php:66
 Stack trace:
 #0 C:\xampp\htdocs\acoustic-web2\php\updatingSavedSettings.php(66): mysqli->query('INSERT INTO tes...')
 #1 {main}

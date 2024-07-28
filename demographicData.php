@@ -1,17 +1,19 @@
+
+<?php
+    session_start();
+    include_once("php/dbconnect.php");
+    include "php/config.php";
+    //if no  test has been selected or no referral link is present in the url, return
+    //to the index page
+    if (!isset($_GET['ref']) && !isset($_GET["test"]))
+        header("Location: index.php");
+?>
+    
 <!doctype html>
 <html lang="en">
 
 <head>
 
-    <?php
-        include_once("php/dbconnect.php");
-        include "php/config.php";
-        session_start();
-        //if no  test has been selected or no referral link is present in the url, return
-        //to the index page
-        if (!isset($_GET['ref']) && !isset($_GET["test"]))
-            header("Location: index.php");
-    ?>
 
 
     <!-- Required meta tags -->

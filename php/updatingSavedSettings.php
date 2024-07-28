@@ -3,6 +3,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 1);
 
+$deviceInfo = str_replace(";", " ", $_SERVER['HTTP_USER_AGENT']);
+
 	try{
 		include "config.php";
 		session_start();
