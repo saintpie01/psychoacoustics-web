@@ -2,58 +2,62 @@
 
 include "config.php";
 include_once('dbconnect.php');
-try {
 
+
+try {
     //accesso alla sessione
     session_start();
     unset($_SESSION['idGuestTest']); //se c'erano stati altri guest temporanei, li elimino per evitare collisioni
     unset($_SESSION['name']); //se è settato dopo questa pagina, allora è stato creato un nuovo guest
     unset($_SESSION['test']); //se è settato dopo questa pagina, allora è stato usato un referral
 
+    
+    //check if a referral code in the link is present
     if (isset($_POST["ref"]))
-        $ref = "&ref=" . $_POST["ref"];
-        
+        $ref = "&ref=" . $_POST["ref"];    
     else
         $ref = "";
 
+    //test field seems to be mandatory so i don't know what this does    
     if (isset($_GET["test"]))
         $type = "test=" . $_GET["test"];
     else
         $type = "";
 
+
     //sql injections handling
     $elements = ['name', 'surname', 'notes', 'ref'];
     $characters = ['"', "\\", chr(0)];
     $specialCharacters = false;
+    
     foreach ($elements as $elem) {
         $_POST[$elem] = str_replace("'", "''", $_POST[$elem]);
         foreach ($characters as $char)
             $specialCharacters |= is_numeric(strpos($_POST[$elem], $char));
     }
+
     $specialCharacters |= (!is_numeric($_POST["age"]) && $_POST["age"] != "");
 
     if ($specialCharacters) {
         header("Location: ../demographicData.php?" . $type . $ref . "&err=0");
+
+
     } else {
-        //connessione al db
-        /*$conn = new mysqli($host, $user, $password, $dbname);
-
-        if ($conn->connect_errno)
-            throw new Exception('DB connection failed');
-
-        mysqli_set_charset($conn, "utf8");*/
-        
+    
         $conn=connectdb();
 
-        // vedo se andranno salvati i dati del test
-        $checkSave = 0;
-        if (isset($_POST["checkSave"]))
-            $checkSave = 1;
-        $_SESSION["checkSave"] = $checkSave;
+        // check weather the results need to be saved
+        //$checkSave = 0;
+        //if (isset($_POST["checkSave"]))
+        //   $_SESSION["checkSave"] = true
+        
 
-        if ($checkSave == 0) {
+        //if check save box is not ticked i don't need to set up the data for the DB, skip to next page
+        if (!isset($_POST["checkSave"])) {
             header("Location: ../soundSettings.php?" . $type);
+
         } else {
+            $_SESSION["checkSave"] = true
             //scrivo la query di creazione del guest
             $sql = "INSERT INTO guest VALUES (NULL, '" . $_POST["name"] . "',";
             $_SESSION['name'] = $_POST["name"];
