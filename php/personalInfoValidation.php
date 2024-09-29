@@ -8,7 +8,6 @@ error_reporting(E_ALL); // Log all types of errors
 include "config.php";
 include_once('dbconnect.php');
 
-
 session_start();
 
 unset($_SESSION['idGuestTest']); //se c'erano stati altri guest temporanei, li elimino per evitare collisioni
@@ -28,14 +27,11 @@ if (!isset($_POST["checkSave"])) {
 $_SESSION["checkSave"] = true;
 
 
-
 //check if a referral code in the link is present, creates a concatenation string
 if (isset($_POST["ref"]))
     $ref = "&ref=" . $_POST["ref"];
 else
     $ref = "";
-
-
 
 
 //this section dismiss some special cases where no data manipulation is needed
@@ -55,10 +51,11 @@ if (isset($_SESSION['idGuest'])) { //if the user if logged
 } else
        
     if ($_POST["name"] == "") { //name is mandatory if not logged
-        header("Location: ../demographicData.php?" . $type . $ref . "&err=1");
-        exit;
+    header("Location: ../demographicData.php?" . $type . $ref . "&err=1");
+    exit;
 }
-$_SESSION['name'] = $_POST["name"];
+
+
 
 try {
     //sql injections handling
@@ -85,14 +82,14 @@ try {
     //this block verify if the referral code, if present, is valid
     if ($_POST["ref"] != "") { //referral is present, fetch referrer data
 
-        $_SESSION["ref"] = $_POST["ref"]; //session[ref] is actually never used again...
+        //$_SESSION["ref"] = $_POST["ref"]; //session[ref] is actually never used again...
         $refSQL = "SELECT Username, fk_GuestTest, fk_TestCount FROM account WHERE Referral='{$_POST["ref"]}';";
         $result = $conn->query($refSQL);
         $refrow = $result->fetch_assoc();
 
 
         if (!isset($refrow['Username'])) { //in case the referral is incorrect and no related username could be found
-            header("Location: ../demographicData.php?&ref=&err=3");
+            header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");
             exit;
         }
 
@@ -132,123 +129,33 @@ try {
     }
 
     //no user is logged, but name is present: create new guest
-    if (!isset($_SESSION['idGuest'])) {
 
 
-        //no referral
-        if ($_POST["ref"] == "") {
-            $_SESSION["ref"] = null;
-            $sql .= "NULL);SELECT LAST_INSERT_ID() as id;";
-            $conn->multi_query($sql);
-            $conn->next_result();
-            $result = $conn->store_result();
-            $row = $result->fetch_assoc();
-
-
-
-            $id = $row['id'];
-            $_SESSION['idGuest'] = $id; //take the generated id for future uses
-            $_SESSION['idGuestTest'] = $id;
-            header("Location: ../soundSettings.php?" . $type);
-            exit;
-        }
-
-        //referral is present, fetch referrer data
-        /*$_SESSION["ref"] = $_POST["ref"];
-        $refSQL = "SELECT Username, fk_GuestTest, fk_TestCount FROM account WHERE Referral='{$_POST["ref"]}';";
-        $result = $conn->query($refSQL);
-        $row = $result->fetch_assoc();
-
-
-        if (!isset($row['Username'])) { //in case the referral is incorrect and no related username could be found
-            header("Location: ../demographicData.php?&ref=&err=3");
-            exit;
-        }*/
-
-
-        //for whatever reason this variable is an array.
-        //takes the test inviter 'GuestTest' and how many test were referred by them
-        /*$_SESSION['test'] = array(
-            "guest" => $refrow['fk_GuestTest'],
-            "count" => $refrow['fk_TestCount']
-        );*/
-
-
-        //insert the referrer name in the DB along with user demographics (fk_guest field)
+    //no referral
+    if ($_POST["ref"] == "") {
+        $sql .= "NULL);SELECT LAST_INSERT_ID() as id;";
+    } else {
         $sql .= "'" . $refrow['Username'] . "');SELECT LAST_INSERT_ID() as id;";
-        $conn->multi_query($sql);
-        $conn->next_result();
-        $result = $conn->store_result();
-        $row = $result->fetch_assoc();
-
-        $id = $row['id'];
-        //error_log($id, 3, "error.txt"); // debug printing - ignore
-        $_SESSION['idGuestTest'] = $id;
-        if (isset($_SESSION['test'])) {
-            header("Location: ../info.php");
-            exit;
-        }
-
-        // a user is logged
     }
 
-    /*if ($_POST["name"] == "" && $_POST['ref'] == "") { //no referal, no new guest to create, can skip ahead
-            $_SESSION['idGuestTest'] = $_SESSION['idGuest'];
-            header("Location: ../soundSettings.php?" . $type);*/
-
-    //is this situation even possible??
-    /*if ($_POST["name"] != "" && $_POST['ref'] == "") { //log in e nome ma niente referral, va creato un nuovo guest e va collegato all'account che ha fatto il log in
-            header("Location: ../demographicData.php?" . $type);*/
-
-    /*if ($_POST["name"] == "" && $_POST['ref'] != "") { //log in e referral ma niente nome, va lanciato un errore (nome obbligatorio col referral)
-            header("Location: ../demographicData.php?" . $type . $ref . "&err=2");*/
-
-    //this case should be validated by default ath this point
-    /*if ($_POST["name"] != "" && $_POST['ref'] != "") { //log in, referral e nome, va creato un nuovo guest e va collegato all'account del referral
-            $_SESSION["name"] = $_POST["name"];*/
-
-
-    /*$_SESSION["ref"] = $_POST["ref"];
-
-            $refSQL = "SELECT Username FROM account WHERE Referral='{$_SESSION["ref"]}';";
-            $result = $conn->query($refSQL);
-            $row = $result->fetch_assoc();    // dopo aver fatto la query controllo se il risultato é nullo, se lo é, il referral non é valido
-
-            if (!isset($row['Username'])) {
-                header("Location: ../demographicData.php?" . $type . $ref . "&err=3");
-                exit;
-            }*/
-
-
-    $sql .= "'" . $refrow['Username'] . "');SELECT LAST_INSERT_ID() as id;";
-
+    $_SESSION['name'] = $_POST["name"];
     $conn->multi_query($sql);
     $conn->next_result();
     $result = $conn->store_result();
     $row = $result->fetch_assoc();
 
     $id = $row['id'];
+    $_SESSION['idGuest'] = $id; //take the generated id for future uses
     $_SESSION['idGuestTest'] = $id;
 
-    /*$refSQL = "SELECT fk_GuestTest, fk_TestCount FROM account WHERE Referral='{$_SESSION["ref"]}';";
-            $result = $conn->query($refSQL);
-            $row = $result->fetch_assoc();
-
-
-            $_SESSION['test'] = array(
-                "guest" => $row['fk_GuestTest'],
-                "count" => $row['fk_TestCount']
-            );*/
-
-    if (isset($_SESSION['test'])){
-        header("Location: ../info.php");
+    if ($_POST["ref"] == "") {
+        header("Location: ../soundSettings.php?" . $type);
         exit;
     }
- 
 
+    header("Location: ../info.php");
+    exit;
 
-    else
-        header("Location: ../soundSettings.php?" . $type);
 } catch (Exception $e) {
     error_log($e, 3, "error.txt");
     header("Location: ../index.php?err=db");
