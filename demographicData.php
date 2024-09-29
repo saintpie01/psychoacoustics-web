@@ -28,9 +28,7 @@
 
     <title>Psychoacoustics-web - Personal info</title>
 
-    <script>
-
-        //don't know what this function does/ doesn't works
+    <script> 
         function verifyRef() {
             var display = true;
             var logged = <?php if (isset($_SESSION['usr'])) echo "true";
@@ -69,19 +67,22 @@
             verifyRef();
         }
     </script>
+
+
     <style>
         /* Add this style to increase the width of the range input */
         #volume {
             width: 500px;
             /* Adjust the width as needed */
         }
-    </style>
+    </style>   
 </head>
 
-<body onload="verifyRef()">
 
+
+<body onload="verifyRef()">
     <?php
-    //se si sceglie un username già esistente verrà messo "?err=1" nell'url
+    //if an already existing name is selected "?err=1" will be returned in the url
     if (isset($_GET['err'])) {
         if ($_GET['err'] == 0)
             echo "<div class='alert alert-danger'>Some inserted characters aren't allowed</div>";
@@ -97,30 +98,39 @@
 
     <div class="container my-5 p-4 p-sm-5 border rounded rounded-4 bg-light">
         <h2>Personal Informations</h2>
+
         <form name="staircase" method="post" action="php/personalInfoValidation.php<?php
                                                                                     if (isset($_GET["test"]))
                                                                                         echo "?test=" . $_GET["test"];
                                                                                     ?>">
-            <!-- Contenuto dello slot, qui vanno inseriti tutti i bottoni e i check box del primo slot -->
+            <!-- this box contains all the page main buttons and content -->
             <div class="row align-items-center g-4">
+
+                <!--name form -->
                 <div class="col-12 col-lg-3">
                     <div class="input-group flex-nowrap conditionalDisplay">
                         <span class="input-group-text" id="name">Name<?php if (!isset($_SESSION['usr'])) echo "*"; ?></span>
                         <input type="text" class="form-control" id="inputName" placeholder="Name" name="name">
                     </div>
                 </div>
+
+                <!--surname form -->
                 <div class="col-12 col-lg-3">
                     <div class="input-group flex-nowrap conditionalDisplay">
                         <span class="input-group-text" id="surname">Surname</span>
                         <input type="text" class="form-control" id="inputSurname" placeholder="Surname" name="surname">
                     </div>
                 </div>
+
+                <!--age form -->
                 <div class="col-12 col-lg-3">
                     <div class="input-group flex-nowrap conditionalDisplay">
                         <span class="input-group-text" id="age">Age</span>
                         <input type="text" class="form-control" id="inputAge" placeholder="Age" name="age">
                     </div>
                 </div>
+
+                <!--gender form -->
                 <div class="col-12 col-lg-3">
                     <div class="input-group flex-nowrap conditionalDisplay">
                         <span class="input-group-text" id="gender">Gender</span>
@@ -154,12 +164,17 @@
                         </select>
                     </div>
                 </div>
+
+                <!--notes form -->
                 <div class="col-12">
                     <div class="input-group flex-nowrap conditionalDisplay" id="notesDiv">
                         <span class="input-group-text" id="notes">Notes</span>
                         <input type="text" class="form-control" id="inputNotes" placeholder="Notes" name="notes">
                     </div>
                 </div>
+
+
+                <!--Warning + Slider box -->
                 <div class="row mt-3">
                     <div class="col-12 col-lg-6">
                         <p style="color: black;">
@@ -167,6 +182,7 @@
                             <strong>Notice:</strong> The maximum intensity also depends on your system volume setting.
                         </p>
                     </div>
+
                     <div class="col-12 col-lg-6">
                         <form method="post" action="">
                             <label for="volume">Intensity:</label>
@@ -174,12 +190,18 @@
                         </form>
                     </div>
                 </div>
+
+
+                <!--save result check-->            
                 <div class="col-12 col-lg-12">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" name="checkSave" checked>
                         <label class="form-check-label" for="flexCheckDefault">Save results</label>
                     </div>
                 </div>
+
+
+                <!--referral code box -->
                 <div class="col-12 col-lg-6">
                     <div class="row align-items-center justify-content-between g-4">
                         <div class="col-12 col-lg-6">
@@ -200,7 +222,8 @@
                     </div>
                 </div>
 
-                <!-- i bottoni sono fuori dal terzo slot -->
+
+                <!-- navigation buttons -->
                 <div class="container mt-3">
                     <div class="row align-items-center g-4">
                         <div class="col-12">
@@ -212,6 +235,7 @@
                                 <?php } ?>
                             </div>
                         </div>
+
                         <div class="row row-cols-2 gy-2">
                             <div class="col d-grid">
                                 <button type="button" class="btn btn-primary btn-lg btn-red" onclick="location.href='index.php'">
@@ -226,9 +250,12 @@
                         </div>
                     </div>
                 </div>
+
             </div>
+
         </form>
     </div>
+
     <?php if (!isset($_SESSION['usr'])) { ?>
         <div class="container my-5 p-4 p-sm-5 border rounded rounded-4 bg-light">
             <p style="color: black;"> TERMS AND CONDITION

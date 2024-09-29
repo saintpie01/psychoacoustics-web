@@ -1,11 +1,13 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <?php
+<?php
     session_start();
     $_SESSION['version'] = 1; //change this number to force cache update
-    ?>
+?>
+    
+    
+<!doctype html>
+<html lang="en">
 
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,7 +25,6 @@
             src="js/funzioni.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"></script>
 
     <title>Psychoacoustics-web</title>
-
 </head>
 
 <body>

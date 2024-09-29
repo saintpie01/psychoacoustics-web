@@ -1,14 +1,15 @@
+<?php
+    session_start();
+    //check if there is a user logged
+    if (!isset($_SESSION['usr']) || !isset($_SESSION['idGuest']))
+        header("Location: index.php");
+    include "php/config.php";
+?>
+    
 <!doctype html>
 <html lang="en">
 
 <head>
-    <?php
-    session_start();
-    if (!isset($_SESSION['usr']) || !isset($_SESSION['idGuest']))
-        header("Location: index.php");
-    include "php/config.php";
-    ?>
-
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,8 +21,9 @@
     <link rel="stylesheet" href="css/staircaseStyle.css">
     <title>Psychoacoustics-web - Test results</title>
 </head>
-<body>
 
+
+<body>
 <nav class="navbar navbar-dark bg-dark shadow-lg text-white">
     <div class="container">
         <a class="navbar-brand" href="index.php">

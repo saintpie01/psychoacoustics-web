@@ -1,11 +1,13 @@
+<?php
+    session_start();
+    include "php/config.php";
+?>
+
 <!doctype html>
 <html lang="en">
 
 <head>
-    <?php
-    session_start();
-    include "php/config.php";
-    ?>
+
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
