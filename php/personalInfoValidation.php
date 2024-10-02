@@ -1,14 +1,16 @@
 <?php
 
+include "config.php";
+include_once('dbconnect.php');
+
+session_start();
+
 ini_set('log_errors', 'On');
 ini_set('error_log', 'error.txt');
 ini_set('display_errors', 'Off'); // Ensure errors are not displayed in the browser
 error_reporting(E_ALL); // Log all types of errors
 
-include "config.php";
-include_once('dbconnect.php');
 
-session_start();
 
 unset($_SESSION['idGuestTest']); //se c'erano stati altri guest temporanei, li elimino per evitare collisioni
 unset($_SESSION['name']); //se è settato dopo questa pagina, allora è stato creato un nuovo guest
@@ -16,11 +18,13 @@ unset($_SESSION['test']); //se è settato dopo questa pagina, allora è stato us
 
 
 //creates concatenation string to quick pass test type later
+/*if (isset($_GET["test"]))*/
 $type = "test=" . $_GET["test"];
-
 
 //if checksave box is not ticked i don't need to set up the data for the DB, skip to next page
 if (!isset($_POST["checkSave"])) {
+    $_SESSION["checkSave"] = false;
+    $_SESSION['idGuestTest'] = $_SESSION['idGuest'];
     header("Location: ../soundSettings.php?" . $type);
     exit;
 }
@@ -127,8 +131,6 @@ try {
     } else {
         $sql .= "'" . $_POST["notes"] . "', ";
     }
-
-    //no user is logged, but name is present: create new guest
 
 
     //no referral
