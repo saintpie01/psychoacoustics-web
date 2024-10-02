@@ -4,19 +4,21 @@ include_once "dbCommonFunctions.php";
 include "config.php";
 include "dbconnect.php";
 
+ini_set('log_errors', 'On');
+ini_set('error_log', 'error.txt');
+ini_set('display_errors', 'Off'); // Ensure errors are not displayed in the browser
+error_reporting(E_ALL); // Log all types of errors
+
 session_start();
 
 //uses function from dbCommonFunction to verify any injection on POST data
 $specialCharacters = verifyInjection(['usr', 'psw']);
-
-
 if ($specialCharacters) {
 	header("Location: ../login.php?&err=0");
 	exit;
 }
 
-try {
-	
+try {	
 	//connect to Database
 	$conn = connectdb();
 
@@ -28,10 +30,8 @@ try {
 	$sql = "SELECT Guest_ID FROM account WHERE Username='$usr' AND Password=SHA2('$psw', 256)";
 	$result = $conn->query($sql);
 
-	
-	if ($result->num_rows < 0) { //error if no user is found
+	if ($result->num_rows <= 0) { //error if no user is found
 		header('Location: ../login.php?err=1');
-
 	} else {
 		$row = $result->fetch_assoc();
 
