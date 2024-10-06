@@ -6,7 +6,7 @@ include "dbCommonFunctions.php";
 
 session_start();
 
-$specialCharacters = verifyInjection(["name"]);
+$specialCharacters = checkSpecialCharacter(["name"]);
 if ($specialCharacters) {
 	header("Location: ../userSettings.php?&err=0");
 	exit;
@@ -16,8 +16,8 @@ try {
 	$conn = connectdb();
 
 	//prendo i dati del guest
-	$usr = $_SESSION['usr'];
-	$id = $_SESSION['idGuest'];
+	$usr = $_SESSION['currentLoggedUsername'];
+	$id = $_SESSION['currentLoggedID'];
 
 	//controllo di sicurezza
 	$sql = "SELECT Type FROM account WHERE Guest_ID='$id' AND Username='$usr'";

@@ -1,8 +1,8 @@
 <?php
 	session_start();
 
-	unset($_SESSION['usr']);
-	unset($_SESSION['idGuest']);
+	unset($_SESSION['currentLoggedUsername']);
+	unset($_SESSION['currentLoggedID']);
 	
 	header("Location: ../index.php");
 ?>

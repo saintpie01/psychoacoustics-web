@@ -23,12 +23,12 @@
 			
 			$sql = "SELECT username, date, email, name, surname, notes, gender 
 				FROM account INNER JOIN guest ON account.Guest_ID = guest.ID
-				WHERE username='{$_SESSION['usr']}';";
+				WHERE username='{$_SESSION['currentLoggedUsername']}';";
 			$result = $conn->query($sql);
 			$row = $result->fetch_assoc();
 			
 			$somethingChanged = false;
-			$oldUsr = $_SESSION['usr'];
+			$oldUsr = $_SESSION['currentLoggedUsername'];
 			$sql = "UPDATE account SET ";
 			
 			if($_POST['usr']!=$row['username']){
@@ -38,7 +38,7 @@
 					header("Location: ../userSettings.php?&err=1");
 				}else{
 					$sql.="username = '{$_POST['usr']}', ";
-					$_SESSION['usr'] = $_POST['usr'];
+					$_SESSION['currentLoggedUsername'] = $_POST['usr'];
 					$somethingChanged = true;
 				}
 			}
@@ -83,7 +83,7 @@
 			}
 			
 			$sql = substr($sql, 0, -2);
-			$sql .= "WHERE ID='{$_SESSION['idGuest']}';";
+			$sql .= "WHERE ID='{$_SESSION['currentLoggedID']}';";
 			
 			if($somethingChanged)
 				$conn->query($sql);

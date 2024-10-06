@@ -39,7 +39,7 @@ if (isset($_GET['test']))
 //takes all the parameters already setted and uses them instead of the default number in the 
 //following html code
 
-if (isset($_SESSION['usr'])) {
+if (isset($_SESSION['currentLoggedUsername'])) {
     try {
 
         $conn=connectdb();
@@ -52,7 +52,7 @@ if (isset($_SESSION['usr'])) {
 								FROM test
 								INNER JOIN account ON account.fk_GuestTest=test.Guest_ID AND account.fk_TestCount=test.Test_count
 								
-								WHERE account.Username='{$_SESSION['usr']}'";
+								WHERE account.Username='{$_SESSION['currentLoggedUsername']}'";
         $result = $conn->query($sql);
         $row = $result->fetch_assoc();
     } catch (Exception $e) {
@@ -453,7 +453,7 @@ if (isset($_SESSION['usr'])) {
                                     Feedback after response
                                 </label>
                             </div>
-                            <?php if (isset($_SESSION['usr']) && !(isset($_SESSION['updatingSavedSettings']) && $_SESSION['updatingSavedSettings'] == true)) { ?>
+                            <?php if (isset($_SESSION['currentLoggedUsername']) && !(isset($_SESSION['updatingSavedSettings']) && $_SESSION['updatingSavedSettings'] == true)) { ?>
                                 <div class="form-check"
                                      title="if checked the settings will be saved and used as default for the next tests">
                                     <input class="form-check-input" type="checkbox" id="saveSettings"

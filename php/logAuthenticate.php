@@ -45,8 +45,8 @@ try {
 
 	//initialize SESSION variable with logged User data
 	//actually usr and guest id are both unique for all users so there is no need to use both (mystery)
-	$_SESSION['usr'] = $usr;
-	$_SESSION['idGuest'] = $row['Guest_ID'];
+	$_SESSION['currentLoggedUsername'] = $usr;
+	$_SESSION['currentLoggedID'] = $row['Guest_ID'];
 
 	header('Location: ../index.php');
 	$conn->close();

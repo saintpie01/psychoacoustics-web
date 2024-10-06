@@ -19,7 +19,7 @@ $deviceInfo = str_replace(";", " ", $_SERVER['HTTP_USER_AGENT']);
 		//uso codifica utf8 per comunicare col db
 		mysqli_set_charset($conn, "utf8");
 
-		$id = $_SESSION['idGuest'];
+		$id = $_SESSION['currentLoggedID'];
 
 		//trova il numero di test effettuati fin'ora
 		$sql = "SELECT Max(Test_count) as count FROM test WHERE Guest_ID='$id'";
@@ -67,7 +67,7 @@ $deviceInfo = str_replace(";", " ", $_SERVER['HTTP_USER_AGENT']);
 		}
 		$conn->query($sql);
 		
-		$sql = "UPDATE account SET fk_GuestTest = '$id', fk_TestCount = '$count' WHERE Username = '{$_SESSION['usr']}' ";
+		$sql = "UPDATE account SET fk_GuestTest = '$id', fk_TestCount = '$count' WHERE Username = '{$_SESSION['currentLoggedUsername']}' ";
 		$conn->query($sql);
 		
 		unset($_SESSION['updatingSavedSettings']);

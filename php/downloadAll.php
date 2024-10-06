@@ -19,8 +19,8 @@
 		mysqli_set_charset($conn, "utf8");
 		
 		//prendo i dati del guest
-		$usr = $_SESSION['usr'];
-		$id = $_SESSION['idGuest'];
+		$usr = $_SESSION['currentLoggedUsername'];
+		$id = $_SESSION['currentLoggedID'];
 		
 		//controllo di sicurezza
 		$sql = "SELECT Type FROM account WHERE Guest_ID='$id' AND Username='$usr'";
@@ -92,8 +92,8 @@
 			$txt = fopen("files/log.txt", "a") or die("Unable to open file!");
 			
 			fwrite($txt, "Attempt to access downloadAll.php without permission - timestamp: ".$date);
-			if(isset($_SESSION['usr']))
-				fwrite($txt, " - username: ".$_SESSION['usr']);
+			if(isset($_SESSION['currentLoggedUsername']))
+				fwrite($txt, " - username: ".$_SESSION['currentLoggedUsername']);
 			fwrite($txt, "\n");
 			
 			fclose($txt);

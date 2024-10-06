@@ -39,9 +39,9 @@
         <form class="d-flex align-items-center">
             <?php
             //if the user is not logged show the login buttons
-            if (!isset($_SESSION["usr"])) {
-                if (isset($_SESSION["idGuest"]))
-                    unset($_SESSION["idGuest"]);
+            if (!isset($_SESSION['currentLoggedUsername'])) {
+                if (isset($_SESSION['currentLoggedID']))
+                    unset($_SESSION['currentLoggedID']);
                 ?>
                 <button id="menuSignUp" class="btn btn-outline-light me-3" type="button" onclick="location.href='register.php'">
                     Sign Up
@@ -52,7 +52,7 @@
             <?php
             //if the user is logged show the welcome message and the 'your test' and 'logout' buttons
             } else { ?>
-                <label id="menuWelcome" class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['usr'] ?></label>
+                <label id="menuWelcome" class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername'] ?></label>
                 <button id="menuYourTests" class="btn btn-outline-light me-3" type="button" onclick="location.href='yourTests.php'">
                     Your tests
                 </button>

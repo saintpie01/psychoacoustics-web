@@ -13,12 +13,12 @@ try {
         mysqli_set_charset($conn, "utf8");
 
         //prendo i dati del guest
-        if (!isset($_SESSION['idGuestTest']) && !isset($_SESSION['idGuest'])) {
-            echo ($_SESSION['idGuestTest']) . ", " . ($_SESSION['idGuest']);
+        if (!isset($_SESSION['idGuestTest']) && !isset($_SESSION['currentLoggedID'])) {
+            echo ($_SESSION['idGuestTest']) . ", " . ($_SESSION['currentLoggedID']);
             //header("Location: ../index.php?err=2");
         } else {
-            if (isset($_SESSION['idGuest']))
-                $id = $_SESSION['idGuest'];
+            if (isset($_SESSION['currentLoggedID']))
+                $id = $_SESSION['currentLoggedID'];
             else if (isset($_SESSION['idGuestTest']))
                 $id = $_SESSION['idGuestTest'];
 

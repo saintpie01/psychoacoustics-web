@@ -30,7 +30,7 @@ if (isset($_GET['err'])) {
         <div class="col-12 col-md-4">
             <div class="p-5 border rounded rounded-4 bg-light">
                 <h2>Login</h2>
-                <form method="post" action="php/log.php">
+                <form method="post" action="php/logAuthenticate.php">
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Username</span>
                         <input type="text" class="form-control" placeholder="Username" aria-label="Username"

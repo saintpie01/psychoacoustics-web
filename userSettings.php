@@ -38,7 +38,7 @@
                 PSYCHOACOUSTICS-WEB
             </a>
             <form class="d-flex align-items-center">
-                <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['usr'] ?></label>
+                <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername'] ?></label>
                 <button class="btn btn-outline-light me-3" type="button" onclick="location.href='yourTests.php'">
                     Your tests
                 </button>
@@ -75,7 +75,7 @@
 
         $sql = "SELECT referral, name, surname, date, gender, notes, email 
 					FROM account INNER JOIN guest ON account.Guest_ID = guest.ID 
-					WHERE username='" . $_SESSION['usr'] . "'";
+					WHERE username='" . $_SESSION['currentLoggedUsername'] . "'";
         $result = $conn->query($sql);
         $row = $result->fetch_assoc();
         $ref = $row['referral'];
@@ -136,10 +136,10 @@
 
         <?php
         try {
-            $sql = "SELECT Type FROM account WHERE Guest_ID='{$_SESSION['idGuest']}' AND Username='{$_SESSION['usr']}'";
+            $sql = "SELECT Type FROM account WHERE Guest_ID='{$_SESSION['currentLoggedID']}' AND Username='{$_SESSION['currentLoggedUsername']}'";
             $result = $conn->query($sql);
             $row = $result->fetch_assoc();
-            if ($row['Type'] == 1) { ?>
+            if (isset($row['Type']) && $row['Type'] == 1) { ?>
                 <div class="container-fluid p-4 border rounded-4 bg-light mt-5">
                     <h4 class="mb-3">Create new superuser</h4>
                     <form action="php/newUsername.php" method="POST" class="settingForm ref">
@@ -192,7 +192,7 @@
                     <div class="col">
                         <div class="input-group">
                             <span class="input-group-text">Username</span>
-                            <input type="text" class="form-control" name="usr" value="<?php echo $_SESSION['usr']; ?>">
+                            <input type="text" class="form-control" name="usr" value="<?php echo $_SESSION['currentLoggedUsername']; ?>">
                         </div>
                     </div>
                     <div class="col">

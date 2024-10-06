@@ -125,7 +125,7 @@ try {
 			$conn->query($sql);
 
 			// if($_GET['saveSettings']){
-			// 	$sql = "UPDATE account SET fk_guestTest = '$id', fk_testCount = '$count' WHERE username = '{$_SESSION['usr']}' ";
+			// 	$sql = "UPDATE account SET fk_guestTest = '$id', fk_testCount = '$count' WHERE username = '{$_SESSION['currentLoggedUsername']}' ";
 			// 	$conn->query($sql);
 			// }
 

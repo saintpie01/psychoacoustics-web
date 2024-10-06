@@ -47,8 +47,8 @@
 		mysqli_set_charset($conn, "utf8");
 		
 		//prendo i dati del guest
-		$usr = $_SESSION['usr'];
-		$id = $_SESSION['idGuest'];
+		$usr = $_SESSION['currentLoggedUsername'];
+		$id = $_SESSION['currentLoggedID'];
 		
 		//creo e apro il file csv
 		$path = "yourResults.csv";

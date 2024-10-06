@@ -55,7 +55,7 @@
                         <?php
                         if (isset($_GET['continue'])) {
                             if ($_GET['continue'] == 0) {
-                                if (isset($_SESSION['usr'])) { ?>
+                                if (isset($_SESSION['currentLoggedUsername'])) { ?>
                                     <div class="col d-grid">
                                         <button type='button' class='btn btn-primary btn-lg btn-red' onclick='location.href="php/download.php?format=complete"'>
                                             Download data

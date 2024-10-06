@@ -1,7 +1,7 @@
 <?php
     session_start();
     //check if there is a user logged
-    if (!isset($_SESSION['usr']) || !isset($_SESSION['idGuest']))
+    if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLoggedID']))
         header("Location: index.php");
     include "php/config.php";
 ?>
@@ -31,7 +31,7 @@
             PSYCHOACOUSTICS-WEB
         </a>
         <form class="d-flex align-items-center">
-            <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['usr'] ?></label>
+            <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername'] ?></label>
             <button class="btn btn-outline-light me-3" type="button" onclick="location.href='yourTests.php'">
                 Your tests
             </button>
@@ -46,7 +46,7 @@
 </nav>
 
 <div class="container">
-    <h1 class="mt-5">Welcome <?php echo $_SESSION['usr']; ?></h1>
+    <h1 class="mt-5">Welcome <?php echo $_SESSION['currentLoggedUsername']; ?></h1>
     <div class="row g-3">
         <div class="col d-grid">
             <button type='button' class='btn btn-primary btn-lg btn-red'
@@ -69,8 +69,8 @@
 
             mysqli_set_charset($conn, "utf8");
 
-            $usr = $_SESSION['usr'];
-            $id = $_SESSION['idGuest'];
+            $usr = $_SESSION['currentLoggedUsername'];
+            $id = $_SESSION['currentLoggedID'];
 
             $sql = "SELECT Type FROM account WHERE Guest_ID='$id' AND Username='$usr'";
             $result = $conn->query($sql);
@@ -129,7 +129,7 @@
         <tbody>
         <?php
         try {
-            $sql = "SELECT Name, Test_count, Timestamp, Type FROM test INNER JOIN guest ON Guest_ID=ID WHERE fk_guest='{$_SESSION['usr']}'";
+            $sql = "SELECT Name, Test_count, Timestamp, Type FROM test INNER JOIN guest ON Guest_ID=ID WHERE fk_guest='{$_SESSION['currentLoggedUsername']}'";
             $result = $conn->query($sql);
             while ($row = $result->fetch_assoc()) { ?>
                 <tr>
