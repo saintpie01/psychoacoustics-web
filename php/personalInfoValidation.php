@@ -2,6 +2,7 @@
 
 include "config.php";
 include_once('dbconnect.php');
+include_once('dbCommonFunctions.php');
 
 session_start();
 
@@ -10,153 +11,124 @@ ini_set('error_log', 'error.txt');
 ini_set('display_errors', 'Off'); // Ensure errors are not displayed in the browser
 error_reporting(E_ALL); // Log all types of errors
 
-
-
 unset($_SESSION['idGuestTest']); //se c'erano stati altri guest temporanei, li elimino per evitare collisioni
 unset($_SESSION['name']); //se è settato dopo questa pagina, allora è stato creato un nuovo guest
 unset($_SESSION['test']); //se è settato dopo questa pagina, allora è stato usato un referral
 
-
 //creates concatenation string to quick pass test type later
-/*if (isset($_GET["test"]))*/
 $type = "test=" . $_GET["test"];
 
-//if checksave box is not ticked i don't need to set up the data for the DB, skip to next page
-if (!isset($_POST["checkSave"])) {
-    $_SESSION["checkSave"] = false;
-    $_SESSION['idGuestTest'] = $_SESSION['idGuest'];
-    header("Location: ../soundSettings.php?" . $type);
+//verify injection on POST data
+$specialCharacters = checkSpecialCharacter(['name', 'surname', 'notes', 'ref']);
+$specialCharacters |= (!is_numeric($_POST["age"]) && $_POST["age"] != "");
+//if sql injection test fail, return to previous page
+if ($specialCharacters) {
+    header("Location: ../demographicData.php?" . $type . $ref . "&err=0");
     exit;
 }
+
+$ref = "";
+$redirection = "Location: ../soundSettings.php?" . $type; //redirection string based on the presence of referal code
+if (($_POST["ref"]) != "") { //check if a referral code in the link is present and valid, create a session variable and change the redirection path
+
+    try {
+        $refrow = fetchReferralInfo($_POST['ref']); //return an array with referral data
+
+    } catch (Exception $e) { //if invalid
+        header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");
+        exit;
+    }
+
+    $_SESSION['test'] = array( //gather referral data
+        "guest" => $refrow['fk_GuestTest'],
+        "count" => $refrow['fk_TestCount']
+    );
+
+    $ref = "&ref=" . $_POST["ref"];
+    $redirection = "Location: ../info.php"; //all referral tests get redirected to this page
+
+
+}
+
 $_SESSION["checkSave"] = true;
 
-
-//check if a referral code in the link is present, creates a concatenation string
-if (isset($_POST["ref"]))
-    $ref = "&ref=" . $_POST["ref"];
-else
-    $ref = "";
-
-
 //this section dismiss some special cases where no data manipulation is needed
-if (isset($_SESSION['idGuest'])) { //if the user if logged
+if (!isset($_POST["checkSave"])) { //no data needs to be saved, skip ahead
+    $_SESSION["checkSave"] = false;
+    //error_log('referral presen'.$ref, 3, "error.txt");
+    header($redirection);
+    exit;
+}
 
-    //error_log($_SESSION['idGuest'], 3, "error.txt"); // debug printing - ignore
+if (isset($_SESSION['currentLoggedID'])) { //if the user if logged
+    $_SESSION['idGuestTest'] = $_SESSION['currentLoggedID']; //id guestTest take the Logged Account ID
+
+    //error_log($_SESSION['currentLoggedID'], 3, "error.txt"); // debug printing - ignore
     if ($_POST["ref"] == "") { //no referral is present, go ahead
         //error_log($_POST['ref'], 3, "error.txt"); // debug printing - ignore
-        $_SESSION['idGuestTest'] = $_SESSION['idGuest'];
-        header("Location: ../soundSettings.php?" . $type);
+        header($rediretion);
         exit;
     } else 
         if ($_POST["name"] == "") { //referral is present but no name given (mandatory) return an error
         header("Location: ../demographicData.php?" . $type . $ref . "&err=2");
         exit;
     }
-} else
-       
+} else   
     if ($_POST["name"] == "") { //name is mandatory if not logged
     header("Location: ../demographicData.php?" . $type . $ref . "&err=1");
     exit;
 }
 
+//if none of the condition before validate i must create a new Guest
+$_SESSION['name'] = $_POST["name"];
+// beginning of the insertion query
+// create a new guest
+$sql = "INSERT INTO guest VALUES (NULL, '" . $_POST["name"] . "',";
 
+
+if ($_POST["surname"] == "") {
+    $sql .= "NULL, ";
+} else {
+    $sql .= "'" . $_POST["surname"] . "', ";
+}
+
+if ($_POST["age"] == "") {
+    $sql .= "NULL, ";
+} else {
+    $sql .= "'" . $_POST["age"] . "', ";
+}
+
+if (!isset($_POST["gender"])) {
+    $sql .= "NULL, ";
+} else {
+    $sql .= "'" . $_POST["gender"] . "', ";
+}
+
+if ($_POST["notes"] == "") {
+    $sql .= "NULL, ";
+} else {
+    $sql .= "'" . $_POST["notes"] . "', ";
+}
+
+
+if (isset($_POST["ref"])) {
+    $sql .= "NULL);SELECT LAST_INSERT_ID() as id;"; //no referral
+} else {
+    $sql .= "'" . $refrow['Username'] . "');SELECT LAST_INSERT_ID() as id;";
+}
 
 try {
-    //sql injections handling
-    $elements = ['name', 'surname', 'notes', 'ref'];
-    $characters = ['"', "\\", chr(0)];
-    $specialCharacters = false;
-    foreach ($elements as $elem) {
-        $_POST[$elem] = str_replace("'", "''", $_POST[$elem]);
-        foreach ($characters as $char)
-            $specialCharacters |= is_numeric(strpos($_POST[$elem], $char));
-    }
-    $specialCharacters |= (!is_numeric($_POST["age"]) && $_POST["age"] != "");
-
-    //if sql injection test fail, return to previous page
-    if ($specialCharacters) {
-        header("Location: ../demographicData.php?" . $type . $ref . "&err=0");
-        exit;
-    }
-
-
-    //now i can  connect to db to handle and save tha passed data
     $conn = connectdb();
-
-    //this block verify if the referral code, if present, is valid
-    if ($_POST["ref"] != "") { //referral is present, fetch referrer data
-
-        //$_SESSION["ref"] = $_POST["ref"]; //session[ref] is actually never used again...
-        $refSQL = "SELECT Username, fk_GuestTest, fk_TestCount FROM account WHERE Referral='{$_POST["ref"]}';";
-        $result = $conn->query($refSQL);
-        $refrow = $result->fetch_assoc();
-
-
-        if (!isset($refrow['Username'])) { //in case the referral is incorrect and no related username could be found
-            header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");
-            exit;
-        }
-
-        //who wrote this??
-        $_SESSION['test'] = array(
-            "guest" => $refrow['fk_GuestTest'],
-            "count" => $refrow['fk_TestCount']
-        );
-    }
-
-    //i start writing the beginning of the insertion query
-    $sql = "INSERT INTO guest VALUES (NULL, '" . $_POST["name"] . "',";
-
-
-    if ($_POST["surname"] == "") {
-        $sql .= "NULL, ";
-    } else {
-        $sql .= "'" . $_POST["surname"] . "', ";
-    }
-
-    if ($_POST["age"] == "") {
-        $sql .= "NULL, ";
-    } else {
-        $sql .= "'" . $_POST["age"] . "', ";
-    }
-
-    if (!isset($_POST["gender"])) {
-        $sql .= "NULL, ";
-    } else {
-        $sql .= "'" . $_POST["gender"] . "', ";
-    }
-
-    if ($_POST["notes"] == "") {
-        $sql .= "NULL, ";
-    } else {
-        $sql .= "'" . $_POST["notes"] . "', ";
-    }
-
-
-    //no referral
-    if ($_POST["ref"] == "") {
-        $sql .= "NULL);SELECT LAST_INSERT_ID() as id;";
-    } else {
-        $sql .= "'" . $refrow['Username'] . "');SELECT LAST_INSERT_ID() as id;";
-    }
-
-    $_SESSION['name'] = $_POST["name"];
     $conn->multi_query($sql);
     $conn->next_result();
     $result = $conn->store_result();
     $row = $result->fetch_assoc();
 
     $id = $row['id'];
-    $_SESSION['idGuest'] = $id; //take the generated id for future uses
+    //$_SESSION['currentLoggedID'] = $id; //take the generated id for future uses
     $_SESSION['idGuestTest'] = $id;
 
-    if ($_POST["ref"] == "") {
-        header("Location: ../soundSettings.php?" . $type);
-        exit;
-    }
-
-    header("Location: ../info.php");
-    exit;
+    header($redirection);
 
 } catch (Exception $e) {
     error_log($e, 3, "error.txt");
