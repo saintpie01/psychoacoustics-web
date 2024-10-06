@@ -29,24 +29,34 @@
     <title>Psychoacoustics-web - Personal info</title>
 
     <script> 
+        /**
+         * this function is neede to hide div marked with "conditional Display" on specific conditons 
+         */
         function verifyRef() {
             var display = true;
-            var logged = <?php if (isset($_SESSION['usr'])) echo "true";
-                            else echo "false"; ?>;
-            if (document.getElementById("ref").value != "" && logged) {
+            var logged = <?php if (isset($_SESSION['currentLoggedUsername'])) echo "true";
+                            else echo "false"; ?>;           
+
+            if (document.getElementById("ref").value != "" && logged) {//if the user is logged
                 if (document.getElementById("name").innerHTML.slice(-1) != "*")
                     document.getElementById("name").innerHTML += "*";
                 display = true;
-            } else if (document.getElementById("ref").value == "" && logged) {
+            } else 
+                if (document.getElementById("ref").value == "" && logged) {
+                 display = false;
+                }            
+            if (!document.getElementById("checkSave").checked){
                 display = false;
+                console.log("The checkbox is not checked.");
             }
+            
             updatePage(display);
         }
 
 
         function insertRef() {
             <?php
-            if (isset($_SESSION['usr'])) {
+            if (isset($_SESSION['currentLoggedUsername'])) {
                 try {
                     $conn = new mysqli($host, $user, $password, $dbname);
                     if ($conn->connect_errno)
@@ -54,18 +64,25 @@
                     mysqli_set_charset($conn, "utf8");
                     //connectdb();
 
-                    $sql = "SELECT Referral as ref FROM account WHERE Username='{$_SESSION['usr']}'";
+                    $sql = "SELECT Referral as ref FROM account WHERE Username='{$_SESSION['currentLoggedUsername']}'";
 
                     $result = $conn->query($sql);
                     $row = $result->fetch_assoc();
                 } catch (Exception $e) {
                     header("Location: index.php?err=db");
                 }
+                
             }
             ?>
-            document.getElementById("ref").value = <?php echo "'" . $row['ref'] . "'"; ?>;
+            document.getElementById("ref").value = <?php //get the user referral to add with "ADD MINE"-button only if the user is logged
+                                                        if (isset($_SESSION['currentLoggedUsername'])) {
+                                                            echo "'" . $row['ref'] . "'";} 
+                                                        else 
+                                                            echo "''";
+                                                    ?>;
             verifyRef();
         }
+        
     </script>
 
 
@@ -109,7 +126,7 @@
                 <!--name form -->
                 <div class="col-12 col-lg-3">
                     <div class="input-group flex-nowrap conditionalDisplay">
-                        <span class="input-group-text" id="name">Name<?php if (!isset($_SESSION['usr'])) echo "*"; ?></span>
+                        <span class="input-group-text" id="name">Name<?php if (!isset($_SESSION['currentLoggedUsername'])) echo "*"; ?></span>
                         <input type="text" class="form-control" id="inputName" placeholder="Name" name="name">
                     </div>
                 </div>
@@ -195,7 +212,7 @@
                 <!--save result check-->            
                 <div class="col-12 col-lg-12">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" name="checkSave" checked>
+                        <input class="form-check-input" type="checkbox" value="" id="checkSave" name="checkSave" onclick="verifyRef()" checked>
                         <label class="form-check-label" for="flexCheckDefault">Save results</label>
                     </div>
                 </div>
@@ -213,7 +230,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-lg-6 d-grid">
-                            <?php if (isset($_SESSION['usr'])) { ?>
+                            <?php if (isset($_SESSION['currentLoggedUsername'])) { ?>
                                 <button type="button" class="btn btn-primary btn-red refButton" onclick="insertRef()">
                                     USE MINE
                                 </button>
@@ -228,7 +245,7 @@
                     <div class="row align-items-center g-4">
                         <div class="col-12">
                             <div class="col-lg-6">
-                                <?php if (!isset($_SESSION['usr'])) { ?>
+                                <?php if (!isset($_SESSION['currentLoggedUsername'])) { ?>
                                     <div class="col-12 ">
                                         <p style="color: black;"><strong>Warning:</strong> if you press “NEXT” you accept the “Terms and conditions" written below.</p>
                                     </div>
@@ -256,7 +273,7 @@
         </form>
     </div>
 
-    <?php if (!isset($_SESSION['usr'])) { ?>
+    <?php if (!isset($_SESSION['currentLoggedUsername'])) { ?>
         <div class="container my-5 p-4 p-sm-5 border rounded rounded-4 bg-light">
             <p style="color: black;"> TERMS AND CONDITION
                 PSYCHOACOUSTICS-WEB is a research tool designed by Andrei Senyuva, Giulio Contemori, Andrea Felline, Gnana Prakash Goli, Mauro Migliardi, Niccolò Orlandi, Mattia Toffanin under the supervision and responsibility of Massimo Grassi. The responsible person and referent person of PSYCHOACOUSTICS-WEB (hereafter referred to as “referent person”) is Massimo Grassi, Department of General Psychology, University of Padua, via Venezia 8, 35134, Padua, Italy, email: massimo.grassi@unipd.it, phone (office): +39 0498277494. PSYCHOACOUSTICS-WEB complies with the current pertinent regulations related to research ethics and professional deontology, such as: The General Data Protection Regulation (EU) 2016/679 ("GDPR"), the decree “Regole deontologiche per trattamenti a fini statistici o di ricerca scientifica pubblicate ai sensi dell’art. 20, comma 4, del d.lgs. 10 agosto 2018, n. 101 - 19 dec 2018”.
