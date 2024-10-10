@@ -155,7 +155,7 @@
                             <option disabled="disabled" selected value="null" id="NullGender">Select your gender
                             </option>
                             <?php
-                            try {
+                            /*try {
                                 $conn = new mysqli($host, $user, $password, $dbname);
                                 if ($conn->connect_errno)
                                     throw new Exception('DB connection failed');
@@ -176,7 +176,7 @@
                                     echo "<option value='" . strtoupper($elem) . "'>" . strtoupper($elem) . "</option>";
                             } catch (Exception $e) {
                                 header("Location: index.php?err=db");
-                            }
+                            }*/
                             ?>
                         </select>
                     </div>

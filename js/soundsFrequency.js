@@ -1,3 +1,6 @@
+//import {sendDataToPHP} from 'test_common/testUtils.js';
+
+
 //contesto e dichiarazione variabili da cambiare durante il test, probabilmente andranno tolte molte variabili globali da qui una volta terminato l'algoritmo
 var context = new AudioContext();
 
@@ -118,8 +121,20 @@ function select(button) {
         var description = "&amp=" + amp + "&freq=" + freq + "&dur=" + dur + "&onRamp=" + onRamp + "&offRamp=" + offRamp +/*"&phase="+phase+*/"&blocks=" + blocks + "&delta=" + startingDelta + "&nAFC=" + nAFC + "&ISI=" + ISI + "&ITI=" + ITI;
         description += "&fact=" + factor + "&secFact=" + secondFactor + "&rev=" + reversals + "&secRev=" + secondReversals + "&threshold=" + reversalThreshold + "&alg=" + algorithm + "&sampleRate=" + context.sampleRate;
 
+
+        console.log('results = ' + result);
         //pass the datas to the php file
-        location.href = "php/saveData.php?result=" + result + "&timestamp=" + timestamp + "&type=freq" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
+        //location.href = "php/saveData.php?result=" + result + "&timestamp=" + timestamp + "&type=freq" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
+        //var location = "php/saveData.php?timestamp=" + timestamp + "&type=freq" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
+        
+        //sendDataToPHP(location, result);
+
+        //pass the datas to the php file
+        location.href = "php/saveData.php?result=" + result + "&timestamp=" + timestamp + "&type=nmod" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
+   
+    
+    
+    
     }
     //if the test is not ended
     else {
@@ -143,6 +158,7 @@ document.addEventListener('keypress', function keypress(event) {
     }
 });
 
+/*
 //funzione per implementare l'algoritmo nD1U
 function nDOWNoneUP(n) {
     delta = varFreq - stdFreq;
@@ -186,10 +202,10 @@ function nDOWNoneUP(n) {
     }
     // document.getElementById("downloadData").disabled = true;
     stimulus = []; // debug
-}
+}*/
 
 //starting function
-function start() {
+/*function start() {
     document.getElementById("StartingWindow").style.display = "none"; //starting window becomes invisible
     document.getElementById("PlayForm").style.display = "inherit"; //test interface becomes visible
     // document.getElementById("downloadData").style.display = "inherit"; //test interface becomes visible
@@ -200,9 +216,10 @@ function start() {
 
     random();
     //window.setTimeout("random()", ITI); //test starts after interTrialInterval ms
-}
+}*/
 
-function timer() {
+/*function timer() {
     document.getElementById("wrong").style.display = "none";
     document.getElementById("correct").style.display = "none";
-}
+}*/
+

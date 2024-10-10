@@ -1,3 +1,5 @@
+php/personalInfoValidation3.php
+php/personalInfoValidation2.php
 php/config.php
 .VSCodeCounter/2024-10-03_05-30-02/details.md
 .VSCodeCounter/2024-10-03_05-30-02/diff-details.md
@@ -35,4 +37,5 @@ php/config.php
 .VSCodeCounter/2024-10-03_05-38-32/results.json
 .VSCodeCounter/2024-10-03_05-38-32/results.md
 .VSCodeCounter/2024-10-03_05-38-32/results.txt
-php/error.txt
+php/errors_log.txt
+php/test_common_functions.php

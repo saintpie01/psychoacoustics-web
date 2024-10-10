@@ -1,10 +1,12 @@
 <?php
 
+session_start();
+
 include_once "config.php";
 include_once "dbconnect.php";
 include_once "dbCommonFunctions.php";
 
-session_start();
+
 
 //sql injections handling
 $specialCharacters = checkSpecialCharacter(['usr', 'psw', 'name', 'surname', 'email', 'notes']);
@@ -17,7 +19,7 @@ try {
 	//apro la connessione con il db
 	$conn = connectdb();
 
-	//recupero username e password dal form di registrazione
+	//recupero username dal form di registrazione
 	$usr = $_POST['usr'];
 
 	//controllo se esiste già

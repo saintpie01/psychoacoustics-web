@@ -5,16 +5,13 @@
  * $_SESSION[idGuest] takes user Guest_ID (unique)
  */
 
+session_start();
+
 include_once "dbCommonFunctions.php";
 include "config.php";
 include_once "dbconnect.php";
 
-ini_set('log_errors', 'On');
-ini_set('error_log', 'error.txt');
-ini_set('display_errors', 'Off'); // Ensure errors are not displayed in the browser
-error_reporting(E_ALL); // Log all types of errors
 
-session_start();
 
 //uses function from dbCommonFunction to verify any injection on POST data
 $specialCharacters = checkSpecialCharacter(['usr', 'psw']);

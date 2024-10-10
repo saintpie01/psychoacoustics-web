@@ -3,11 +3,11 @@
  * updates user password from setting page
  */
 
+session_start();
+
 include "config.php";
 include "dbconnect.php";
 include "dbCommonFunctions.php";
-
-session_start();
 
 //uses function from dbCommonFunction to verify any injection on POST data
 $specialCharacters = checkSpecialCharacter(['oldPsw', 'newPsw']);
@@ -49,5 +49,5 @@ try {
 
 } catch (Exception $e) {
 	header("Location: ../index.php?err=db");
-	error_log($e, 3, "error.txt");
+	error_log($e, 3, "errors_log.txt");
 }

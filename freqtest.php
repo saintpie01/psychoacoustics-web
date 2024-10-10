@@ -43,10 +43,12 @@
     </script>
     <script type="text/javascript"
             src="js/generatorSoundAndNoise.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
-            defer></script>
+            defer></script> 
+    <script  src="js/test_common/testUtils.js"></script>
     <script type="text/javascript"
             src="js/soundsFrequency.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
             defer></script>
+
 </head>
 
 <body>

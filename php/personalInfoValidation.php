@@ -1,22 +1,19 @@
-<?php
-
-include "config.php";
-include_once('dbconnect.php');
-include_once('dbCommonFunctions.php');
+<?php   
 
 session_start();
 
-ini_set('log_errors', 'On');
-ini_set('error_log', 'error.txt');
-ini_set('display_errors', 'Off'); // Ensure errors are not displayed in the browser
-error_reporting(E_ALL); // Log all types of errors
+//include "config.php";
+include_once('dbconnect.php');
+include_once('dbCommonFunctions.php');
 
 unset($_SESSION['idGuestTest']); //se c'erano stati altri guest temporanei, li elimino per evitare collisioni
 unset($_SESSION['name']); //se è settato dopo questa pagina, allora è stato creato un nuovo guest
 unset($_SESSION['test']); //se è settato dopo questa pagina, allora è stato usato un referral
 
 //creates concatenation string to quick pass test type later
-$type = "test=" . $_GET["test"];
+$type = "";
+if (isset($_GET["test"]))
+    $type = "test=" . $_GET["test"];
 
 //verify injection on POST data
 $specialCharacters = checkSpecialCharacter(['name', 'surname', 'notes', 'ref']);
@@ -46,27 +43,23 @@ if (($_POST["ref"]) != "") { //check if a referral code in the link is present a
 
     $ref = "&ref=" . $_POST["ref"];
     $redirection = "Location: ../info.php"; //all referral tests get redirected to this page
-
-
 }
 
-$_SESSION["checkSave"] = true;
+$_SESSION["saveData"] = true;
 
 //this section dismiss some special cases where no data manipulation is needed
 if (!isset($_POST["checkSave"])) { //no data needs to be saved, skip ahead
-    $_SESSION["checkSave"] = false;
-    //error_log('referral presen'.$ref, 3, "error.txt");
+    $_SESSION["saveData"] = false;
+    //error_log('referral presen'.$ref, 3, "errors_log.txt");
     header($redirection);
     exit;
 }
 
 if (isset($_SESSION['currentLoggedID'])) { //if the user if logged
-    $_SESSION['idGuestTest'] = $_SESSION['currentLoggedID']; //id guestTest take the Logged Account ID
+    $_SESSION['idGuestTest'] = $_SESSION['currentLoggedID']; 
 
-    //error_log($_SESSION['currentLoggedID'], 3, "error.txt"); // debug printing - ignore
     if ($_POST["ref"] == "") { //no referral is present, go ahead
-        //error_log($_POST['ref'], 3, "error.txt"); // debug printing - ignore
-        header($rediretion);
+        header($redirection);
         exit;
     } else 
         if ($_POST["name"] == "") { //referral is present but no name given (mandatory) return an error
@@ -131,6 +124,6 @@ try {
     header($redirection);
 
 } catch (Exception $e) {
-    error_log($e, 3, "error.txt");
+    error_log($e, 3, "errors_log.txt");
     header("Location: ../index.php?err=db");
 }

@@ -136,6 +136,8 @@ document.addEventListener('keypress', function keypress(event) {
         }
     }
 });
+
+/*
 //funzione per implementare l'algoritmo nD1U
 function nDOWNoneUP(n) {
     delta = modAmp;
@@ -180,10 +182,10 @@ function nDOWNoneUP(n) {
     }
     // document.getElementById("downloadData").disabled = true;
     stimulus = []; // debug
-}
+}*/
 
 //starting function
-function start() {
+/*function start() {
     document.getElementById("StartingWindow").style.display = "none"; //starting window becomes invisible
     document.getElementById("PlayForm").style.display = "inherit"; //test interface becomes visible
     // document.getElementById("downloadData").style.display = "inherit"; //test interface becomes visible
@@ -194,9 +196,9 @@ function start() {
 
     random();
     //window.setTimeout("random()", ITI); //test starts after interTrialInterval ms
-}
-
+}*/
+/*
 function timer() {
     document.getElementById("wrong").style.display = "none";
     document.getElementById("correct").style.display = "none";
-}
+}*/

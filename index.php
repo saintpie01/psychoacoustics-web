@@ -1,6 +1,22 @@
 <?php
     session_start();
     $_SESSION['version'] = 1; //change this number to force cache update
+    //session gets destroyed to clear cached data but logged user data is kept
+    if (isset($_SESSION['currentLoggedID'])){ 
+        $CLID  = $_SESSION['currentLoggedID'];
+        $CLUN = $_SESSION['currentLoggedUsername'];
+
+    $_SESSION = array(); //session get resetted
+    session_destroy();
+    session_start();
+    
+    if(isset($CLID)){
+        $_SESSION['currentLoggedID'] = $CLID;
+        $_SESSION['currentLoggedUsername'] = $CLUN;
+    }
+
+    }
+
 ?>
     
     

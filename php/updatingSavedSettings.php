@@ -1,13 +1,12 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 1);
+
+session_start();
+include "config.php";
 
 $deviceInfo = str_replace(";", " ", $_SERVER['HTTP_USER_AGENT']);
 
 	try{
-		include "config.php";
-		session_start();
+		
 
 		//apro la connessione con il db
 		$conn = new mysqli($host, $user, $password, $dbname);
@@ -74,7 +73,7 @@ $deviceInfo = str_replace(";", " ", $_SERVER['HTTP_USER_AGENT']);
 		
 		header("Location: ../userSettings.php?err=4");
 	}catch(Exception $e){
-		error_log($e, 3, "error.txt");
+		error_log($e, 3, "errors_log.txt");
 		header("Location: ../index.php?err=db");
 
 

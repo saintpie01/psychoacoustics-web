@@ -1,10 +1,10 @@
 <?php
 
+session_start();
+
 include "config.php";
 include "dbconnect.php";
 include "dbCommonFunctions.php";
-
-session_start();
 
 $specialCharacters = checkSpecialCharacter(["name"]);
 if ($specialCharacters) {

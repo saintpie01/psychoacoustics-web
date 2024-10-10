@@ -1,10 +1,11 @@
+<?php
+session_start();
+?>
+
 <!doctype html>
 <html lang="en">
 
 <head>
-    <?php
-    session_start();
-    ?>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,8 +16,9 @@
     <link rel="stylesheet" href="css/staircaseStyle.css<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>">
 
     <title>Psychoacoustics-web - Test results</title>
-
 </head>
+
+
 
 <body>
     <?php
@@ -33,22 +35,22 @@
                 <h2>Your threshold is:</h2>
                 <p></p>
                 <h2>
-                <?php
-                if (isset($_SESSION['geometric_score']))
-                    if (strrpos($_SESSION['geometric_score'], ";"))
-                        echo substr($_SESSION['geometric_score'], strrpos($_SESSION['geometric_score'], ";") + 1);
-                    else
-                        echo $_SESSION['geometric_score'];
-                ?> (Geometric Mean)</h2>
+                    <?php
+                    if (isset($_SESSION['geometric_score']))
+                        if (strrpos($_SESSION['geometric_score'], ";"))
+                            echo substr($_SESSION['geometric_score'], strrpos($_SESSION['geometric_score'], ";") + 1);
+                        else
+                            echo $_SESSION['geometric_score'];
+                    ?> (Geometric Mean)</h2>
                 <p></p>
                 <h2>
-                <?php
-                if (isset($_SESSION['score']))
-                    if (strrpos($_SESSION['score'], ";"))
-                        echo substr($_SESSION['score'], strrpos($_SESSION['score'], ";") + 1);
-                    else
-                        echo $_SESSION['score'];
-                ?> (Arithmetic Mean)</h2>
+                    <?php
+                    if (isset($_SESSION['score']))
+                        if (strrpos($_SESSION['score'], ";"))
+                            echo substr($_SESSION['score'], strrpos($_SESSION['score'], ";") + 1);
+                        else
+                            echo $_SESSION['score'];
+                    ?> (Arithmetic Mean)</h2>
 
                 <div class="container-fluid mt-5">
                     <div class="row row-cols-1 row-cols-lg-3 align-items-center justify-content-between g-2">
@@ -75,7 +77,8 @@
                             <?php
                             } else {
                                 $page = "test.php";
-                                if ($_SESSION['type'] == "PURE_TONE_FREQUENCY")
+                                $page = "$_SESSION[testTypeCmp]" . $page;
+                               /*if ($_SESSION['type'] == "PURE_TONE_FREQUENCY")
                                     $page = "freq" . $page;
                                 if ($_SESSION['type'] == "PURE_TONE_INTENSITY")
                                     $page = "amp" . $page;
@@ -86,7 +89,7 @@
                                 if ($_SESSION['type'] == "WHITE_NOISE_DURATION")
                                     $page = "ndur" . $page;
                                 if ($_SESSION['type'] == "WHITE_NOISE_MODULATION")
-                                    $page = "nmod" . $page;
+                                    $page = "nmod" . $page;*/
                             ?>
                                 <div class='col d-grid'>
                                     <button type='button' class='btn btn-primary btn-lg btn-red' onclick='location.href="<?php echo $page; ?>"'>
@@ -94,7 +97,7 @@
                                     </button>
                                 </div>
                         <?php
-                            }
+                          }
                         }
                         ?>
                     </div>

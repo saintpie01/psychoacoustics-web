@@ -1,8 +1,10 @@
 <?php
 
+session_start();
+
 include "config.php";
 include_once "dbconnect.php";
-session_start();
+
 
 try {
 

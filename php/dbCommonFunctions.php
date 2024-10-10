@@ -16,10 +16,8 @@ function checkSpecialCharacter($formElements)
 }
 
 
-
 function fetchReferralInfo($referral)
 {
-
 	$conn = connectdb();
 
 	$refSQL = "SELECT Username, fk_GuestTest, fk_TestCount FROM account WHERE Referral='$referral';";
@@ -33,3 +31,7 @@ function fetchReferralInfo($referral)
 	}
 	return $refrow;
 }
+
+
+
+
