@@ -17,8 +17,8 @@ try {
 	) {
 
 
-		//$result = $_GET['result'];
-		$result = $_POST['result'];
+		$result = $_GET['result'];
+		//$result = $_POST['result'];
 
 
 
@@ -162,10 +162,11 @@ try {
 
 			$conn->query($sql);
 
-			if($_SESSION['saveSettings']){
+			//function to remove
+			/*if($_SESSION['saveSettings']){
 				$sql = "UPDATE account SET fk_guestTest = '$id', fk_testCount = '$count' WHERE username = '{$_SESSION['currentLoggedUsername']}' ";
 				$conn->query($sql);
-			}
+			}*/
 
 		}
 

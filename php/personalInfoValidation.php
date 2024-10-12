@@ -2,7 +2,7 @@
 
 session_start();
 
-//include "config.php";
+include "config.php";
 include_once('dbconnect.php');
 include_once('dbCommonFunctions.php');
 
@@ -41,6 +41,8 @@ if (($_POST["ref"]) != "") { //check if a referral code in the link is present a
         "count" => $refrow['fk_TestCount']
     );
 
+
+    error_log('referral username'.$refrow['Username'], 3, "errors_log.txt");
     $ref = "&ref=" . $_POST["ref"];
     $redirection = "Location: ../info.php"; //all referral tests get redirected to this page
 }
@@ -104,9 +106,10 @@ if ($_POST["notes"] == "") {
 }
 
 
-if (isset($_POST["ref"])) {
+if (($_POST["ref"]) == "") {
     $sql .= "NULL);SELECT LAST_INSERT_ID() as id;"; //no referral
 } else {
+    error_log('referral username'.$refrow['Username'], 3, "errors_log.txt");
     $sql .= "'" . $refrow['Username'] . "');SELECT LAST_INSERT_ID() as id;";
 }
 
