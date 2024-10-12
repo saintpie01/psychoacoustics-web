@@ -34,4 +34,20 @@ function fetchReferralInfo($referral)
 
 
 
+/*
+function insertIntoTable($table, $data, $conn) {
 
+    // Prepare the SQL statement
+    $columns = implode(", ", array_keys($data));
+    $placeholders = implode(", ", array_map(fn($key) => ":$key", array_keys($data)));
+
+    $sql = "INSERT INTO $table ($columns) VALUES ($placeholders)";
+    $stmt = $conn->prepare($sql);
+
+    // Bind parameters dynamically
+    foreach ($data as $key => $value) {
+        $stmt->bindValue(":$key", $value);
+    }
+
+    return $stmt->execute();
+}*/
