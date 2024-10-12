@@ -1,6 +1,7 @@
 <?php
     session_start();
     include "php/config.php";
+    include_once "php/dbCommonFunctions.php";
 ?>
 
 <!doctype html>
@@ -38,7 +39,7 @@
                 PSYCHOACOUSTICS-WEB
             </a>
             <form class="d-flex align-items-center">
-                <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername'] ?></label>
+                <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername']; echo '   #'.$_SESSION['currentLoggedID']; ?></label>
                 <button class="btn btn-outline-light me-3" type="button" onclick="location.href='yourTests.php'">
                     Your tests
                 </button>
@@ -56,6 +57,7 @@
     <?php
     //se si sceglie un username già esistente verrà messo "?err=1" nell'url
     if (isset($_GET['err'])) {
+
         if ($_GET['err'] == 0)
             echo "<div class='alert alert-danger'>Some inserted characters aren't allowed</div>";
         if ($_GET['err'] == 1)
@@ -66,6 +68,8 @@
             echo "<div class='alert alert-success'>Password changed</div>";
         if ($_GET['err'] == 4)
             echo "<div class='alert alert-success'>Test settings changed</div>";
+        if ($_GET['err'] == 5)
+            echo "<div class='alert alert-danger'>Select a test type from the menu</div>";
     }
     try {
         $conn = new mysqli($host, $user, $password, $dbname);
@@ -85,9 +89,36 @@
         $gender = $row['gender'];
         $notes = $row['notes'];
         $email = $row['email'];
+        
+        //i fetch data to print test type on screen
+        try {
+            $refrow = fetchReferralInfo($ref); //return an array with referral data
+    
+        } catch (Exception $e) { //if invalid
+            header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");
+            exit;
+        }
+
+        $_SESSION['test'] = array( //gather referral data
+            "guest" => $refrow['fk_GuestTest'],
+            "count" => $refrow['fk_TestCount']
+        );
+
+        $sql = "SELECT Type FROM test WHERE Guest_ID='{$_SESSION['test']['guest']}' AND Test_count='{$_SESSION['test']['count']}'";
+        $result = $conn->query($sql);
+        $refrow = $result->fetch_assoc();
+        $testTypeExt = $refrow['Type'];
+
     } catch (Exception $e) {
         header("Location: index.php?err=db");
     }
+
+  
+
+
+
+
+
     ?>
 
     <div class="container my-5">
@@ -109,7 +140,8 @@
                     </div>
                     <div class="col">
                         <select name='gender' class="form-select" onchange="updateLink('<?php echo $ref; ?>')" id="testType">
-                            <option value='amp' selected>Pure tone intensity</option>
+                            <option selected disabled value=''> Select a Test Type</option>
+                            <option value='amp' >Pure tone intensity</option>
                             <option value='freq'>Pure tone frequency</option>
                             <option value='dur'>Pure tone duration</option>
                             <option value='gap'>Noise Gap</option>
@@ -120,7 +152,8 @@
                     <div class="col">
                         <div class="row row-cols-2 g-3">
                             <div class="col d-grid">
-                                <button type="submit" class="btn btn-primary btn-red">Change invite code</button>
+                                <h5>test type: <?php echo $testTypeExt; ?></h5>
+                                <!--<button type="submit" class="btn btn-primary btn-red">Change invite code</button>-->
                             </div>
                             <div class="col d-grid">
                                 <button type="button" class="btn btn-primary btn-red" onclick="window.location='php/updateSavedSettings.php?test='+document.getElementById('testType').value">
