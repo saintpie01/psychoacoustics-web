@@ -43,7 +43,7 @@ if (isset($_SESSION['test'])) { //referral present
         else if ($row['Type'] == 'WHITE_NOISE_MODULATION')
             $type = "nmod";
 
-        $_SESSION['testTypeShort'] = $type;
+        $_SESSION['testTypeCmp'] = $type;
 
         $_SESSION["amplitude"] = $row["amp"];
         $_SESSION["frequency"] = $row["freq"];
@@ -59,7 +59,7 @@ if (isset($_SESSION['test'])) { //referral present
         $_SESSION["ISI"] = $row["ISI"];
         $_SESSION["delta"] = $row["Delta"];
         $_SESSION["checkFb"] = $row["feedback"];
-        //$_SESSION["saveSettings"] = 0;
+        $_SESSION["saveSettings"] = 0;
         $_SESSION["factor"] = $row["fact"];
         $_SESSION["secFactor"] = $row["secfact"];
         $_SESSION["reversals"] = $row["rev"];
@@ -222,3 +222,4 @@ $_SESSION['testTypeCmp'] = $_GET['test'];
         $conn->query($sql);
     }*/
 header("Location: ../{$_GET['test']}test.php");
+
