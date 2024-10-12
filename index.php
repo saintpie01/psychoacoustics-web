@@ -68,7 +68,7 @@
             <?php
             //if the user is logged show the welcome message and the 'your test' and 'logout' buttons
             } else { ?>
-                <label id="menuWelcome" class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername'] ?></label>
+                <label id="menuWelcome" class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername']; echo '   #'.$_SESSION['currentLoggedID'];?></label>
                 <button id="menuYourTests" class="btn btn-outline-light me-3" type="button" onclick="location.href='yourTests.php'">
                     Your tests
                 </button>

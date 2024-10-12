@@ -31,7 +31,7 @@
             PSYCHOACOUSTICS-WEB
         </a>
         <form class="d-flex align-items-center">
-            <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername'] ?></label>
+            <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername']; ?></label>
             <button class="btn btn-outline-light me-3" type="button" onclick="location.href='yourTests.php'">
                 Your tests
             </button>
@@ -46,7 +46,7 @@
 </nav>
 
 <div class="container">
-    <h1 class="mt-5">Welcome <?php echo $_SESSION['currentLoggedUsername']; ?></h1>
+    <h1 class="mt-5">Welcome <?php echo $_SESSION['currentLoggedUsername'];?> <?php echo '  #'. $_SESSION['currentLoggedID'];?> </h1>
     <div class="row g-3">
         <div class="col d-grid">
             <button type='button' class='btn btn-primary btn-lg btn-red'
