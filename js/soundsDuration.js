@@ -146,7 +146,7 @@ document.addEventListener('keypress', function keypress(event) {
         }
     }
 });
-/*
+
 //funzione per implementare l'algoritmo nD1U
 function nDOWNoneUP(n) {
     delta = varDur - stdDur;
@@ -190,7 +190,7 @@ function nDOWNoneUP(n) {
     }
     // document.getElementById("downloadData").disabled = true;
     stimulus = []; // debug
-}*/
+}
 
 //starting function
 /*function start() {

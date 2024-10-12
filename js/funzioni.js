@@ -21,7 +21,7 @@ function copy(id){
 
 function updateLink(ref){
 	var test = document.getElementById('testType').value;
-	document.getElementById('link').innerHTML = "localhost/acoustic-web2/demographicData.php?ref="+ref+"&test="+test;
+	document.getElementById('link').innerHTML = "https://psychoacoustics.dpg.psy.unipd.it/optim/newsite/acoustic-web2/userSettings.php?ref="+ref+"&test="+test;
 }
 
 function updatePage(display){
