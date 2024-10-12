@@ -29,9 +29,9 @@
         var nAFC = parseInt(<?php echo $_SESSION["nAFC"]; ?>);
         var ITI = parseInt(<?php echo $_SESSION["ITI"]; ?>);
         var ISI = parseInt(<?php echo $_SESSION["ISI"]; ?>);
-        var feedback = <?php echo $_SESSION["checkFb"]; ?>;
         //var noise = <//?php echo $_SESSION["checkNoise"]; ?>;
-        var saveSettings = <?php echo $_SESSION["saveSettings"]; ?>;
+        var feedback = parseInt(<?php echo $_SESSION["checkFb"]; ?>);
+        var saveSettings = parseInt(<?php echo $_SESSION["saveSettings"]; ?>);
         var factor = parseFloat(<?php echo $_SESSION["factor"]; ?>);
         var secondFactor = parseFloat(<?php echo $_SESSION["secFactor"]; ?>);
         var reversals = parseInt(<?php echo $_SESSION["reversals"]; ?>);
