@@ -1,7 +1,13 @@
 <?php
-    session_start();
-    include "php/config.php";
-    include_once "php/dbCommonFunctions.php";
+session_start();
+include_once "php/config.php";
+include_once "php/dbCommonFunctions.php";
+
+if (!isset($_SESSION['currentLoggedID'])) {
+    header("Location: index.php?err=2");
+    exit;
+}
+
 ?>
 
 <!doctype html>
@@ -39,7 +45,8 @@
                 PSYCHOACOUSTICS-WEB
             </a>
             <form class="d-flex align-items-center">
-                <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername']; echo '   #'.$_SESSION['currentLoggedID']; ?></label>
+                <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername'];
+                                                                    echo '   #' . $_SESSION['currentLoggedID']; ?></label>
                 <button class="btn btn-outline-light me-3" type="button" onclick="location.href='yourTests.php'">
                     Your tests
                 </button>
@@ -70,6 +77,8 @@
             echo "<div class='alert alert-success'>Test settings changed</div>";
         if ($_GET['err'] == 5)
             echo "<div class='alert alert-danger'>Select a test type from the menu</div>";
+        if ($_GET['err'] == 6)
+            echo "<div class='alert alert-danger'>the created test already exist, it is now your active referral</div>";
     }
     try {
         $conn = new mysqli($host, $user, $password, $dbname);
@@ -89,11 +98,11 @@
         $gender = $row['gender'];
         $notes = $row['notes'];
         $email = $row['email'];
-        
+
         //i fetch data to print test type on screen
         try {
             $refrow = fetchReferralInfo($ref); //return an array with referral data
-    
+
         } catch (Exception $e) { //if invalid
             header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");
             exit;
@@ -107,15 +116,14 @@
         $sql = "SELECT Type FROM test WHERE Guest_ID='{$_SESSION['test']['guest']}' AND Test_count='{$_SESSION['test']['count']}'";
         $result = $conn->query($sql);
         $refrow = $result->fetch_assoc();
-        $testTypeExt = $refrow['Type'];
+        if (isset($refrow['Type'])){
+            $testTypeExt = $refrow['Type'];
+        } else
+            $testTypeExt = 'No test created yet';
 
     } catch (Exception $e) {
         header("Location: index.php?err=db");
     }
-
-  
-
-
 
 
 
@@ -139,9 +147,9 @@
                         </div>
                     </div>
                     <div class="col">
-                        <select name='gender' class="form-select" onchange="updateLink('<?php echo $ref; ?>')" id="testType">
+                        <select name='testType' class="form-select" onchange="updateLink('<?php echo $ref; ?>')" id="testType">
                             <option selected disabled value=''> Select a Test Type</option>
-                            <option value='amp' >Pure tone intensity</option>
+                            <option value='amp'>Pure tone intensity</option>
                             <option value='freq'>Pure tone frequency</option>
                             <option value='dur'>Pure tone duration</option>
                             <option value='gap'>Noise Gap</option>
@@ -152,7 +160,7 @@
                     <div class="col">
                         <div class="row row-cols-2 g-3">
                             <div class="col d-grid">
-                                <h5>test type: <?php echo $testTypeExt; ?></h5>
+                                <h6 class="mb-0">test type: <?php echo $testTypeExt; ?></h6>
                                 <!--<button type="submit" class="btn btn-primary btn-red">Change invite code</button>-->
                             </div>
                             <div class="col d-grid">
@@ -220,12 +228,12 @@
 
         <div class="container-fluid p-4 border rounded-4 bg-light mt-5">
             <h4 class="mb-3">Change user settings</h4>
-            <form method="post" action="php/saveSettings.php" class="settingForm">
+            <form method="post" action="php/changeUserData.php" class="settingForm">
                 <div class="row row-cols-1 row-cols-lg-2 g-3 justify-content-center align-items-center">
                     <div class="col">
                         <div class="input-group">
                             <span class="input-group-text">Username</span>
-                            <input type="text" class="form-control" name="usr" value="<?php echo $_SESSION['currentLoggedUsername']; ?>">
+                            <input type="text" class="form-control" name="usr" value="<?php echo $_SESSION['currentLoggedUsername']; ?>" readonly>
                         </div>
                     </div>
                     <div class="col">
@@ -254,30 +262,11 @@
                         </div>
                     </div>
                     <div class="col">
-                        <select name='gender' class="form-select">
-                            <option value="null" id="NullGender" <?php if ($gender == null) echo "selected";
-                                                                    else echo "disabled"; ?>>
-                                Select your gender
-                            </option>
-                            <?php
-                            /*try {
-                                $sql = "SELECT COLUMN_TYPE AS ct FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'psychoacoustics_db' AND TABLE_NAME = 'guest' AND COLUMN_NAME = 'gender';";
-                                $result = $conn->query($sql);
-                                $row = $result->fetch_assoc(); //questa query da un risultato di tipo enum('Male','Female','Non-Binary')
-
-                                //metto i valori in un array
-                                $values = substr($row['ct'], 5, -1); //tolgo "enum(" e ")"
-                                $values = str_replace("'", "", $values); //tolgo gli apici
-                                $list = explode(",", $values); //divido in una lista in base alle virgole
-
-                                //creo un'opzione per ogni possibile valore
-                                foreach ($list as $elem) { ?>
-                                    <option <?php if (strcmp($elem, $gender) == 0) echo "selected" ?> value="<?php echo strtoupper($elem); ?>"><?php echo strtoupper($elem); ?></option>
-                            <?php }
-                            } catch (Exception $e) {
-                                header("Location: index.php?err=db");
-                            }*/
-                            ?>
+                        <select class="form-select" id="gender" name="gender">
+                            <option value="" selected disabled>Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
                     <div class="col">
