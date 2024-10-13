@@ -1,8 +1,8 @@
 <?php
-    include "php/config.php";
-    session_start()
+include "php/config.php";
+session_start()
 ?>
-    
+
 <!DOCTYPE html>
 <html>
 
@@ -17,7 +17,8 @@
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/staircaseStyle.css" rel="stylesheet">
     <!--		<link rel="stylesheet" href="css/formStyle.css-->
-    <?php //if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?><!--"> -->
+    <?php //if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; 
+    ?><!--"> -->
 </head>
 
 
@@ -81,38 +82,20 @@
                             <span class="input-group-text" id="basic-addon1">Birth date</span>
                             <input type="date" class="form-control" name="date">
                         </div>
-                        <select name='gender' class="form-select mb-3">
-                            <option disabled="disabled" selected value="null" id="NullGender">Select your gender</option>
-                            <?php
-                            try {
-                                $conn = new mysqli($host, $user, $password, $dbname);
-                                if ($conn->connect_errno)
-                                    throw new Exception('DB connection failed');
-                                mysqli_set_charset($conn, "utf8");
-
-                                $sql = "SELECT COLUMN_TYPE AS ct FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'psychoacoustics_db' AND TABLE_NAME = 'guest' AND COLUMN_NAME = 'gender';";
-                                $result = $conn->query($sql);
-                                $row = $result->fetch_assoc();//questa query da un risultato di tipo enum('Male','Female','Non-Binary')
-
-                                //metto i valori in un array
-                                $values = substr($row['ct'], 5, -1);//tolgo "enum(" e ")"
-                                $values = str_replace("'", "", $values);//tolgo gli apici
-                                $list = explode(",", $values);//divido in una lista in base alle virgole
-
-                                //creo un'opzione per ogni possibile valore
-                                foreach ($list as $elem)
-                                    echo "<option value='" . strtoupper($elem) . "'>" . strtoupper($elem) . "</option>";
-                            } catch (Exception $e) {
-                                header("Location: index.php?err=db");
-                            }
-                            ?>
-                        </select>
+                        <div class="input-group mb-3">
+                            <select class="form-select" id="gender" name="gender">
+                                <option value="" selected disabled>Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Notes</span>
                             <input type="text" class="form-control" placeholder="Notes" name="notes">
                         </div>
                         <div>
-                            <p style="color: black;">If you click “register” you accept the conditions reported below.</p> 
+                            <p style="color: black;">If you click “register” you accept the conditions reported below.</p>
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg btn-red">Register</button>
@@ -129,4 +112,5 @@
         document.getElementById("NullGender").disabled = false;
     }
 </script>
+
 </html>
