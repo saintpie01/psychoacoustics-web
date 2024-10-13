@@ -67,38 +67,10 @@ if (isset($_SESSION['test'])) { //referral present
         $_SESSION["threshold"] = $row["thr"];
         $_SESSION["algorithm"] = $row["alg"];
 
-        /*$id = $_SESSION['idGuestTest'];
 
-        $t_type = $row["Type"];
-
-        $sql = "SELECT Max(Test_count) as count FROM test WHERE Guest_ID='$id'";
-        $result = $conn->query($sql);
-        $row = $result->fetch_assoc();
-
-        //il test corrente è il numero di test già effettuati + 1
-        $count = $row['count'] + 1;
-
-
-        if ($type == "gap" || $type == "ndur") {
-            $sql = "INSERT INTO test VALUES ('$id', '$count', current_timestamp(), '$t_type', ";
-            $sql .= "'{$_SESSION['amplitude']}', NULL, '{$_SESSION['duration']}', '{$_SESSION['onRamp']}', '{$_SESSION['offRamp']}', '{$_SESSION['blocks']}', '{$_SESSION['delta']}', ";
-            $sql .= "'{$_SESSION['nAFC']}', '{$_SESSION['ITI']}', '{$_SESSION['ISI']}', '{$_SESSION['factor']}', '{$_SESSION['reversals']}', ";
-            $sql .= "'{$_SESSION['secFactor']}', '{$_SESSION['secReversals']}', '{$_SESSION['threshold']}', '{$_SESSION['algorithm']}', '', '0','$checkFb', NULL, NULL, NULL, '$deviceInfo')";
-        } else if ($type == "nmod") {
-            $sql = "INSERT INTO test VALUES ('$id', '$count', current_timestamp(), '$t_type', ";
-            $sql .= "'{$_SESSION['amplitude']}', NULL, '{$_SESSION['duration']}', '{$_SESSION['onRamp']}', '{$_SESSION['offRamp']}', '{$_SESSION['blocks']}', '{$_SESSION['delta']}', ";
-            $sql .= "'{$_SESSION['nAFC']}', '{$_SESSION['ITI']}', '{$_SESSION['ISI']}', '{$_SESSION['factor']}', '{$_SESSION['reversals']}', ";
-            $sql .= "'{$_SESSION['secFactor']}', '{$_SESSION['secReversals']}', '{$_SESSION['threshold']}', '{$_SESSION['algorithm']}', '', '0','$checkFb', '" . floatval($_SESSION["modAmplitude"]) . "', '{$_SESSION["modFrequency"]}', '{$_SESSION["modPhase"]}', '$deviceInfo')";
-        } else {
-            $sql = "INSERT INTO test VALUES ('$id', '$count', current_timestamp(), '$t_type', ";
-            $sql .= "'{$_SESSION['amplitude']}', '{$_SESSION['frequency']}', '{$_SESSION['duration']}', '{$_SESSION['onRamp']}', '{$_SESSION['offRamp']}', '{$_SESSION['blocks']}', '{$_SESSION['delta']}', ";
-            $sql .= "'{$_SESSION['nAFC']}', '{$_SESSION['ITI']}', '{$_SESSION['ISI']}', '{$_SESSION['factor']}', '{$_SESSION['reversals']}', ";
-            $sql .= "'{$_SESSION['secFactor']}', '{$_SESSION['secReversals']}', '{$_SESSION['threshold']}', '{$_SESSION['algorithm']}', '', '0','$checkFb', NULL, NULL, NULL, '$deviceInfo')";
-        }
-
-        $conn->query($sql);*/
         header("Location: ../{$type}test.php");
         exit;
+
     } catch (Exception $e) {
         error_log($e, 3, "errors_log.txt");
         header("Location: ../index.php?err=db");
@@ -148,73 +120,8 @@ $_SESSION["secReversals"] = $_POST["secReversals"];
 $_SESSION["threshold"] = $_POST["threshold"];
 $_SESSION["algorithm"] = $_POST["algorithm"];
 
-		/*$_SESSION["amp"] = $_GET['amp'];
-		$_SESSION["freq"] = $_GET['freq'];
-		$_SESSION["dur"] = $_GET['dur'];
-		$_SESSION["onRamp"] = $_GET['onRamp'];
-		$_SESSION["offRamp"] = $_GET['offRamp'];
-		if ($_GET['type'] == "nmod") {
-			$_SESSION["modAmp"] = $_GET["modAmp"];
-			$_SESSION["modFreq"] = $_GET["modFreq"];
-			$_SESSION["modPhase"] = $_GET["modPhase"];
-		}
-		$_SESSION["delta"] = $_GET['delta'];
-		$_SESSION["nAFC"] = $_GET['nAFC'];
-		$_SESSION["ITI"] = $_GET['ITI'];
-		$_SESSION["ISI"] = $_GET['ISI'];
-		$_SESSION["fact"] = $_GET['fact'];
-		$_SESSION["secFact"] = $_GET['secFact'];
-		$_SESSION["rev"] = $_GET['rev'];
-		$_SESSION["secRev"] = $_GET['secRev'];
-		$_SESSION["thr"] = $_GET['threshold'];
-		$_SESSION["alg"] = $_GET['alg'];
-		$_SESSION["sampleRate"] = $_GET['sampleRate'];*/
-
-
-/*$id = $_SESSION['idGuestTest'];
-
-$type = "";
-if ($_GET['test'] == "freq")
-    $type = "PURE_TONE_FREQUENCY";
-else if ($_GET['test'] == "amp")
-    $type = "PURE_TONE_INTENSITY";
-else if ($_GET['test'] == "dur")
-    $type = "PURE_TONE_DURATION";
-else if ($_GET['test'] == "gap")
-    $type = "WHITE_NOISE_GAP";
-else if ($_GET['test'] == "ndur")
-    $type = "WHITE_NOISE_DURATION";
-else if ($_GET['test'] == "nmod")
-    $type = "WHITE_NOISE_MODULATION";**/
-
+		
 $_SESSION['testTypeCmp'] = $_GET['test'];
-
-/*$sql = "SELECT Max(Test_count) as count FROM test WHERE Guest_ID='$id'";
-    $conn = connectdb();
-    $result = $conn->query($sql);
-    $row = $result->fetch_assoc();
-
-    //il test corrente è il numero di test già effettuati + 1
-    $count = $row['count'] + 1;
-
-    if ($_GET['test'] == "gap" || $_GET['test'] == "ndur") {
-        $sql = "INSERT INTO test VALUES ('$id', '$count', current_timestamp(), '$type', ";
-        $sql .= "'{$_POST['amplitude']}', NULL, '{$_POST['duration']}', '{$_POST['onRamp']}', '{$_POST['offRamp']}', '{$_POST['blocks']}', '{$_POST['delta']}', ";
-        $sql .= "'{$_POST['nAFC']}', '{$_POST['ITI']}', '{$_POST['ISI']}', '{$_POST['factor']}', '{$_POST['reversals']}', ";
-        $sql .= "'{$_POST['secFactor']}', '{$_POST['secReversals']}', '{$_POST['threshold']}', '{$_POST['algorithm']}', '', '0','$checkFb', NULL, NULL, NULL, '$deviceInfo')";
-    } else if ($_GET['test'] == "nmod") {
-        $sql = "INSERT INTO test VALUES ('$id', '$count', current_timestamp(), '$type', ";
-        $sql .= "'{$_POST['amplitude']}', NULL, '{$_POST['duration']}', '{$_POST['onRamp']}', '{$_POST['offRamp']}', '{$_POST['blocks']}', '{$_POST['delta']}', ";
-        $sql .= "'{$_POST['nAFC']}', '{$_POST['ITI']}', '{$_POST['ISI']}', '{$_POST['factor']}', '{$_POST['reversals']}', ";
-        $sql .= "'{$_POST['secFactor']}', '{$_POST['secReversals']}', '{$_POST['threshold']}', '{$_POST['algorithm']}', '', '0','$checkFb', '" . floatval($_POST["modAmplitude"]) . "', '{$_POST["modFrequency"]}', '{$_POST["modPhase"]}', '$deviceInfo')";
-    } else {
-        $sql = "INSERT INTO test VALUES ('$id', '$count', current_timestamp(), '$type', ";
-        $sql .= "'{$_POST['amplitude']}', '{$_POST['frequency']}', '{$_POST['duration']}', '{$_POST['onRamp']}', '{$_POST['offRamp']}', '{$_POST['blocks']}', '{$_POST['delta']}', ";
-        $sql .= "'{$_POST['nAFC']}', '{$_POST['ITI']}', '{$_POST['ISI']}', '{$_POST['factor']}', '{$_POST['reversals']}', ";
-        $sql .= "'{$_POST['secFactor']}', '{$_POST['secReversals']}', '{$_POST['threshold']}', '{$_POST['algorithm']}', '', '0','$checkFb', NULL, NULL, NULL, '$deviceInfo')";
-    }
-
-    $conn->query($sql);*/
 
 //??????????????????
 /*if ($checkSave) {
