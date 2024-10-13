@@ -1,14 +1,13 @@
-
 <?php
-    session_start();
-    include_once("php/dbconnect.php");
-    include "php/config.php";
-    //if no  test has been selected or no referral link is present in the url, return
-    //to the index page
-    if (!isset($_GET['ref']) && !isset($_GET["test"]))
-        header("Location: index.php");
+session_start();
+include_once("php/dbconnect.php");
+include "php/config.php";
+//if no  test has been selected or no referral link is present in the url, return
+//to the index page
+if (!isset($_GET['ref']) && !isset($_GET["test"]))
+    header("Location: index.php");
 ?>
-    
+
 <!doctype html>
 <html lang="en">
 
@@ -28,28 +27,28 @@
 
     <title>Psychoacoustics-web - Personal info</title>
 
-    <script> 
+    <script>
         /**
          * this function is neede to hide div marked with "conditional Display" on specific conditons 
          */
         function verifyRef() {
             var display = true;
             var logged = <?php if (isset($_SESSION['currentLoggedUsername'])) echo "true";
-                            else echo "false"; ?>;           
+                            else echo "false"; ?>;
 
-            if (document.getElementById("ref").value != "" && logged) {//if the user is logged
+            if (document.getElementById("ref").value != "" && logged) { //if the user is logged
                 if (document.getElementById("name").innerHTML.slice(-1) != "*")
                     document.getElementById("name").innerHTML += "*";
                 display = true;
-            } else 
-                if (document.getElementById("ref").value == "" && logged) {
-                 display = false;
-                }            
-            if (!document.getElementById("checkSave").checked){
+            } else
+            if (document.getElementById("ref").value == "" && logged) {
+                display = false;
+            }
+            if (!document.getElementById("checkSave").checked) {
                 display = false;
                 console.log("The checkbox is not checked.");
             }
-            
+
             updatePage(display);
         }
 
@@ -71,18 +70,16 @@
                 } catch (Exception $e) {
                     header("Location: index.php?err=db");
                 }
-                
             }
             ?>
             document.getElementById("ref").value = <?php //get the user referral to add with "ADD MINE"-button only if the user is logged
-                                                        if (isset($_SESSION['currentLoggedUsername'])) {
-                                                            echo "'" . $row['ref'] . "'";} 
-                                                        else 
-                                                            echo "''";
+                                                    if (isset($_SESSION['currentLoggedUsername'])) {
+                                                        echo "'" . $row['ref'] . "'";
+                                                    } else
+                                                        echo "''";
                                                     ?>;
             verifyRef();
         }
-        
     </script>
 
 
@@ -92,7 +89,7 @@
             width: 500px;
             /* Adjust the width as needed */
         }
-    </style>   
+    </style>
 </head>
 
 
@@ -151,33 +148,11 @@
                 <div class="col-12 col-lg-3">
                     <div class="input-group flex-nowrap conditionalDisplay">
                         <span class="input-group-text" id="gender">Gender</span>
-                        <select name='gender' class="form-select">
-                            <option disabled="disabled" selected value="null" id="NullGender">Select your gender
-                            </option>
-                            <?php
-                            /*try {
-                                $conn = new mysqli($host, $user, $password, $dbname);
-                                if ($conn->connect_errno)
-                                    throw new Exception('DB connection failed');
-                                mysqli_set_charset($conn, "utf8");
-                                //connectdb();
-
-                                $sql = "SELECT COLUMN_TYPE AS ct FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'psychoacoustics_db' AND TABLE_NAME = 'guest' AND COLUMN_NAME = 'gender';";
-                                $result = $conn->query($sql);
-                                $row = $result->fetch_assoc(); //questa query da un risultato di tipo enum('Male','Female','Non-Binary')
-
-                                //metto i valori in un array
-                                $values = substr($row['ct'], 5, -1); //tolgo "enum(" e ")"
-                                $values = str_replace("'", "", $values); //tolgo gli apici
-                                $list = explode(",", $values); //divido in una lista in base alle virgole
-
-                                //creo un'opzione per ogni possibile valore
-                                foreach ($list as $elem)
-                                    echo "<option value='" . strtoupper($elem) . "'>" . strtoupper($elem) . "</option>";
-                            } catch (Exception $e) {
-                                header("Location: index.php?err=db");
-                            }*/
-                            ?>
+                        <select class="form-select" id="gender" name="gender">
+                            <option value="" selected disabled>Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
                 </div>
@@ -209,7 +184,7 @@
                 </div>
 
 
-                <!--save result check-->            
+                <!--save result check-->
                 <div class="col-12 col-lg-12">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="checkSave" name="checkSave" onclick="verifyRef()" checked>
