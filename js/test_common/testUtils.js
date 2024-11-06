@@ -1,15 +1,15 @@
 
 //not used!!, send longstring with POST method to fullUrl page
 function sendDataToPHP(fullUrl, longString) {
-	fetch(fullUrl, {
+    fetch(fullUrl, {
 
-		method: 'POST', // Use POST to send the data
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
-        
-		body: 'result=' + encodeURIComponent(longString) // Send the data via POST
-	});
+        method: 'POST', // Use POST to send the data
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+
+        body: 'result=' + encodeURIComponent(longString) // Send the data via POST
+    });
 }
 
 
@@ -43,7 +43,7 @@ function nDOWNoneUP(n) {
         correctAnsw += 1;
         if (correctAnsw == n) { //if there are n consegutive correct answers
             modAmp /= currentFactor;
-            
+
             correctAnsw = 0;
             if (positiveStrike == 0) {
                 //there was a reversal
