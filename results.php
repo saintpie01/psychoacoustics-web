@@ -21,27 +21,23 @@ session_start();
 
 
 <body>
+
     <?php
-    //controllo errori
     if (isset($_GET['err'])) {
         if ($_GET['err'] == "1")
             echo "<div class='alert alert-danger' style='float:left; width:95%'>'Save result' wasn't checked but 'Save settings' was, Settings can't be saved without saving the results
 							<br>Result and settings weren't saved</div>";
     }
     ?>
+    
     <div class="container mt-5">
         <div class="row justify-content-center align-items-center">
             <div class="col-12 col-md-7 border bg-light rounded-4 p-5">
                 
-            
-
                 <h1>Your user ID is: #<?php echo $_SESSION['idGuestTest']?></h1>
             
                 <h2>Your threshold is:</h2>
                 <p></p>
-
-
-
 
                 <h2>
                     <?php
@@ -65,7 +61,10 @@ session_start();
                     <div class="row row-cols-1 row-cols-lg-3 align-items-center justify-content-between g-2">
                         <?php
                         if (isset($_GET['continue'])) {
+                            //if continue = 1 this is not the last block of tests
                             if ($_GET['continue'] == 0) {
+
+                                //only logged user can download the complete csv
                                 if (isset($_SESSION['currentLoggedUsername'])) { ?>
                                     <div class="col d-grid">
                                         <button type='button' class='btn btn-primary btn-lg btn-red' onclick='location.href="php/download.php?format=complete"'>
@@ -73,40 +72,32 @@ session_start();
                                         </button>
                                     </div>
                                 <?php } ?>
+
                                 <div class="col d-grid">
                                     <button type='button' class='btn btn-primary btn-lg btn-red' onclick='location.href="php/download.php?format=reduced"'>
                                         Download data (thresholds only)
                                     </button>
                                 </div>
+
                                 <div class="col d-grid">
                                     <button type='button' class='btn btn-primary btn-lg btn-red' onclick='location.href="index.php"'>
                                         Home
                                     </button>
                                 </div>
+
                             <?php
                             } else {
-                                $page = "test.php";
-                                $page = "$_SESSION[testTypeCmp]" . $page;
-                               /*if ($_SESSION['type'] == "PURE_TONE_FREQUENCY")
-                                    $page = "freq" . $page;
-                                if ($_SESSION['type'] == "PURE_TONE_INTENSITY")
-                                    $page = "amp" . $page;
-                                if ($_SESSION['type'] == "PURE_TONE_DURATION")
-                                    $page = "dur" . $page;
-                                if ($_SESSION['type'] == "WHITE_NOISE_GAP")
-                                    $page = "gap" . $page;
-                                if ($_SESSION['type'] == "WHITE_NOISE_DURATION")
-                                    $page = "ndur" . $page;
-                                if ($_SESSION['type'] == "WHITE_NOISE_MODULATION")
-                                    $page = "nmod" . $page;*/
+                                //this display the CONTINUE button to procede with the next block
+                                $page = "$_SESSION[testTypeCmp]" ."test.php";
+
                             ?>
                                 <div class='col d-grid'>
                                     <button type='button' class='btn btn-primary btn-lg btn-red' onclick='location.href="<?php echo $page; ?>"'>
                                         Continue
                                     </button>
                                 </div>
-                        <?php
-                          }
+                            <?php
+                            }
                         }
                         ?>
                     </div>

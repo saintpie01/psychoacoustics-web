@@ -2,9 +2,55 @@
 session_start();
 include_once "php/config.php";
 include_once "php/dbCommonFunctions.php";
+include_once "php/dbconnect.php";
 
 if (!isset($_SESSION['currentLoggedID'])) {
     header("Location: index.php?err=2");
+    exit;
+}
+
+try {
+    $conn = connectdb();
+    //fetch all data to display on page
+    $sql = "SELECT referral, name, surname, date, gender, notes, email 
+                FROM account INNER JOIN guest ON account.Guest_ID = guest.ID 
+                WHERE username='" . $_SESSION['currentLoggedUsername'] . "'";
+
+    $result = $conn->query($sql);
+    $row = $result->fetch_assoc();
+
+} catch (Exception $e) {
+    header("Location: index.php?err=db");
+}
+
+$ref = $row['referral'];
+$name = $row['name'];
+$sur = $row['surname'];
+$date = $row['date'];
+$gender = $row['gender'];
+$notes = $row['notes'];
+$email = $row['email'];
+
+//fetch data to print current test type on screen
+try {
+
+    $refrow = fetchReferralInfo($ref, $conn); //return an array with referral data
+
+    $_SESSION['referralTest'] = array( //gather referral data
+        "guest" => $refrow['fk_GuestTest'],
+        "count" => $refrow['fk_TestCount']
+    );
+
+    $sql = "SELECT Type FROM test WHERE Guest_ID='{$_SESSION['referralTest']['guest']}' AND Test_count='{$_SESSION['referralTest']['count']}'";
+    $result = $conn->query($sql);
+    $refrow = $result->fetch_assoc();
+    if (isset($refrow['Type'])) {
+        $testTypeExt = $refrow['Type'];
+    } else
+        $testTypeExt = 'No test created yet';
+
+} catch (Exception $e) { //if invalid
+    header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");
     exit;
 }
 
@@ -14,7 +60,6 @@ if (!isset($_SESSION['currentLoggedID'])) {
 <html lang="en">
 
 <head>
-
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -32,34 +77,12 @@ if (!isset($_SESSION['currentLoggedID'])) {
     <script type="text/javascript" src="js/funzioni.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"></script>
 
     <title>Psychoacoustics-web - User settings</title>
-
 </head>
 
 <body>
 
-    <!-- Barra navigazione -->
-    <nav class="navbar navbar-dark bg-dark shadow-lg text-white">
-        <div class="container">
-            <a class="navbar-brand" href="index.php">
-                <img src="files/logo.png" alt="" width="25" height="25" class="d-inline-block align-text-top">
-                PSYCHOACOUSTICS-WEB
-            </a>
-            <form class="d-flex align-items-center">
-                <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername'];
-                                                                    echo '   #' . $_SESSION['currentLoggedID']; ?></label>
-                <button class="btn btn-outline-light me-3" type="button" onclick="location.href='yourTests.php'">
-                    Your tests
-                </button>
-                <button class="btn btn-outline-light me-3" type="button" onclick="location.href='php/logout.php'">
-                    Log Out
-                </button>
-                <a class='settings navbar-text' href='userSettings.php'>
-                    <i class='material-icons rotate text-white'>settings</i>
-                </a>
-            </form>
-        </div>
-    </nav>
-
+    <!-- Navigation Bar -->
+    <?php include_once 'html_modules/navbar.php'; ?>
 
     <?php
     //se si sceglie un username già esistente verrà messo "?err=1" nell'url
@@ -79,73 +102,34 @@ if (!isset($_SESSION['currentLoggedID'])) {
             echo "<div class='alert alert-danger'>Select a test type from the menu</div>";
         if ($_GET['err'] == 6)
             echo "<div class='alert alert-danger'>the created test already exist, it is now your active referral</div>";
-    }
-    try {
-        $conn = new mysqli($host, $user, $password, $dbname);
-        if ($conn->connect_errno)
-            throw new Exception('DB connection failed');
-        mysqli_set_charset($conn, "utf8");
-
-        $sql = "SELECT referral, name, surname, date, gender, notes, email 
-					FROM account INNER JOIN guest ON account.Guest_ID = guest.ID 
-					WHERE username='" . $_SESSION['currentLoggedUsername'] . "'";
-        $result = $conn->query($sql);
-        $row = $result->fetch_assoc();
-        $ref = $row['referral'];
-        $name = $row['name'];
-        $sur = $row['surname'];
-        $date = $row['date'];
-        $gender = $row['gender'];
-        $notes = $row['notes'];
-        $email = $row['email'];
-
-        //i fetch data to print test type on screen
-        try {
-            $refrow = fetchReferralInfo($ref); //return an array with referral data
-
-        } catch (Exception $e) { //if invalid
-            header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");
-            exit;
-        }
-
-        $_SESSION['test'] = array( //gather referral data
-            "guest" => $refrow['fk_GuestTest'],
-            "count" => $refrow['fk_TestCount']
-        );
-
-        $sql = "SELECT Type FROM test WHERE Guest_ID='{$_SESSION['test']['guest']}' AND Test_count='{$_SESSION['test']['count']}'";
-        $result = $conn->query($sql);
-        $refrow = $result->fetch_assoc();
-        if (isset($refrow['Type'])){
-            $testTypeExt = $refrow['Type'];
-        } else
-            $testTypeExt = 'No test created yet';
-
-    } catch (Exception $e) {
-        header("Location: index.php?err=db");
-    }
-
-
-
+    }  
     ?>
 
     <div class="container my-5">
+
+        <!-- Test Settings section -->
         <div class="container-fluid p-4 border rounded-4 bg-light">
             <h4 class="mb-3">Test settings</h4>
             <form action="php/newReferral.php" class="settingForm ref">
                 <div class="row row-cols-1 row-cols-lg-2 g-3 justify-content-center align-items-center">
+                    
+                    <!-- invite code box -->
                     <div class="col">
                         <div class="input-group flex-nowrap">
                             <span class="input-group-text title" title="click to copy">Invite code</span>
                             <span class="input-group-text form-control link" id="ref" title="click to copy"><?php echo $ref; ?></span>
                         </div>
                     </div>
+
+                    <!-- complete referral link box -->
                     <div class="col">
                         <div class="input-group">
                             <span class="input-group-text title" title="click to copy">Link</span>
                             <span class="input-group-text form-control overflow-scroll link" id="link" title="click to copy">localhost/acoustic-web2/demographicData.php?ref=<?php echo $ref; ?></span>
                         </div>
                     </div>
+
+                    <!-- test type selection -->
                     <div class="col">
                         <select name='testType' class="form-select" onchange="updateLink('<?php echo $ref; ?>')" id="testType">
                             <option selected disabled value=''> Select a Test Type</option>
@@ -157,12 +141,18 @@ if (!isset($_SESSION['currentLoggedID'])) {
                             <option value='nmod'>Noise Modulation</option>
                         </select>
                     </div>
+
+                    
                     <div class="col">
                         <div class="row row-cols-2 g-3">
+                            
+                        <!-- current test type -->
                             <div class="col d-grid">
                                 <h6 class="mb-0">test type: <?php echo $testTypeExt; ?></h6>
                                 <!--<button type="submit" class="btn btn-primary btn-red">Change invite code</button>-->
                             </div>
+
+                            <!-- change test settings button -->
                             <div class="col d-grid">
                                 <button type="button" class="btn btn-primary btn-red" onclick="window.location='php/updateSavedSettings.php?test='+document.getElementById('testType').value">
                                     Change test settings
@@ -176,6 +166,7 @@ if (!isset($_SESSION['currentLoggedID'])) {
 
 
         <?php
+        //this section is active only is a Superuser is logged --ignore
         try {
             $sql = "SELECT Type FROM account WHERE Guest_ID='{$_SESSION['currentLoggedID']}' AND Username='{$_SESSION['currentLoggedUsername']}'";
             $result = $conn->query($sql);
@@ -203,22 +194,29 @@ if (!isset($_SESSION['currentLoggedID'])) {
         }
         ?>
 
+        <!-- change password section -->
         <div class="container-fluid p-4 border rounded-4 bg-light mt-5">
             <h4 class="mb-3">Change password</h4>
             <form action="php/changePsw.php" method="post" class="settingForm">
                 <div class="row row-cols-1 row-cols-lg-3 g-3 justify-content-center align-items-center">
+                    
+                    <!-- old psw form -->
                     <div class="col">
                         <div class="input-group">
                             <span class="input-group-text">Old password</span>
                             <input type="password" class="form-control" placeholder="Old password" name="oldPsw">
                         </div>
                     </div>
+
+                    <!-- new psw form -->
                     <div class="col">
                         <div class="input-group">
                             <span class="input-group-text">New password</span>
                             <input type="password" class="form-control" placeholder="New password" name="newPsw">
                         </div>
                     </div>
+
+                    <!-- change psw button -->
                     <div class="col d-grid">
                         <button type="submit" class="btn btn-primary btn-red">Change Password</button>
                     </div>
@@ -226,6 +224,7 @@ if (!isset($_SESSION['currentLoggedID'])) {
             </form>
         </div>
 
+        <!-- change user settings section -->
         <div class="container-fluid p-4 border rounded-4 bg-light mt-5">
             <h4 class="mb-3">Change user settings</h4>
             <form method="post" action="php/changeUserData.php" class="settingForm">

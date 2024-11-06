@@ -7,7 +7,7 @@ include_once("php/error_codes/soundSettingsErrorValidation.php");
 include "php/config.php";
 
 //if one of the parameter is not set i can't fetch the correct test parameters
-if (!isset($_GET["test"]) && !isset($_SESSION['test']))
+if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
     header("Location: index.php");
 ?>
 
@@ -165,7 +165,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['test']))
                         </div>
                     </div>
                 <?php } else { ?>
-                    <h6 class="mt-2">Master settings</h6>
+                    <h6 class="mt-2">Carrier settings</h6>
                     <div class="row row-cols-1 row-cols-lg-3 gy-3">
                         <div class="col">
                             <div class="input-group flex-nowrap"
@@ -448,7 +448,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['test']))
                                 <!-- Checkbox -->
                                 <div class="form-check"
                                     title="if checked a message will tell if you choose the correct sound">
-                                    <input class="form-check-input" type="checkbox" id="cb" name="checkFb"
+                                    <input class="form-check-input" type="checkbox" id="cb" name="checkFb" value="1"
                                         <?php
                                         if (($row && $row['fb']) || !$row)
                                             echo "checked";

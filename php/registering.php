@@ -1,11 +1,24 @@
 <?php
-
+/**
+ * create a new account based on info given.
+ * every account is associated with a Gest where all the main demographic is saved
+ * the is of the Account and Guest is the same, created with an increasing integer
+ */
 session_start();
 
 include_once "config.php";
 include_once "dbconnect.php";
 include_once "dbCommonFunctions.php";
+include_once "utils.php";
 
+/*
+ * @var string contains the name of the logged user
+ */
+$_SESSION['currentLoggedUsername'] = "";
+/*
+ * @var int contains the id of the logged user
+ */
+$_SESSION['currentLoggedID'] = 0;
 
 
 //sql injections handling
@@ -15,32 +28,33 @@ if ($specialCharacters) {
 	exit;
 }
 
+//get username from form
+$usr = $_POST['usr'];
+
 try {
-	//apro la connessione con il db
+	
 	$conn = connectdb();
 
-	//recupero username dal form di registrazione
-	$usr = $_POST['usr'];
+	//test for selectFromTable Function
+	$result = selectFromTable(['*'], 'account', ["Username='$usr'"], $conn);
 
-	//controllo se esiste già
-	$sql = "SELECT * FROM account WHERE Username='$usr'";
-	$result = $conn->query($sql);
+	//chech if it already exist
 	if ($result->num_rows > 0) {
-		header('Location: ../register.php?err=1'); //errore 1: lo definisco come errore di username già esistente
+		header('Location: ../register.php?err=1');
 		exit;
 	}
-	//se non esiste eseguo la registrazione
 
-	//prendo tutti i dati
+	//takes all form data
 	$psw = $_POST['psw'];
 	$name = $_POST['name'];
 	$surname = $_POST['surname'];
 	$date = $_POST['date'];
-	$gender = strtoupper($_POST['gender']);
+	$gender = $_POST['gender'];
 	$notes = $_POST['notes'];
-	$email = $_POST['email'];  // permetto la creazione di piú utenti username diversi ma con la stessa email 
+	$email = $_POST['email'];   
 
-	//inizio a creare la query inserendo i valori non NULL
+	//crate insertion query
+	//create guest
 	$sql = "INSERT INTO guest (Name";
 	$sqlVal = " VALUES ('$name'";
 
@@ -61,8 +75,6 @@ try {
 
 	$sql .= ")";
 	$sqlVal .= ");SELECT LAST_INSERT_ID() as id;";
-
-	//creo il guest
 	$sql .= $sqlVal;
 
 	$conn->multi_query($sql);
@@ -71,7 +83,7 @@ try {
 	$row = $result->fetch_assoc();
 	$id = $row['id'];
 
-	//creo e collego l'account, salvo l'hash della password con sha2-256, tipo di account 0 (base)
+	//create a new account
 	$sql = "INSERT INTO account VALUES ('$usr', SHA2('$psw', 256) ";
 
 	if ($date != "")
@@ -82,7 +94,6 @@ try {
 	$sql .= ",'$id', '0', '" . base64_encode($usr) . "', NULL, NULL, '$email');";
 	$conn->query($sql);
 
-	//faccio sapere alle altre pagine quale utente è loggato
 	$_SESSION['currentLoggedUsername'] = $usr;
 	$_SESSION['currentLoggedID'] = $id;
 

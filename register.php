@@ -16,15 +16,12 @@ session_start()
 
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/staircaseStyle.css" rel="stylesheet">
-    <!--		<link rel="stylesheet" href="css/formStyle.css-->
-    <?php //if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; 
-    ?><!--"> -->
 </head>
 
 
 <body>
     <?php
-    //se si sceglie un username già esistente verrà messo "?err=1" nell'url
+    //error displaying handling
     if (isset($_GET['err'])) {
         if ($_GET['err'] == 0)
             echo "<div class='alert alert-danger'>Some inserted characters aren't allowed</div>";
@@ -32,6 +29,7 @@ session_start()
             echo "<div class='alert alert-danger'>Username already taken</div>";
     }
     ?>
+    
     <div class="container my-5 p-4 p-sm-5 border rounded rounded-4 bg-light">
         <p style="color: black;"> TERMS AND CONDITION
             PSYCHOACOUSTICS-WEB is a research tool designed by Andrei Senyuva, Giulio Contemori, Andrea Felline, Gnana Prakash Goli, Mauro Migliardi, Niccolò Orlandi, Mattia Toffanin under the supervision and responsibility of Massimo Grassi. The responsible person and referent person of PSYCHOACOUSTICS-WEB (hereafter referred to as “referent person”) is Massimo Grassi, Department of General Psychology, University of Padua, via Venezia 8, 35134, Padua, Italy, email: massimo.grassi@unipd.it, phone (office): +39 0498277494. PSYCHOACOUSTICS-WEB complies with the current pertinent regulations related to research ethics and professional deontology, such as: The General Data Protection Regulation (EU) 2016/679 ("GDPR"), the decree “Regole deontologiche per trattamenti a fini statistici o di ricerca scientifica pubblicate ai sensi dell’art. 20, comma 4, del d.lgs. 10 agosto 2018, n. 101 - 19 dec 2018”.

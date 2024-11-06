@@ -1,4 +1,8 @@
+
 <?php
+/**
+ * this page is not needed anymore
+ */
 
 session_start();
 
@@ -11,7 +15,9 @@ try {
 	$conn = connectdb();
 
 	//takes the current referral like of the current logged account
-	$sql = "SELECT Referral FROM account WHERE Username='" . $_SESSION['currentLoggedUsername'] . "'";
+	$sql = "SELECT Referral 
+			FROM account 
+			WHERE Username='" . $_SESSION['currentLoggedUsername'] . "'";
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 	$ref = $row['referral'];

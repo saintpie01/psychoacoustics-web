@@ -1,19 +1,37 @@
 <?php   
-
+/**
+ * insert the demographics of the user in the database
+ * if the user is logged no insertion is needed.
+ * if a referral is present, it is MANDATORY to create a new Guest
+ * 
+ */
 session_start();
 
 include "config.php";
 include_once('dbconnect.php');
 include_once('dbCommonFunctions.php');
+include_once "utils.php";
 
-unset($_SESSION['idGuestTest']); //se c'erano stati altri guest temporanei, li elimino per evitare collisioni
-unset($_SESSION['name']); //se è settato dopo questa pagina, allora è stato creato un nuovo guest
-unset($_SESSION['test']); //se è settato dopo questa pagina, allora è stato usato un referral
+/*
+ * @var int contains the id of the test taker weather it is a guest or a logged user
+ */
+unset($_SESSION['idGuestTest']); 
+/*
+ * @var string contains the name of the guest, if it is setted after this page, a new user 
+ * has been created
+ */
+unset($_SESSION['name']); 
+/*
+ * @var array contains the key of the referral test if present
+ */
+unset($_SESSION['referralTest']); 
 
 //creates concatenation string to quick pass test type later
 $type = "";
 if (isset($_GET["test"]))
     $type = "test=" . $_GET["test"];
+
+$ref = "&ref=" . $_POST["ref"];
 
 //verify injection on POST data
 $specialCharacters = checkSpecialCharacter(['name', 'surname', 'notes', 'ref']);
@@ -24,40 +42,37 @@ if ($specialCharacters) {
     exit;
 }
 
-$ref = "";
 $redirection = "Location: ../soundSettings.php?" . $type; //redirection string based on the presence of referal code
-if (($_POST["ref"]) != "") { //check if a referral code in the link is present and valid, create a session variable and change the redirection path
+
+if (($_POST["ref"]) != "") { //check if a referral code in the link is present and valid
 
     try {
-        $refrow = fetchReferralInfo($_POST['ref']); //return an array with referral data
+        $conn = connectdb();
+        $refrow = fetchReferralInfo($_POST['ref'], $conn); //return an array with referral data
 
     } catch (Exception $e) { //if invalid
         header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");
         exit;
     }
 
-    $_SESSION['test'] = array( //gather referral data
+    $_SESSION['referralTest'] = array( //gather referral key
         "guest" => $refrow['fk_GuestTest'],
         "count" => $refrow['fk_TestCount']
     );
 
+    error_log('referral username = '.$refrow['Username'] .'\n', 3, "errors_log.txt");
 
-    error_log('referral username'.$refrow['Username'], 3, "errors_log.txt");
-    $ref = "&ref=" . $_POST["ref"];
-    $redirection = "Location: ../info.php"; //all referral tests get redirected to this page
+    $redirection = "Location: ../info.php"; //all referral tests get redirected to info.php page
 }
 
-$_SESSION["saveData"] = true;
-
-//this section dismiss some special cases where no data manipulation is needed
-if (!isset($_POST["checkSave"])) { //no data needs to be saved, skip ahead
+if (!isset($_POST["checkSave"])) { //no data needs to be saved, no user to create, skip ahead
     $_SESSION["saveData"] = false;
-    //error_log('referral presen'.$ref, 3, "errors_log.txt");
     header($redirection);
     exit;
 }
+$_SESSION["saveData"] = true;
 
-if (isset($_SESSION['currentLoggedID'])) { //if the user if logged
+if (isUserLogged()) { 
     $_SESSION['idGuestTest'] = $_SESSION['currentLoggedID']; 
 
     if ($_POST["ref"] == "") { //no referral is present, go ahead
@@ -68,49 +83,29 @@ if (isset($_SESSION['currentLoggedID'])) { //if the user if logged
         header("Location: ../demographicData.php?" . $type . $ref . "&err=2");
         exit;
     }
-} else   
+} else {
     if ($_POST["name"] == "") { //name is mandatory if not logged
-    header("Location: ../demographicData.php?" . $type . $ref . "&err=1");
-    exit;
+        header("Location: ../demographicData.php?" . $type . $ref . "&err=1");
+        exit;
+    }
 }
 
-//if none of the condition before validate i must create a new Guest
-$_SESSION['name'] = $_POST["name"];
+
+//if none of the condition above validate : i must create a new Guest
+
 // beginning of the insertion query
 // create a new guest
 $sql = "INSERT INTO guest VALUES (NULL, '" . $_POST["name"] . "',";
 
-
-if ($_POST["surname"] == "") {
-    $sql .= "NULL, ";
-} else {
-    $sql .= "'" . $_POST["surname"] . "', ";
-}
-
-if ($_POST["age"] == "") {
-    $sql .= "NULL, ";
-} else {
-    $sql .= "'" . $_POST["age"] . "', ";
-}
-
-if (!isset($_POST["gender"])) {
-    $sql .= "NULL, ";
-} else {
-    $sql .= "'" . $_POST["gender"] . "', ";
-}
-
-if ($_POST["notes"] == "") {
-    $sql .= "NULL, ";
-} else {
-    $sql .= "'" . $_POST["notes"] . "', ";
-}
-
+$sql .= ($_POST["surname"] == "") ? "NULL, " : "'" . $_POST["surname"] . "', ";
+$sql .= ($_POST["age"] == "") ? "NULL, " : "'" . $_POST["age"] . "', ";
+$sql .= (!isset($_POST["gender"])) ? "NULL, " : "'" . $_POST["gender"] . "', ";
+$sql .= ($_POST["notes"] == "") ? "NULL, " : "'" . $_POST["notes"] . "', ";
 
 if (($_POST["ref"]) == "") {
     $sql .= "NULL);SELECT LAST_INSERT_ID() as id;"; //no referral
 } else {
-    error_log('referral username'.$refrow['Username'], 3, "errors_log.txt");
-    $sql .= "'" . $refrow['Username'] . "');SELECT LAST_INSERT_ID() as id;";
+    $sql .= "'" . $refrow['Username'] . "');SELECT LAST_INSERT_ID() as id;"; //if referral present i must insert the referrer Username
 }
 
 try {
@@ -120,9 +115,8 @@ try {
     $result = $conn->store_result();
     $row = $result->fetch_assoc();
 
-    $id = $row['id'];
-    //$_SESSION['currentLoggedID'] = $id; //take the generated id for future uses
-    $_SESSION['idGuestTest'] = $id;
+    $_SESSION['idGuestTest'] = $row['id'];
+    $_SESSION['name'] = $_POST["name"];
 
     header($redirection);
 

@@ -1,11 +1,16 @@
 <?php
 session_start();
+include "php/config.php";
+include_once "php/dbconnect.php";
 
 //check if there is a user logged
 if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLoggedID']))
     header("Location: index.php");
-include "php/config.php";
+
 ?>
+
+
+
 
 <!doctype html>
 <html lang="en">
@@ -20,40 +25,19 @@ include "php/config.php";
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/staircaseStyle.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <title>Psychoacoustics-web - Test results</title>
 </head>
 
 
 <body>
-    <nav class="navbar navbar-dark bg-dark shadow-lg text-white">
-        <div class="container">
 
-            <!-- Site title -->
-            <a class="navbar-brand" href="index.php">
-                <img src="files/logo.png" alt="" width="25" height="25" class="d-inline-block align-text-top">
-                PSYCHOACOUSTICS-WEB
-            </a>
-
-            <!-- user Login and Settings Buttons -->
-            <form class="d-flex align-items-center">
-                <label class='text-white navbar-text me-3'>Welcome <?php echo $_SESSION['currentLoggedUsername']; ?></label>
-                <button class="btn btn-outline-light me-3" type="button" onclick="location.href='yourTests.php'">
-                    Your tests
-                </button>
-                <button class="btn btn-outline-light me-3" type="button" onclick="location.href='php/logout.php'">
-                    Log Out
-                </button>
-                <a class='settings navbar-text' href='userSettings.php'>
-                    <i class='material-icons rotate text-white'>settings</i>
-                </a>
-            </form>
-
-        </div>
-    </nav>
+    <!-- Navigation Bar -->
+    <?php include_once 'html_modules/navbar.php'; ?>
 
 
     <div class="container">
-        <h1 class="mt-5">Welcome <?php echo $_SESSION['currentLoggedUsername']; ?> <?php echo '  #' . $_SESSION['currentLoggedID']; ?> </h1>
+        <h1 class="mt-5 pt-5">Welcome <?php echo $_SESSION['currentLoggedUsername']; ?> <?php echo '  #' . $_SESSION['currentLoggedID']; ?> </h1>
         <div class="row g-3">
 
             <!-- download all your data Button -->
@@ -71,15 +55,12 @@ include "php/config.php";
                     Download all your guest's data
                 </button>
             </div>
-            
+
+
             <?php
+            //function deicated to Superuser
             try {
-                $conn = new mysqli($host, $user, $password, $dbname);
-
-                if ($conn->connect_errno)
-                    throw new Exception('DB connection failed');
-
-                mysqli_set_charset($conn, "utf8");
+                $conn = connectdb();
 
                 $usr = $_SESSION['currentLoggedUsername'];
                 $id = $_SESSION['currentLoggedID'];
@@ -99,8 +80,10 @@ include "php/config.php";
                 header("Location: index.php?err=db");
             }
             ?>
+
         </div>
 
+        <!-- your results Table -->
         <h3 class="mt-5">Your results</h3>
         <table class="table table-striped table-hover">
             <thead>
@@ -113,13 +96,31 @@ include "php/config.php";
             <tbody>
                 <?php
                 try {
-                    $sql = "SELECT Test_count, Timestamp, Type FROM test WHERE Guest_ID='$id'";
+                    $sql = "SELECT Guest_ID, Test_count, Timestamp, Type FROM test WHERE Guest_ID='$id' AND Result = ''";
                     $result = $conn->query($sql);
                     while ($row = $result->fetch_assoc()) { ?>
                         <tr>
                             <td><?php echo $row["Test_count"]; ?></td>
                             <td><?php echo $row["Timestamp"]; ?></td>
                             <td><?php echo $row["Type"]; ?></td>
+
+                            <?php $TestId = (int)$row['Guest_ID'] ?>
+                            <?php $TestCount = (int)$row['Test_count'] ?>
+
+                            <td>
+                                <form method="post" action="php/deleteRecord.php"">
+
+                                    <input type="hidden" name="testId" value="<?php echo $TestId; ?>">
+                                    <input type="hidden" name="testCount" value="<?php echo $TestCount; ?>">
+                                    <button type="submit" class="btn btn-light rounded-circle"
+                                        id="<?php echo $TestId; ?>"
+                                        name="delete_id"
+                                        title="ID: <?php echo $TestId; ?> COUNT: <?php echo $TestCount;?>"
+                                        value="<?php echo $TestId; ?>">
+                                        <i class="bi bi-trash text-danger"></i> <!-- Red icon with white background -->
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                 <?php }
                 } catch (Exception $e) {
@@ -129,11 +130,13 @@ include "php/config.php";
             </tbody>
         </table>
 
+
+        <!-- Guest's results Table -->
         <h3 class="mt-5">Your guest's results</h3>
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th scope="col">Test</th>
+                    <th scope="col">Name</th>
                     <th scope="col">Time</th>
                     <th scope="col">Type</th>
                 </tr>
@@ -141,14 +144,32 @@ include "php/config.php";
             <tbody>
                 <?php
                 try {
-                    $sql = "SELECT Name, Test_count, Timestamp, Type FROM test INNER JOIN guest ON Guest_ID=ID WHERE fk_guest='{$_SESSION['currentLoggedUsername']}'";
+                    $sql = "SELECT ID, Name, Test_count, Timestamp, Type FROM test INNER JOIN guest ON Guest_ID=ID WHERE fk_guest='{$_SESSION['currentLoggedUsername']}'";
                     $result = $conn->query($sql);
+
                     while ($row = $result->fetch_assoc()) { ?>
                         <tr>
                             <td><?php echo $row["Name"]; ?></td>
-                            <td><?php echo $row["Test_count"]; ?></td>
                             <td><?php echo $row["Timestamp"]; ?></td>
                             <td><?php echo $row["Type"]; ?></td>
+
+                            <?php $TestId = (int)$row['ID'] ?>
+                            <?php $TestCount = (int)$row['Test_count'] ?>
+
+                            <td>
+                                <form method="post" action="php/deleteRecord.php">
+
+                                    <input type="hidden" name="testId" value="<?php echo $TestId; ?>">
+                                    <input type="hidden" name="testCount" value="<?php echo $TestCount; ?>">
+                                    <button type="submit" class="btn btn-light rounded-circle"
+                                        id="<?php echo $TestId; ?>"
+                                        name="delete_id"
+                                        title="ID: <?php echo $TestId; ?> COUNT: <?php echo $TestCount;?>"
+                                        value="<?php echo $TestId; ?>">
+                                        <i class="bi bi-trash text-danger"></i> <!-- Red icon with white background -->
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                 <?php }
                 } catch (Exception $e) {
@@ -156,10 +177,9 @@ include "php/config.php";
                 }
                 ?>
         </table>
-        <div class="d-grid my-5">
-            <button type="button" class="btn btn-primary btn-lg btn-red" id="home" onclick="location.href='index.php'">Home</button>
-        </div>
+
     </div>
+
 
 </body>
 

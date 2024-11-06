@@ -1,11 +1,14 @@
 <?php
-
+/**
+ * update demographic data of the logged user from userSettings.php
+ */
 session_start();
 include_once "config.php";
 include_once "dbconnect.php";
 include_once "dbCommonFunctions.php";
+include_once "utils.php";
 
-
+//check for injection on post data
 $specialCharacters = checkSpecialCharacter(['usr', 'email', "name", "surname", "notes"]);
 if ($specialCharacters) {
 	header("Location: ../userSettings.php?&err=0");
@@ -15,27 +18,17 @@ if ($specialCharacters) {
 try {
 	$conn = connectdb();
 
+	//fetch all user data
 	$sql = "SELECT username, date, email, name, surname, notes, gender 
-				FROM account INNER JOIN guest ON account.Guest_ID = guest.ID
-				WHERE username='{$_SESSION['currentLoggedUsername']}';";
+			FROM account INNER JOIN guest ON account.Guest_ID = guest.ID
+			WHERE username='{$_SESSION['currentLoggedUsername']}';";
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 
 	$somethingChanged = false;
-	$oldUsr = $_SESSION['currentLoggedUsername'];
-	$sql = "UPDATE account SET ";
-	/*
-	if ($_POST['usr'] != $row['username']) {
-		$userControl = "SELECT username FROM account WHERE username='{$_POST['usr']}';";
-		$result = $conn->query($sql);
-		if ($result->num_rows != 0) {
-			header("Location: ../userSettings.php?&err=1");
-		} else {
-			$sql .= "username = '{$_POST['usr']}', ";
-			$_SESSION['currentLoggedUsername'] = $_POST['usr'];
-			$somethingChanged = true;
-		}
-	}*/
+	$username = $_SESSION['currentLoggedUsername'];
+	
+	$sql = "UPDATE account SET ";	
 
 	if ($_POST['email'] != $row['email']) {
 		$sql .= "email = '{$_POST['email']}', ";
@@ -48,10 +41,10 @@ try {
 	}
 
 	$sql = substr($sql, 0, -2);
-	$sql .= "WHERE username='$oldUsr';";
-
+	$sql .= "WHERE username='$username';";
 	if ($somethingChanged)
 		$conn->query($sql);
+	
 
 	$somethingChanged = false;
 	$sql = "UPDATE guest SET ";
@@ -78,11 +71,11 @@ try {
 
 	$sql = substr($sql, 0, -2);
 	$sql .= "WHERE ID='{$_SESSION['currentLoggedID']}';";
-
 	if ($somethingChanged)
 		$conn->query($sql);
 
 	header("Location: ../userSettings.php");
+
 } catch (Exception $e) {
 	header("Location: ../index.php?err=db");
 }

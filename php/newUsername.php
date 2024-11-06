@@ -2,7 +2,7 @@
 
 session_start();
 
-include "config.php";
+include_once "config.php";
 include "dbconnect.php";
 include "dbCommonFunctions.php";
 
@@ -11,13 +11,14 @@ if ($specialCharacters) {
 	header("Location: ../userSettings.php?&err=0");
 	exit;
 }
+	
+//prendo i dati del guest
+$usr = $_SESSION['currentLoggedUsername'];
+$id = $_SESSION['currentLoggedID'];
+
 
 try {
 	$conn = connectdb();
-
-	//prendo i dati del guest
-	$usr = $_SESSION['currentLoggedUsername'];
-	$id = $_SESSION['currentLoggedID'];
 
 	//controllo di sicurezza
 	$sql = "SELECT Type FROM account WHERE Guest_ID='$id' AND Username='$usr'";
