@@ -10,8 +10,6 @@ if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLogge
 ?>
 
 
-
-
 <!doctype html>
 <html lang="en">
 
@@ -26,6 +24,8 @@ if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLogge
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/staircaseStyle.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <script src="js/libraries/maintainscroll.js"></script>
+
     <title>Psychoacoustics-web - Test results</title>
 </head>
 
@@ -96,7 +96,7 @@ if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLogge
             <tbody>
                 <?php
                 try {
-                    $sql = "SELECT Guest_ID, Test_count, Timestamp, Type FROM test WHERE Guest_ID='$id' AND Result = ''";
+                    $sql = "SELECT Guest_ID, Test_count, Timestamp, Type FROM test WHERE Guest_ID='$id' AND ref_name != ''";
                     $result = $conn->query($sql);
                     while ($row = $result->fetch_assoc()) { ?>
                         <tr>
@@ -107,17 +107,15 @@ if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLogge
                             <?php $TestId = (int)$row['Guest_ID'] ?>
                             <?php $TestCount = (int)$row['Test_count'] ?>
 
-                            <td>
-                                <form method="post" action="php/deleteRecord.php"">
-
+                            <td class="text-end">
+                                <form method="post" action="php/deleteRecord.php">
                                     <input type="hidden" name="testId" value="<?php echo $TestId; ?>">
                                     <input type="hidden" name="testCount" value="<?php echo $TestCount; ?>">
-                                    <button type="submit" class="btn btn-light rounded-circle"
+                                    <button type="submit" class="btn btn-link text-danger p-0"
                                         id="<?php echo $TestId; ?>"
                                         name="delete_id"
-                                        title="ID: <?php echo $TestId; ?> COUNT: <?php echo $TestCount;?>"
-                                        value="<?php echo $TestId; ?>">
-                                        <i class="bi bi-trash text-danger"></i> <!-- Red icon with white background -->
+                                        title="ID: <?php echo $TestId; ?> COUNT: <?php echo $TestCount; ?>">
+                                        Delete
                                     </button>
                                 </form>
                             </td>
@@ -156,17 +154,15 @@ if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLogge
                             <?php $TestId = (int)$row['ID'] ?>
                             <?php $TestCount = (int)$row['Test_count'] ?>
 
-                            <td>
+                            <td class="text-end">
                                 <form method="post" action="php/deleteRecord.php">
-
                                     <input type="hidden" name="testId" value="<?php echo $TestId; ?>">
                                     <input type="hidden" name="testCount" value="<?php echo $TestCount; ?>">
-                                    <button type="submit" class="btn btn-light rounded-circle"
+                                    <button type="submit" class="btn btn-link text-danger p-0"
                                         id="<?php echo $TestId; ?>"
                                         name="delete_id"
-                                        title="ID: <?php echo $TestId; ?> COUNT: <?php echo $TestCount;?>"
-                                        value="<?php echo $TestId; ?>">
-                                        <i class="bi bi-trash text-danger"></i> <!-- Red icon with white background -->
+                                        title="ID: <?php echo $TestId; ?> COUNT: <?php echo $TestCount; ?>">
+                                        Delete
                                     </button>
                                 </form>
                             </td>
