@@ -17,7 +17,7 @@
     <script type="text/javascript" src="js/fetchTexts.js"></script>
 
     <script>
-        // pass info from php session to js
+           // pass info from php session to js
         var amp = parseFloat(<?php echo $_SESSION["amplitude"]; ?>);
         var freq = parseFloat(<?php echo $_SESSION["frequency"]; ?>);
         var dur = parseFloat(<?php echo $_SESSION["duration"]; ?>);
@@ -29,8 +29,9 @@
         var nAFC = parseInt(<?php echo $_SESSION["nAFC"]; ?>);
         var ITI = parseInt(<?php echo $_SESSION["ITI"]; ?>);
         var ISI = parseInt(<?php echo $_SESSION["ISI"]; ?>);
-        //var noise = <//?php echo $_SESSION["checkNoise"]; ?>;
         var feedback = parseInt(<?php echo $_SESSION["checkFb"]; ?>);
+        //var noise = <//?php echo $_SESSION["checkNoise"]; ?>;
+        var saveSettings = parseInt(<?php echo $_SESSION["saveSettings"]; ?>);
         var factor = parseFloat(<?php echo $_SESSION["factor"]; ?>);
         var secondFactor = parseFloat(<?php echo $_SESSION["secFactor"]; ?>);
         var reversals = parseInt(<?php echo $_SESSION["reversals"]; ?>);
@@ -38,8 +39,7 @@
         var reversalThreshold = parseInt(<?php echo $_SESSION["threshold"]; ?>);
         var algorithm = <?php echo "'{$_SESSION["algorithm"]}'"; ?>;
         var currentBlock = parseInt(<?php if (isset($_SESSION["currentBlock"])) echo $_SESSION["currentBlock"] + 1; else echo "1"?>);
-
-    </script>
+ </script>
     <script type="text/javascript"
             src="js/generatorSoundAndNoise.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
             defer></script> 
