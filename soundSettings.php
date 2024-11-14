@@ -38,13 +38,20 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
 
     if (isset($_GET['test']))
         $type = $_GET['test'];
+    if (isset($_GET['refn']))
+        $refName = $_GET['refn'];
 
 
-    //this section check weather a user is logged or not, if it is it creates a query that 
+    //this section check weather a user is logged or not, if it is, it creates a query that 
     //takes all the parameters already setted and uses them instead of the default number in the 
     //following html code
 
-    if (isset($_SESSION['currentLoggedUsername'])) {
+    //**update this functionality has been removed, the code remains here just in case and because
+    //the rest of this html page would be a pain to fix. It wouldnt make any difference anyway*/
+
+    
+
+    /*if (isset($_SESSION['currentLoggedUsername'])) {
         try {
 
             $conn = connectdb();
@@ -64,7 +71,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
             header("Location: index.php?err=dB");
             error_log($e, 3, "errors_log.txt");
         }
-    } else
+    } else*/
         $row = false;
     ?>
 
@@ -74,7 +81,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
         <h2>Set the characteristics of the experiment</h2>
         <form action="<?php
                         if (isset($_SESSION['updatingSavedSettings']) && $_SESSION['updatingSavedSettings'] == true)
-                            echo "php/updatingSavedSettings.php?test=" . $type;
+                            echo "php/updatingSavedSettings.php?test=" . $type . "&refn=" . $refName;
                         else
                             echo "php/soundSettingsValidation.php?test=" . $type;
                         ?>" name="Settings" method="post">
