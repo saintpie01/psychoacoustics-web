@@ -67,7 +67,7 @@ if (isset($CLID)) { //account data are preserved
 
         <!-- welcome title -->
         <h1 class="text-center my-5" id="indexTitle">
-            Welcome to PSYCHOACOUSTICS-WEB
+            Welcome to PSYCHOACOUSTICS-WEB 
         </h1>
 
         <!-- Site Description -->

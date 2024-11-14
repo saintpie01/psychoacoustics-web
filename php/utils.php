@@ -58,13 +58,13 @@ function getExtfromCmpType($testTypeCmp){
 /**
  * initialize an array with all the test parameters required
  * this function may seems uselsess, but it extract all the variable nedded from overcrowded arrays like
- * $_POST or $_SESSION to create an ordinated array of parameter.
+ * $_POST or $_SESSION to create an ordinated and restricted array of parameter.
  * 
  * Notice how this function retrieve all the parameters, even those that might not be initialized 
  * based on the test selected, setting them to null
  * 
- * @param array contains an array with all the parameters needed from the tests
- * @return array contains all and only the parametes needed from the tests
+ * @param array $rawParameters contains an array with miscellaneous extracted from a test
+ * @return array $newParam contains all and only the parametes needed to perform and save the test
  */
 function initializeTestParameter($rawParameters) {
     
@@ -96,7 +96,7 @@ function initializeTestParameter($rawParameters) {
 }
 
 /*
- * self explained
+ * self explaining
  */
 function isUserLogged(){
     if (isset($_SESSION["currentLoggedID"]) && isset($_SESSION["currentLoggedUsername"]))
