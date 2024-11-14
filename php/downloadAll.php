@@ -15,10 +15,10 @@ include "config.php";
 include "dbconnect.php";
 include_once "utils.php";
 session_start();
+
 try {
 	$conn = connectdb();
 
-	//prendo i dati del guest
 	$usr = $_SESSION['currentLoggedUsername'];
 	$id = $_SESSION['currentLoggedID'];
 

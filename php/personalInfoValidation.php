@@ -33,6 +33,8 @@ if (isset($_GET["test"]))
 
 $ref = "&ref=" . $_POST["ref"];
 
+$_SESSION['saveSettings'] = 0; //this is useless but if you remove it the program breaks because it is written wery well and i dont want to go through javascript hell so here it stays
+
 //verify injection on POST data
 $specialCharacters = checkSpecialCharacter(['name', 'surname', 'notes', 'ref']);
 $specialCharacters |= (!is_numeric($_POST["age"]) && $_POST["age"] != "");
@@ -48,7 +50,7 @@ if (($_POST["ref"]) != "") { //check if a referral code in the link is present a
 
     try {
         $conn = connectdb();
-        $refrow = fetchReferralInfo($_POST['ref'], $conn); //return an array with referral data
+        $refrow = getReferralKeyFromInviteCode($_POST['ref'], $conn); //return an array with referral data
 
     } catch (Exception $e) { //if invalid
         header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");

@@ -31,11 +31,13 @@ if ($_GET['currentBlock'] < $_GET['blocks']) {
 	exit;
 }
 
-$_SESSION["geometric_score"] = substr($_SESSION["geometric_score"], 0, -1); //removes the last ';'
-$_SESSION["score"] = substr($_SESSION["score"], 0, -1);
-$finalResults = $_SESSION['results']; //readability
 
+//readability
+$score = $_SESSION['score'];
+$finalResults = $_SESSION['results']; 
+$geometricScore = $_SESSION['geometric_score'];
 
+//better not to touch this
 if (!$_SESSION["saveData"]) {
 	if ($_GET['saveSettings']) {
 		header("Location: ../results.php?continue=0&err=1");
@@ -45,6 +47,12 @@ if (!$_SESSION["saveData"]) {
 		exit;
 	}
 }
+
+
+//removes the last ';'
+/*
+$_SESSION["geometric_score"] = substr($_SESSION["geometric_score"], 0, -1); 
+$_SESSION["score"] = substr($_SESSION["score"], 0, -1);*/
 
 //is this check necessary?
 if (!isset($_SESSION['idGuestTest'])) {
@@ -72,7 +80,15 @@ try {
 	//new test count is the number of test taken + 1
 	$count = $row['count'] + 1;
 
-	insertTest($id, $count, $testTypeCmp, $_SESSION, $finalResults, $conn);
+	insertTest( $id, 
+				$count, 
+				null,
+				$testTypeCmp,
+				$_SESSION, 
+				$finalResults, 
+				$score, 
+				$geometricScore, 
+				$conn);
 
 	header("Location: ../results.php?continue=0");
 	exit;

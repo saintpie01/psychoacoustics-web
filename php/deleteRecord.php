@@ -6,6 +6,7 @@ require_once "dbconnect.php";
 
 $testId = $_POST['testId'];
 $testCount = $_POST['testCount'];
+$returnPage = $_SERVER['HTTP_REFERER'];
 
 try{
     $conn = connectdb();
@@ -15,7 +16,7 @@ try{
 
     $conn->query($sql);
 
-    header("Location: ../yourTests.php");
+    header("Location: $returnPage");
 
 }catch(Exception $e) {
     error_log($e, 3, "errors_log.txt");

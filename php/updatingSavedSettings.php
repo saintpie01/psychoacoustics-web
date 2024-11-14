@@ -11,9 +11,10 @@ include_once "dbCommonFunctions.php";
 
 $id = $_SESSION['currentLoggedID'];
 $testParameters = initializeTestParameter($_POST);
+$refName = $_GET['refn'];
+$testType = $_GET['test'];
 
 try {
-
 
 	$conn = connectdb();
 
@@ -28,7 +29,15 @@ try {
 	//new test number is test taken + 1
 	$count = $row['count'] + 1;
 
-	insertTest($id, $count, $_GET['test'], $testParameters, '', $conn); //the referral test is just a test without result
+	insertTest( $id,
+				$count,
+				$refName, 
+				$testType, 
+				$testParameters, 
+				null, 
+				null, //the referral test is just a test without results
+				null, 
+				$conn); 
 
 	//the referral is identified by the $count number in the account table
 	$sql = "UPDATE account 
