@@ -25,25 +25,13 @@ unset($_SESSION['testTypeCmp']);
 
 if (isset($_SESSION['referralTest'])) { //referral present
 
-    //fetch  all the test parameters from DB (referral test saved as a mockup test in the "test" table)
-    $sql = "SELECT Type, Amplitude AS amplitude, Frequency AS frequency, Duration AS duration, 
-                OnRamp AS onRamp, OffRamp AS offRamp, blocks, Delta AS delta, nAFC AS nAFC, 
-                ISI AS ISI, ITI AS ITI, Factor AS factor, Reversal AS reversals, 
-                SecFactor AS secFactor, SecReversal AS secReversals, Feedback AS checkFb, 
-                Threshold AS threshold, Algorithm AS algorithm, 
-                ModAmplitude AS modAmplitude, ModFrequency AS modFrequency, 
-                ModPhase AS modPhase
-					
-			FROM test
-					
-			WHERE Guest_ID='{$_SESSION['referralTest']['guest']}' AND Test_count='{$_SESSION['referralTest']['count']}'";
+    $refId = $_SESSION['referralTest']['guest'];
+    $refCount = $_SESSION['referralTest']['count'];
 
     try {
 
         $conn = connectdb();
-        $result = $conn->query($sql);
-        $row = $result->fetch_assoc();
-
+        $row = getTestParameters($refId, $refCount, $conn);
 
         //select the test type to start
         if ($row['Type'] == 'PURE_TONE_INTENSITY')
@@ -62,7 +50,9 @@ if (isset($_SESSION['referralTest'])) { //referral present
 
         $_SESSION['testTypeCmp'] = $type;
 
+
         $testParameters = initializeTestParameter($row);
+
         $_SESSION = array_merge($testParameters, $_SESSION);
         
 
