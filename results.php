@@ -29,32 +29,40 @@ session_start();
 							<br>Result and settings weren't saved</div>";
     }
     ?>
-    
+
     <div class="container mt-5">
         <div class="row justify-content-center align-items-center">
             <div class="col-12 col-md-7 border bg-light rounded-4 p-5">
-                
-                <h1>Your user ID is: #<?php echo $_SESSION['idGuestTest']?></h1>
-            
+
+                <h1>Your user ID is: #<?php echo $_SESSION['idGuestTest'] ?></h1>
+
                 <h2>Your threshold is:</h2>
                 <p></p>
 
                 <h2>
                     <?php
-                    if (isset($_SESSION['geometric_score']))
-                        if (strrpos($_SESSION['geometric_score'], ";"))
-                            echo substr($_SESSION['geometric_score'], strrpos($_SESSION['geometric_score'], ";") + 1);
-                        else
-                            echo $_SESSION['geometric_score'];
+                    if (isset($_SESSION['geometric_score'])) {
+                        $trimmed_score = substr($_SESSION['geometric_score'], 0, -1); 
+
+                        if (strrpos($trimmed_score, ";")) {
+                            echo substr($trimmed_score, strrpos($trimmed_score, ";")+1);
+                        } else {
+                            echo $trimmed_score;
+                        }
+                    }
                     ?> (Geometric Mean)</h2>
                 <p></p>
                 <h2>
                     <?php
-                    if (isset($_SESSION['score']))
-                        if (strrpos($_SESSION['score'], ";"))
-                            echo substr($_SESSION['score'], strrpos($_SESSION['score'], ";") + 1);
-                        else
-                            echo $_SESSION['score'];
+                    if (isset($_SESSION['score'])) {
+                        $trimmed_score = substr($_SESSION['score'], 0, -1); 
+
+                        if (strrpos($trimmed_score, ";")) {
+                            echo substr($trimmed_score, strrpos($trimmed_score, ";")+1);
+                        } else {
+                            echo $trimmed_score;
+                        }
+                    }
                     ?> (Arithmetic Mean)</h2>
 
                 <div class="container-fluid mt-5">
@@ -88,7 +96,7 @@ session_start();
                             <?php
                             } else {
                                 //this display the CONTINUE button to procede with the next block
-                                $page = "$_SESSION[testTypeCmp]" ."test.php";
+                                $page = "$_SESSION[testTypeCmp]" . "test.php";
 
                             ?>
                                 <div class='col d-grid'>
@@ -96,7 +104,7 @@ session_start();
                                         Continue
                                     </button>
                                 </div>
-                            <?php
+                        <?php
                             }
                         }
                         ?>
