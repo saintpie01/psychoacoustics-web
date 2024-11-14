@@ -1,4 +1,5 @@
 <?php
+
 /**
  *this file contains all the functions where a database interaction is required
  */
@@ -11,7 +12,7 @@ include_once "dbconnect.php";
  * @param \mysqli $conn connection to the database
  * @return array $refrow contains the test key  (fk_GuestTest, fk_TestCount)
  */
-function fetchReferralInfo($referral, $conn)
+function getReferralKeyFromInviteCode($referral, $conn)
 {
 
 	$refSQL = "SELECT 
@@ -58,13 +59,13 @@ function selectFromTable($columns, $table, $conditions, $conn)
  * @param int $id user id
  * @param int $count number of the test take by the $id, dont ask why the key is composed like this
  * @param string $testTypeCmp contains the tipology of the test in compact form
- * @param array $param contains all the parameter of the test
+ * @param array $param contains all the parameter of the test 
  * @param string $result contains the string with the result 
+ * @param string $score contains the threshold score
+ * @param string $geometricScore contains the threshold geoemetric score
  * @param \mysqli $conn contains connnection with the database
  */
-function insertTest($id, $count, $testTypeCmp, $param, $result, $conn)
-{
-
+function insertTest($id, $count, $referralName, $testTypeCmp, $param, $results, $score, $geometricScore, $conn) {
 
 	$type = getExtfromCmpType($testTypeCmp);
 	$deviceInfo = str_replace(";", " ", $_SERVER['HTTP_USER_AGENT']);	//take user device info
@@ -77,13 +78,18 @@ function insertTest($id, $count, $testTypeCmp, $param, $result, $conn)
 	$modPhase = isset($param['modPhase']) ? $param['modPhase'] : "NULL";
 	$sampleRate = isset($param['sampleRate']) ? $param['sampleRate'] : "0";
 	$algorithm = (string) $param['algorithm']; //this need to be a string
+	$results =	$results = isset($results) ? $results : "NULL";
 
+	$referralName = isset($referralName) ? $referralName : NULL;
+	$score = $score = isset($score) ? $score : NULL;
+	$geometricScore = isset($geometricScore) ? $geometricScore : NULL;
 
 
 
 	$values = [
 		$id,                                  // Guest_ID
 		$count,                               // Test_count
+		"'$referralName'",				      // Ref_name
 		"current_timestamp()",                // Timestamp
 		"'$type'",                            // Type
 		$param['amplitude'],                  // Amplitude
@@ -102,7 +108,9 @@ function insertTest($id, $count, $testTypeCmp, $param, $result, $conn)
 		$param['secReversals'],               // SecReversal
 		$param['threshold'],                  // Threshold
 		"'$algorithm'",                  	  // Algorithm
-		"'$result'",                          // Result
+		"'$results'",  						  // Result
+		"'$score'",								  //score
+		"'$geometricScore'",					  //GeometricScore	
 		$sampleRate,                          // SampleRate
 		$param['checkFb'],                    // Feedback
 		$modAmplitude,                        // ModAmplitude
@@ -110,9 +118,36 @@ function insertTest($id, $count, $testTypeCmp, $param, $result, $conn)
 		$modPhase,                            // ModPhase
 		"'$deviceInfo'"                       // DeviceInfo
 	];
-	
+
 	// Join all values with commas and wrap in parentheses
 	$sql = "INSERT INTO test VALUES (" . implode(", ", $values) . ");";
 
 	$conn->query($sql);
+}
+
+
+
+/**
+ * this function fetch all the test parameters with the correct naming
+ * (naming in the DB and PHP program are different)
+ */
+function getTestParameters($id, $count, $conn)
+{
+
+	$sql = "SELECT Type, Amplitude AS amplitude, Frequency AS frequency, Duration AS duration, 
+			OnRamp AS onRamp, OffRamp AS offRamp, blocks, Delta AS delta, nAFC AS nAFC, 
+			ISI AS ISI, ITI AS ITI, Factor AS factor, Reversal AS reversals, 
+			SecFactor AS secFactor, SecReversal AS secReversals, Feedback AS checkFb, 
+			Threshold AS threshold, Algorithm AS algorithm, 
+			ModAmplitude AS modAmplitude, ModFrequency AS modFrequency, 
+			ModPhase AS modPhase
+		
+			FROM test
+		
+			WHERE Guest_ID='{$id}' AND Test_count='{$count}'";
+
+	$result = $conn->query($sql);
+	$row = $result->fetch_assoc();
+
+	return $row;
 }
