@@ -3,27 +3,29 @@ session_start();
 include_once "php/config.php";
 include_once "php/dbCommonFunctions.php";
 include_once "php/dbconnect.php";
+include_once "php/utils.php";
 
-if (!isset($_SESSION['currentLoggedID'])) {
+if (!isUserLogged()) {
     header("Location: index.php?err=2");
     exit;
 }
 
+//fetch all user demographic data
 try {
     $conn = connectdb();
-    //fetch all data to display on page
+
     $sql = "SELECT referral, name, surname, date, gender, notes, email 
                 FROM account INNER JOIN guest ON account.Guest_ID = guest.ID 
                 WHERE username='" . $_SESSION['currentLoggedUsername'] . "'";
 
     $result = $conn->query($sql);
     $row = $result->fetch_assoc();
-
 } catch (Exception $e) {
     header("Location: index.php?err=db");
+    exit;
 }
 
-$ref = $row['referral'];
+//data to display in Change user setting section
 $name = $row['name'];
 $sur = $row['surname'];
 $date = $row['date'];
@@ -31,27 +33,39 @@ $gender = $row['gender'];
 $notes = $row['notes'];
 $email = $row['email'];
 
-//fetch data to print current test type on screen
+$inviteCode = $row['referral'];
+$activeTestTypeExt = 'No test created yet';
+
+//fetch data of user's active referral test
 try {
 
-    $refrow = fetchReferralInfo($ref, $conn); //return an array with referral data
+    $refrow = getReferralKeyFromInviteCode($inviteCode, $conn); //return an array with referral data
 
     $_SESSION['referralTest'] = array( //gather referral data
         "guest" => $refrow['fk_GuestTest'],
         "count" => $refrow['fk_TestCount']
     );
-
-    $sql = "SELECT Type FROM test WHERE Guest_ID='{$_SESSION['referralTest']['guest']}' AND Test_count='{$_SESSION['referralTest']['count']}'";
-    $result = $conn->query($sql);
-    $refrow = $result->fetch_assoc();
-    if (isset($refrow['Type'])) {
-        $testTypeExt = $refrow['Type'];
-    } else
-        $testTypeExt = 'No test created yet';
-
 } catch (Exception $e) { //if invalid
-    header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");
+    header("Location: ../demographicData.php?" . $type . $inviteCode . "&ref=&err=3");
     exit;
+}
+
+
+try {
+    //fetch all the user's created referral
+    $sql = "SELECT * 
+            FROM test 
+            WHERE Guest_ID = '{$_SESSION['currentLoggedID']}' AND Ref_name != ''";
+    $allRefTest = $conn->query($sql);
+} catch (Exception $e) {
+    header("Location: index.php?err=db");
+    exit;
+}
+
+$param = null;
+if (isset($_SESSION['testInfoParameters'])) {
+    $param = $_SESSION['testInfoParameters'];
+    unset($_SESSION['testInfoParameters']);
 }
 
 ?>
@@ -65,17 +79,18 @@ try {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="files/logo.png">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 
     <!-- Bootstrap CSS -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/staircaseStyle.css" rel="stylesheet">
-    <!--		<link rel ="stylesheet" href="css/style.css-->
-    <?php //if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; 
-    ?><!--">-->
-    <script type="text/javascript" src="js/funzioni.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"></script>
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <link href="css/staircaseStyle.css" rel="stylesheet">
+    <script type="text/javascript" src="js/funzioni.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"></script>
     <title>Psychoacoustics-web - User settings</title>
 </head>
 
@@ -97,65 +112,77 @@ try {
         if ($_GET['err'] == 3)
             echo "<div class='alert alert-success'>Password changed</div>";
         if ($_GET['err'] == 4)
-            echo "<div class='alert alert-success'>Test settings changed</div>";
+            echo "<div class='alert alert-success'>Test created Successfully</div>";
         if ($_GET['err'] == 5)
             echo "<div class='alert alert-danger'>Select a test type from the menu</div>";
         if ($_GET['err'] == 6)
-            echo "<div class='alert alert-danger'>the created test already exist, it is now your active referral</div>";
-    }  
+            echo "<div class='alert alert-danger'>The created test already exist, it is now your active referral</div>";
+        if ($_GET['err'] == 7)
+            echo "<div class='alert alert-danger'>There already is a test with the same name</div>";
+        if ($_GET['err'] == 8)
+            echo "<div class='alert alert-danger'>Insert a name for the test</div>";
+    }
     ?>
 
     <div class="container my-5">
 
-        <!-- Test Settings section -->
+        <!-- Create New Referral -->
         <div class="container-fluid p-4 border rounded-4 bg-light">
-            <h4 class="mb-3">Test settings</h4>
-            <form action="php/newReferral.php" class="settingForm ref">
+            <h4 class="mb-3">Create New Referral</h4>
+            <form action="php/updateSavedSettings.php" method="POST" class="settingForm ref">
                 <div class="row row-cols-1 row-cols-lg-2 g-3 justify-content-center align-items-center">
-                    
+
                     <!-- invite code box -->
                     <div class="col">
                         <div class="input-group flex-nowrap">
                             <span class="input-group-text title" title="click to copy">Invite code</span>
-                            <span class="input-group-text form-control link" id="ref" title="click to copy"><?php echo $ref; ?></span>
+                            <span class="input-group-text form-control link" id="ref" title="click to copy"><?php echo $inviteCode; ?></span>
                         </div>
                     </div>
 
-                    <!-- complete referral link box -->
+                    <!-- full referral link box -->
                     <div class="col">
                         <div class="input-group">
                             <span class="input-group-text title" title="click to copy">Link</span>
-                            <span class="input-group-text form-control overflow-scroll link" id="link" title="click to copy">localhost/acoustic-web2/demographicData.php?ref=<?php echo $ref; ?></span>
+                            <span class="input-group-text form-control overflow-scroll link" id="link" title="click to copy">localhost/acoustic-web2/demographicData.php?ref=<?php echo $inviteCode; ?></span>
                         </div>
                     </div>
 
-                    <!-- test type selection -->
-                    <div class="col">
-                        <select name='testType' class="form-select" onchange="updateLink('<?php echo $ref; ?>')" id="testType">
-                            <option selected disabled value=''> Select a Test Type</option>
-                            <option value='amp'>Pure tone intensity</option>
-                            <option value='freq'>Pure tone frequency</option>
-                            <option value='dur'>Pure tone duration</option>
-                            <option value='gap'>Noise Gap</option>
-                            <option value='ndur'>Noise Duration</option>
-                            <option value='nmod'>Noise Modulation</option>
-                        </select>
-                    </div>
 
-                    
+                    <!-- Test type selection -->
                     <div class="col">
-                        <div class="row row-cols-2 g-3">
-                            
-                        <!-- current test type -->
-                            <div class="col d-grid">
-                                <h6 class="mb-0">test type: <?php echo $testTypeExt; ?></h6>
-                                <!--<button type="submit" class="btn btn-primary btn-red">Change invite code</button>-->
+                        <div class="row g-3">
+
+                            <!-- Ref name and test type selection in one row -->
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text">Ref. Name</span>
+                                    <input type="text" class="form-control" placeholder="Insert a test name" name="refn">
+                                </div>
                             </div>
 
-                            <!-- change test settings button -->
-                            <div class="col d-grid">
-                                <button type="button" class="btn btn-primary btn-red" onclick="window.location='php/updateSavedSettings.php?test='+document.getElementById('testType').value">
-                                    Change test settings
+                            <div class="col-md-6">
+                                <select name="testType" class="form-select" onchange="updateLink('<?php echo $inviteCode; ?>')" id="testType">
+                                    <option selected disabled value=''>Select a Test Type</option>
+                                    <option value='amp'>Pure tone intensity</option>
+                                    <option value='freq'>Pure tone frequency</option>
+                                    <option value='dur'>Pure tone duration</option>
+                                    <option value='gap'>Noise Gap</option>
+                                    <option value='ndur'>Noise Duration</option>
+                                    <option value='nmod'>Noise Modulation</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- change test settings button -->
+                    <div class="col">
+                        <div class="row row-cols-2 g-3 justify-content-end">
+
+                            <div class="col d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary btn-red w-100">
+                                    Create Test
                                 </button>
                             </div>
                         </div>
@@ -194,12 +221,99 @@ try {
         }
         ?>
 
+        <!-- Load test section -->
+        <div class="container-fluid p-4 border rounded-4 bg-light mt-5 ">
+            <h4 class="mb-3">Your Referrals</h4>
+
+            <?php while ($row = $allRefTest->fetch_assoc()) {
+                $borderStyle = ''; //to give blue border on selected test
+                $color = 'style="background-color: #ffffff;"';
+                $selected = false;
+                if ($row['Test_count'] == $_SESSION['referralTest']['count']) {
+                    $borderStyle = 'border border-2 border-primary';
+                    //$color = 'style="background-color: #e8f4fa;"';
+                    $selected = true;
+                } ?>
+
+                <!-- test card -->
+                <div class="container-fluid p-3 border rounded-4 mt-2 d-flex justify-content-between align-items-center shadow-sm bg-body rounded <?php echo $borderStyle ?>" <?php echo $color; ?>>
+
+                    <div class="d-flex align-items-center">
+
+                        <!-- Info button -->
+
+                        <form action="php/testInfo.php" method="POST">
+                            <div class="me-5">
+                                <!-- Hidden input fields -->
+                                <input type="hidden" name="testId" value="<?php echo $row['Guest_ID']; ?>">
+                                <input type="hidden" name="testCount" value="<?php echo $row['Test_count']; ?>">
+
+                                <div class="text-center">
+                                    <!-- Submit button for the form -->
+                                    <button type="submit" class="btn btn-light btn-sm rounded-circle p-2" style="width: 40px; height: 40px; border: 1px solid #ced4da;">
+                                        <i class="fa-solid fa-list"></i>
+                                    </button>
+                                    <small class="d-block text-muted mt-2">Info</small>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Paragraph with name and selected status -->
+                        <p class="fw-bold fs-5 mb-0 px-2">
+                            <?php echo $row['Ref_name']; ?>
+                            <?php if ($selected) echo '<span class="text-primary ms-1 fw-normal d-inline d-sm-none"><i class="fas fa-star"></i></span><span class="text-primary ms-1 fw-normal d-none d-sm-inline">selected <i class="fas fa-star"></i></span>'; ?>
+                        </p>
+
+                    </div>
+
+
+                    <!-- test type writing -->
+                    <p class="fs-6 mb-0 d-none d-sm-block"><?php echo $row['Type']; ?></p>
+
+                    <!-- Container for both forms -->
+                    <div class="d-flex justify-content-center">
+
+                        <!-- Form for Delete Button -->
+                        <div class="me-2"> <!-- Adds margin to the right -->
+                            <form method="post" action="php/deleteRecord.php">
+                                <input type="hidden" name="testId" value="<?php echo $row['Guest_ID']; ?>">
+                                <input type="hidden" name="testCount" value="<?php echo $row['Test_count']; ?>">
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-danger btn-sm rounded-circle p-2" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <small class="d-block text-muted mt-2">Delete</small>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Form for Load Button -->
+                        <div>
+                            <form method="post" action="php/loadTest.php">
+                                <input type="hidden" name="testId" value="<?php echo $row['Guest_ID']; ?>">
+                                <input type="hidden" name="testCount" value="<?php echo $row['Test_count']; ?>">
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary btn-sm rounded-circle p-2" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <small class="d-block text-muted mt-2">Load</small>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+
+        </div>
+
         <!-- change password section -->
         <div class="container-fluid p-4 border rounded-4 bg-light mt-5">
             <h4 class="mb-3">Change password</h4>
             <form action="php/changePsw.php" method="post" class="settingForm">
                 <div class="row row-cols-1 row-cols-lg-3 g-3 justify-content-center align-items-center">
-                    
+
                     <!-- old psw form -->
                     <div class="col">
                         <div class="input-group">
@@ -280,6 +394,54 @@ try {
                 </div>
             </form>
         </div>
+
+        <?php if (isset($param)) { ?>
+            <!-- Info modal Banner -->
+            <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="infoModalLabel">Test Information</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul style="list-style: none; padding: 0; margin: 0;">
+                                <?php echo isset($param['Type']) && $param['Type'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Type: <strong>" . htmlspecialchars($param['Type'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['amplitude']) && $param['amplitude'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Amplitude: <strong>" . htmlspecialchars($param['amplitude'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['frequency']) && $param['frequency'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Frequency: <strong>" . htmlspecialchars($param['frequency'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['duration']) && $param['duration'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Duration: <strong>" . htmlspecialchars($param['duration'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['onRamp']) && $param['onRamp'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>On Ramp: <strong>" . htmlspecialchars($param['onRamp'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['offRamp']) && $param['offRamp'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Off Ramp: <strong>" . htmlspecialchars($param['offRamp'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['modAmplitude']) && $param['modAmplitude'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Modulation Amplitude: <strong>" . htmlspecialchars($param['modAmplitude'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['modFrequency']) && $param['modFrequency'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Modulation Frequency: <strong>" . htmlspecialchars($param['modFrequency'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['modPhase']) && $param['modPhase'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Modulation Phase: <strong>" . htmlspecialchars($param['modPhase'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['blocks']) && $param['blocks'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Blocks: <strong>" . htmlspecialchars($param['blocks'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['nAFC']) && $param['nAFC'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>nAFC: <strong>" . htmlspecialchars($param['nAFC'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['ITI']) && $param['ITI'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>ITI: <strong>" . htmlspecialchars($param['ITI'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['ISI']) && $param['ISI'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>ISI: <strong>" . htmlspecialchars($param['ISI'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['delta']) && $param['delta'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Delta: <strong>" . htmlspecialchars($param['delta'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['checkFb']) && $param['checkFb'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Check Feedback: <strong>" . htmlspecialchars($param['checkFb'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['factor']) && $param['factor'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Factor: <strong>" . htmlspecialchars($param['factor'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['secFactor']) && $param['secFactor'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Sec Factor: <strong>" . htmlspecialchars($param['secFactor'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['reversals']) && $param['reversals'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Reversals: <strong>" . htmlspecialchars($param['reversals'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['secReversals']) && $param['secReversals'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Sec Reversals: <strong>" . htmlspecialchars($param['secReversals'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['threshold']) && $param['threshold'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Threshold: <strong>" . htmlspecialchars($param['threshold'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['algorithm']) && $param['algorithm'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Algorithm: <strong>" . htmlspecialchars($param['algorithm'] ?? '') . "</strong></li>" : ''; ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Automatically show the modal when the page loads -->
+            <script>
+                var infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+                infoModal.show();
+            </script>
+        <?php } ?>
+
+
+
 </body>
 
 </html>
