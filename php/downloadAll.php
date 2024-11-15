@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * hellish page
+ */
 function writeResults($txt, $firstValues, $results) {
 	//results sarà nella forma ["bl1;tr1;del1;var1;varpos1;but1;cor1;rev1", "bl2;tr2;...", ...]
 	for ($i = 0; $i < count($results) - 1; $i++) {

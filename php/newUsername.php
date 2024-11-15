@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * function only used by Superusers
+ * deprecated??
+ */
 session_start();
 
 include_once "config.php";
@@ -12,7 +15,6 @@ if ($specialCharacters) {
 	exit;
 }
 	
-//prendo i dati del guest
 $usr = $_SESSION['currentLoggedUsername'];
 $id = $_SESSION['currentLoggedID'];
 
@@ -20,12 +22,12 @@ $id = $_SESSION['currentLoggedID'];
 try {
 	$conn = connectdb();
 
-	//controllo di sicurezza
+	
 	$sql = "SELECT Type FROM account WHERE Guest_ID='$id' AND Username='$usr'";
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 
-	if ($row['Type'] == 1) {
+	if ($row['Type'] == 1) { //if superuser
 		$sql = "UPDATE account SET Type='1' WHERE Username='" . $_POST['username'] . "'";
 		$conn->query($sql);
 	}

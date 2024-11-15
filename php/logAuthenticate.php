@@ -12,8 +12,6 @@ include_once "dbconnect.php";
 include_once "utils.php";
 
 
-
-
 //verify any injection on POST data
 $specialCharacters = checkSpecialCharacter(['usr', 'psw']);
 if ($specialCharacters) {

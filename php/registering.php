@@ -35,7 +35,7 @@ try {
 	
 	$conn = connectdb();
 
-	//test for selectFromTable Function
+	//test for selectFromTable Function, ignore
 	$result = selectFromTable(['*'], 'account', ["Username='$usr'"], $conn);
 
 	//chech if it already exist
@@ -54,6 +54,7 @@ try {
 	$email = $_POST['email'];   
 
 	//crate insertion query
+	
 	//create guest
 	$sql = "INSERT INTO guest (Name";
 	$sqlVal = " VALUES ('$name'";

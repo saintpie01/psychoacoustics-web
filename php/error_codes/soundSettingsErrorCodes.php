@@ -142,7 +142,7 @@
         else if ($_POST["threshold"] > $_POST["reversals"] + $_POST["secReversals"])
             return("Location: ../soundSettings.php?test={$_GET['test']}&err=threshold3");
 
-       /* if (returns_sent()) exit*/
+    
 
     }
     

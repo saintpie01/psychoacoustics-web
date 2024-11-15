@@ -1,16 +1,19 @@
 <?php
 /**
- * updates the parameters of the referral test in userSettings.php
+ * creates new referral test in userSettings.php
  */
 session_start();
-include "config.php";
 include_once "dbconnect.php";
 include_once "utils.php";
 include_once "dbCommonFunctions.php";
 
 
 $id = $_SESSION['currentLoggedID'];
+
+//takes all the useful test parameters given in POST
 $testParameters = initializeTestParameter($_POST);
+
+//name of the referral
 $refName = $_GET['refn'];
 $testType = $_GET['test'];
 
@@ -19,13 +22,8 @@ try {
 	$conn = connectdb();
 
 	//find how many test are associated with to the ID
-	$sql = "SELECT Max(Test_count) as count 
-			FROM test 
-			WHERE Guest_ID='$id'";
+	$count = getLastTestCount($id, $conn);
 
-	$result = $conn->query($sql);
-	$row = $result->fetch_assoc();
-	
 	//new test number is test taken + 1
 	$count = $row['count'] + 1;
 

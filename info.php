@@ -91,8 +91,7 @@ if ($row['Type'] == 'PURE_TONE_INTENSITY') {
         var ISI = parseInt(<?php echo $row["ISI"]; ?>);
         var nAFC = parseInt(<?php echo $row["nAFC"]; ?>);
         var feedback = <?php echo $row["feedback"]; ?>;
-        console.log("AAAAAA");
-        console.log(freq);
+
     </script>
     <script type="text/javascript"
         src="js/generatorSoundAndNoise.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"

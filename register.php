@@ -55,31 +55,38 @@ session_start()
             <div class="col-12 col-md-6">
                 <div class="p-5 border rounded rounded-4 bg-light">
                     <h2>Sign Up</h2>
-                    <form method="post" action="php/registering.php" onsubmit="validation()">
+                    <form method="post" action="php/registering.php">
+
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Username*</span>
                             <input type="text" class="form-control" placeholder="Username" required name="usr">
                         </div>
+
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Password*</span>
                             <input type="password" class="form-control" placeholder="Password" required name="psw">
                         </div>
+
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Email*</span>
                             <input type="text" class="form-control" placeholder="Email" required name="email">
                         </div>
+
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Name*</span>
                             <input type="text" class="form-control" placeholder="Name" required name="name">
                         </div>
+
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Surname</span>
                             <input type="text" class="form-control" placeholder="Surname" name="surname">
                         </div>
+
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Birth date</span>
                             <input type="date" class="form-control" name="date">
                         </div>
+
                         <div class="input-group mb-3">
                             <select class="form-select" id="gender" name="gender">
                                 <option value="" selected disabled>Select Gender</option>
@@ -88,13 +95,16 @@ session_start()
                                 <option value="Other">Other</option>
                             </select>
                         </div>
+
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Notes</span>
                             <input type="text" class="form-control" placeholder="Notes" name="notes">
                         </div>
+
                         <div>
                             <p style="color: black;">If you click “register” you accept the conditions reported below.</p>
                         </div>
+
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg btn-red">Register</button>
                         </div>
@@ -105,10 +115,5 @@ session_start()
     </div>
 </body>
 
-<script>
-    function validation() {
-        document.getElementById("NullGender").disabled = false;
-    }
-</script>
 
 </html>

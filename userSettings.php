@@ -1,6 +1,5 @@
 <?php
 session_start();
-include_once "php/config.php";
 include_once "php/dbCommonFunctions.php";
 include_once "php/dbconnect.php";
 include_once "php/utils.php";
@@ -41,7 +40,7 @@ try {
 
     $refrow = getReferralKeyFromInviteCode($inviteCode, $conn); //return an array with referral data
 
-    $_SESSION['referralTest'] = array( //gather referral data
+    $activeReferralKey = array( //gather referral data
         "guest" => $refrow['fk_GuestTest'],
         "count" => $refrow['fk_TestCount']
     );
@@ -62,6 +61,7 @@ try {
     exit;
 }
 
+//param array for info button, comes from php/testInfo.php
 $param = null;
 if (isset($_SESSION['testInfoParameters'])) {
     $param = $_SESSION['testInfoParameters'];
@@ -86,8 +86,7 @@ if (isset($_SESSION['testInfoParameters'])) {
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     
     <link href="css/staircaseStyle.css" rel="stylesheet">
     <script type="text/javascript" src="js/funzioni.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"></script>
@@ -221,7 +220,7 @@ if (isset($_SESSION['testInfoParameters'])) {
         }
         ?>
 
-        <!-- Load test section -->
+        <!-- Your Referral Section -->
         <div class="container-fluid p-4 border rounded-4 bg-light mt-5 ">
             <h4 class="mb-3">Your Referrals</h4>
 
@@ -229,7 +228,8 @@ if (isset($_SESSION['testInfoParameters'])) {
                 $borderStyle = ''; //to give blue border on selected test
                 $color = 'style="background-color: #ffffff;"';
                 $selected = false;
-                if ($row['Test_count'] == $_SESSION['referralTest']['count']) {
+
+                if ($row['Test_count'] == $activeReferralKey['count']) { //if the test visualized is the active one
                     $borderStyle = 'border border-2 border-primary';
                     //$color = 'style="background-color: #e8f4fa;"';
                     $selected = true;
@@ -267,10 +267,10 @@ if (isset($_SESSION['testInfoParameters'])) {
                     </div>
 
 
-                    <!-- test type writing -->
+                    <!-- test type -->
                     <p class="fs-6 mb-0 d-none d-sm-block"><?php echo $row['Type']; ?></p>
 
-                    <!-- Container for both forms -->
+                    <!-- Div for delete and load button -->
                     <div class="d-flex justify-content-center">
 
                         <!-- Form for Delete Button -->
@@ -395,8 +395,12 @@ if (isset($_SESSION['testInfoParameters'])) {
             </form>
         </div>
 
+
+
+
+        <!-- Info modal Banner, this only shows when the info button is pressed-->    
         <?php if (isset($param)) { ?>
-            <!-- Info modal Banner -->
+
             <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">

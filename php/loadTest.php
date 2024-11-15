@@ -1,10 +1,14 @@
 <?php
+
+/**
+ *this page make a give test the active one for the logged user
+ */
 session_start();
 
 include "config.php";
 require_once "dbconnect.php";
 
-///$testId = $_POST['testId'];
+//i only need the Count, the ID is the logged one
 $testCount = $_POST['testCount'];
 
 try {

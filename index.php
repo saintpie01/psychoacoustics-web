@@ -52,12 +52,15 @@ if (isset($CLID)) { //account data are preserved
 
     <?php
     //this section read the error code returned by other php pages and display the proper messages
+    
     if (isset($_GET['err'])) {
-        if ($_GET['err'] == 1)
+        $errorCode = $_GET['err'] ;
+
+        if ($errorCode == 1)
             echo "<div class='alert alert-danger'>Access denied, attempt logged</div>";
-        if ($_GET['err'] == 2)
+        if ($errorCode == 2)
             echo "<div class='alert alert-danger'>Something went wrong</div>";
-        if ($_GET['err'] == "db")
+        if ($errorCode == "db")
             echo "<div class='alert alert-danger'>Something went wrong while trying to connect to the database, please contact an administator</div>";
     }
     ?>

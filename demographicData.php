@@ -13,8 +13,6 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
 
 <head>
 
-
-
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,7 +27,7 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
 
     <script>
         /**
-         * this function is neede to hide div marked with "conditional Display" on specific conditons 
+         * this function is needed to hide div marked with "conditional Display" on specific conditons 
          */
         function verifyRef() {
             var display = true;

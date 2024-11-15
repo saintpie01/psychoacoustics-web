@@ -1,5 +1,18 @@
 <?php
 session_start();
+
+$currentBlock = $_SESSION['currentBlock'];
+
+if (isset($_SESSION['geometric_score'])) {
+    $score = explode(";", $_SESSION['geometric_score']);
+    $geometricScore = $score[$currentBlock-1];
+}
+
+if (isset($_SESSION['score'])) {
+    $score = explode(";", $_SESSION['score']);
+    $score = $score[$currentBlock-1];
+}
+
 ?>
 
 <!doctype html>
@@ -17,7 +30,6 @@ session_start();
 
     <title>Psychoacoustics-web - Test results</title>
 </head>
-
 
 
 <body>
@@ -41,29 +53,16 @@ session_start();
 
                 <h2>
                     <?php
-                    if (isset($_SESSION['geometric_score'])) {
-                        $trimmed_score = substr($_SESSION['geometric_score'], 0, -1); 
-
-                        if (strrpos($trimmed_score, ";")) {
-                            echo substr($trimmed_score, strrpos($trimmed_score, ";")+1);
-                        } else {
-                            echo $trimmed_score;
-                        }
-                    }
-                    ?> (Geometric Mean)</h2>
+                        echo $geometricScore
+                    ?> (Geometric Mean)
+                </h2>
+                
                 <p></p>
                 <h2>
                     <?php
-                    if (isset($_SESSION['score'])) {
-                        $trimmed_score = substr($_SESSION['score'], 0, -1); 
-
-                        if (strrpos($trimmed_score, ";")) {
-                            echo substr($trimmed_score, strrpos($trimmed_score, ";")+1);
-                        } else {
-                            echo $trimmed_score;
-                        }
-                    }
-                    ?> (Arithmetic Mean)</h2>
+                        echo $score;
+                    ?> (Arithmetic Mean)
+                </h2>
 
                 <div class="container-fluid mt-5">
                     <div class="row row-cols-1 row-cols-lg-3 align-items-center justify-content-between g-2">

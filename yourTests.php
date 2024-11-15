@@ -23,7 +23,6 @@ if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLogge
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/staircaseStyle.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <script src="js/libraries/maintainscroll.js"></script>
 
     <title>Psychoacoustics-web - Test results</title>

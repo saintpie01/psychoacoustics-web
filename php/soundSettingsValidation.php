@@ -1,13 +1,14 @@
 <?php
+
 /**
- * retrieve the test parameters inserted in soundsettings.php or fetch referral parameters
+ * retrieve the test parameters inserted in soundsettings.php or fetch new referral parameters
  */
 session_start();
 
-include "config.php";
 require_once "dbconnect.php";
 require 'error_codes/soundSettingsErrorCodes.php';
 include_once "utils.php";
+include_once "dbCommonFunctions.php";
 
 
 unset($_SESSION['currentBlock']);
@@ -22,7 +23,6 @@ $_SESSION['results'] = '';
  */
 unset($_SESSION['testTypeCmp']);
 
-
 if (isset($_SESSION['referralTest'])) { //referral present
 
     $refId = $_SESSION['referralTest']['guest'];
@@ -33,37 +33,36 @@ if (isset($_SESSION['referralTest'])) { //referral present
         $conn = connectdb();
         $row = getTestParameters($refId, $refCount, $conn);
 
-        //select the test type to start
-        if ($row['Type'] == 'PURE_TONE_INTENSITY')
-            $type = "amp";
-        else if ($row['Type'] == 'PURE_TONE_FREQUENCY')
-            $type = "freq";
-        else if ($row['Type'] == 'PURE_TONE_DURATION')
-            $type = "dur";
-        else if ($row['Type'] == 'WHITE_NOISE_GAP')
-            $type = "gap";
-        else if ($row['Type'] == 'WHITE_NOISE_DURATION')
-            $type = "ndur";
-        else if ($row['Type'] == 'WHITE_NOISE_MODULATION')
-            $type = "nmod";
-
-
-        $_SESSION['testTypeCmp'] = $type;
-
-
-        $testParameters = initializeTestParameter($row);
-
-        $_SESSION = array_merge($testParameters, $_SESSION);
-        
-
-        header("Location: ../{$type}test.php");
-        exit;
-
     } catch (Exception $e) {
         error_log($e, 3, "errors_log.txt");
         header("Location: ../index.php?err=db");
         exit;
     }
+
+    //select the test type to perform
+    if ($row['Type'] == 'PURE_TONE_INTENSITY')
+        $type = "amp";
+    else if ($row['Type'] == 'PURE_TONE_FREQUENCY')
+        $type = "freq";
+    else if ($row['Type'] == 'PURE_TONE_DURATION')
+        $type = "dur";
+    else if ($row['Type'] == 'WHITE_NOISE_GAP')
+        $type = "gap";
+    else if ($row['Type'] == 'WHITE_NOISE_DURATION')
+        $type = "ndur";
+    else if ($row['Type'] == 'WHITE_NOISE_MODULATION')
+        $type = "nmod";
+
+
+    $_SESSION['testTypeCmp'] = $type;
+
+    $testParameters = initializeTestParameter($row);
+
+    //insert all the test parameters into session to retrieve later
+    $_SESSION = array_merge($testParameters, $_SESSION);
+
+    header("Location: ../{$type}test.php");
+    exit;
 }
 
 //this section calls a function to check all the forms inserted
@@ -77,9 +76,7 @@ if ($redirect != "") {
 
 $_SESSION['testTypeCmp'] = $_GET['test'];
 
-
 $testParameters = initializeTestParameter($_POST);
 $_SESSION = array_merge($testParameters, $_SESSION);
-
 
 header("Location: ../{$_GET['test']}test.php");

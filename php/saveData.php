@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * saves the data of the test when all blocks are executed
+ */
 session_start();
 
 include "config.php";
@@ -32,7 +34,9 @@ if ($_GET['currentBlock'] < $_GET['blocks']) {
 }
 
 
-//readability
+//readabilityù
+//the score ersults might have ah semicolon at the end of the sting in the DB,
+//that does not change anything since we access them with indexes and not with string handling
 $score = $_SESSION['score'];
 $finalResults = $_SESSION['results']; 
 $geometricScore = $_SESSION['geometric_score'];
@@ -49,16 +53,11 @@ if (!$_SESSION["saveData"]) {
 }
 
 
-//removes the last ';'
-/*
-$_SESSION["geometric_score"] = substr($_SESSION["geometric_score"], 0, -1); 
-$_SESSION["score"] = substr($_SESSION["score"], 0, -1);*/
-
 //is this check necessary?
-if (!isset($_SESSION['idGuestTest'])) {
+/*if (!isset($_SESSION['idGuestTest'])) {
 	header("Location: ../index.php?err=2");
 	exit;
-}
+}*/
 
 //initialize some variables needed for test insertion
 $id = $_SESSION['idGuestTest'];
@@ -70,19 +69,14 @@ try {
 	$conn = connectdb();
 
 	//find the number of tests taken by the user
-	$sql = "SELECT Max(Test_count) as count 
-			FROM test 
-			WHERE Guest_ID='$id'";
-
-	$result = $conn->query($sql);
-	$row = $result->fetch_assoc();
+	$count = getLastTestCount($id, $conn);
 
 	//new test count is the number of test taken + 1
-	$count = $row['count'] + 1;
+	$count = $count + 1;
 
 	insertTest( $id, 
 				$count, 
-				null,
+				null, //this field is only for referral tests
 				$testTypeCmp,
 				$_SESSION, 
 				$finalResults, 

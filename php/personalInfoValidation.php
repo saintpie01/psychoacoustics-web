@@ -31,7 +31,14 @@ $type = "";
 if (isset($_GET["test"]))
     $type = "test=" . $_GET["test"];
 
-$ref = "&ref=" . $_POST["ref"];
+//takes referral Code if present
+if (isset($_POST["ref"]) &&  (($_POST["ref"]) != "")){
+    $referralCode = $_POST["ref"];
+    $ref = "&ref=" . $referralCode;
+}
+   
+
+
 
 $_SESSION['saveSettings'] = 0; //this is useless but if you remove it the program breaks because it is written wery well and i dont want to go through javascript hell so here it stays
 
@@ -46,7 +53,7 @@ if ($specialCharacters) {
 
 $redirection = "Location: ../soundSettings.php?" . $type; //redirection string based on the presence of referal code
 
-if (($_POST["ref"]) != "") { //check if a referral code in the link is present and valid
+if (($referralCode) != "") { //check if a referral code in the link is present and valid
 
     try {
         $conn = connectdb();
@@ -67,7 +74,7 @@ if (($_POST["ref"]) != "") { //check if a referral code in the link is present a
     $redirection = "Location: ../info.php"; //all referral tests get redirected to info.php page
 }
 
-if (!isset($_POST["checkSave"])) { //no data needs to be saved, no user to create, skip ahead
+if (!isset($_POST["checkSave"])) { //no data to save, no user to create, skip ahead
     $_SESSION["saveData"] = false;
     header($redirection);
     exit;
@@ -77,7 +84,7 @@ $_SESSION["saveData"] = true;
 if (isUserLogged()) { 
     $_SESSION['idGuestTest'] = $_SESSION['currentLoggedID']; 
 
-    if ($_POST["ref"] == "") { //no referral is present, go ahead
+    if ($referralCode == "") { //no referral is present, go ahead
         header($redirection);
         exit;
     } else 
@@ -104,7 +111,7 @@ $sql .= ($_POST["age"] == "") ? "NULL, " : "'" . $_POST["age"] . "', ";
 $sql .= (!isset($_POST["gender"])) ? "NULL, " : "'" . $_POST["gender"] . "', ";
 $sql .= ($_POST["notes"] == "") ? "NULL, " : "'" . $_POST["notes"] . "', ";
 
-if (($_POST["ref"]) == "") {
+if (($referralCode) == "") {
     $sql .= "NULL);SELECT LAST_INSERT_ID() as id;"; //no referral
 } else {
     $sql .= "'" . $refrow['Username'] . "');SELECT LAST_INSERT_ID() as id;"; //if referral present i must insert the referrer Username
@@ -117,7 +124,7 @@ try {
     $result = $conn->store_result();
     $row = $result->fetch_assoc();
 
-    $_SESSION['idGuestTest'] = $row['id'];
+    $_SESSION['idGuestTest'] = $row['id']; //the test take's ID is the new user created
     $_SESSION['name'] = $_POST["name"];
 
     header($redirection);

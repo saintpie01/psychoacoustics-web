@@ -1,7 +1,7 @@
 <?php
 
 /**
- *this file contains all the functions where a database interaction is required
+ *this file contains all the common functions where a database interaction is required
  */
 include_once "dbconnect.php";
 
@@ -12,8 +12,7 @@ include_once "dbconnect.php";
  * @param \mysqli $conn connection to the database
  * @return array $refrow contains the test key  (fk_GuestTest, fk_TestCount)
  */
-function getReferralKeyFromInviteCode($referral, $conn)
-{
+function getReferralKeyFromInviteCode($referral, $conn) {
 
 	$refSQL = "SELECT 
 					Username, 
@@ -34,8 +33,7 @@ function getReferralKeyFromInviteCode($referral, $conn)
 }
 
 //ignore
-function selectFromTable($columns, $table, $conditions, $conn)
-{
+function selectFromTable($columns, $table, $conditions, $conn) {
 
 	// Prepare the columns part
 	$columnsList = implode(", ", $columns);
@@ -77,9 +75,11 @@ function insertTest($id, $count, $referralName, $testTypeCmp, $param, $results, 
 	$modFrequency = isset($param['modFrequency']) ? $param['modFrequency'] : "NULL";
 	$modPhase = isset($param['modPhase']) ? $param['modPhase'] : "NULL";
 	$sampleRate = isset($param['sampleRate']) ? $param['sampleRate'] : "0";
-	$algorithm = (string) $param['algorithm']; //this need to be a string
-	$results =	$results = isset($results) ? $results : "NULL";
 
+
+	//these are strings, inserting null is like inserting an empty string
+	$results =	$results = isset($results) ? $results : NULL;
+	$algorithm = (string) $param['algorithm'];
 	$referralName = isset($referralName) ? $referralName : NULL;
 	$score = $score = isset($score) ? $score : NULL;
 	$geometricScore = isset($geometricScore) ? $geometricScore : NULL;
@@ -128,19 +128,33 @@ function insertTest($id, $count, $referralName, $testTypeCmp, $param, $results, 
 
 
 /**
- * this function fetch all the test parameters with the correct naming
+ * this function fetch all the test parameters assigning them the correct naming
  * (naming in the DB and PHP program are different)
  */
-function getTestParameters($id, $count, $conn)
-{
+function getTestParameters($id, $count, $conn) {
 
-	$sql = "SELECT Type, Amplitude AS amplitude, Frequency AS frequency, Duration AS duration, 
-			OnRamp AS onRamp, OffRamp AS offRamp, blocks, Delta AS delta, nAFC AS nAFC, 
-			ISI AS ISI, ITI AS ITI, Factor AS factor, Reversal AS reversals, 
-			SecFactor AS secFactor, SecReversal AS secReversals, Feedback AS checkFb, 
-			Threshold AS threshold, Algorithm AS algorithm, 
-			ModAmplitude AS modAmplitude, ModFrequency AS modFrequency, 
-			ModPhase AS modPhase
+	$sql = "SELECT 
+				Type, 
+				Amplitude AS amplitude, 
+				Frequency AS frequency, 
+				Duration AS duration, 
+				OnRamp AS onRamp,
+				OffRamp AS offRamp,
+				blocks, 
+				Delta AS delta, 
+				nAFC AS nAFC, 
+				ISI AS ISI, 
+				ITI AS ITI, 
+				Factor AS factor, 
+				Reversal AS reversals, 
+				SecFactor AS secFactor, 
+				SecReversal AS secReversals, 
+				Feedback AS checkFb, 
+				Threshold AS threshold, 
+				Algorithm AS algorithm, 
+				ModAmplitude AS modAmplitude, 
+				ModFrequency AS modFrequency, 
+				ModPhase AS modPhase
 		
 			FROM test
 		
@@ -150,4 +164,24 @@ function getTestParameters($id, $count, $conn)
 	$row = $result->fetch_assoc();
 
 	return $row;
+}
+
+
+/**
+ * find the numer of tests taken by a user, used to assign a new count number for the test primary key
+ * @param int $id id of the guest we want to analyze
+ * @param \msqli $conn connection to db
+ * @return int $count number of tests taken by that id
+ */
+function getLastTestCount($id, $conn){
+
+	$sql = "SELECT Max(Test_count) as count 
+			FROM test 
+			WHERE Guest_ID='$id'";
+
+	$result = $conn->query($sql);
+	$row = $result->fetch_assoc();
+
+	$count = $row['count'];
+	return $count;
 }
