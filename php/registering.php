@@ -7,9 +7,9 @@
 session_start();
 
 include_once "config.php";
-include_once "dbconnect.php";
-include_once "dbCommonFunctions.php";
-include_once "utils.php";
+include_once "db_connect.php";
+include_once "helpers/database_functions.php";
+include_once "helpers/utils.php";
 
 /*
  * @var string contains the name of the logged user
@@ -100,8 +100,10 @@ try {
 
 	$conn->close();
 
+	logEvent("New account created #$id");
 	header('Location: ../index.php');
 	
 } catch (Exception $e) {
 	header("Location: ../index.php?err=db");
 }
+

@@ -6,8 +6,8 @@
 session_start();
 
 include_once "config.php";
-include "dbconnect.php";
-include "dbCommonFunctions.php";
+include "db_connect.php";
+include "helpers/database_functions.php";
 
 $specialCharacters = checkSpecialCharacter(["name"]);
 if ($specialCharacters) {
@@ -17,7 +17,6 @@ if ($specialCharacters) {
 	
 $usr = $_SESSION['currentLoggedUsername'];
 $id = $_SESSION['currentLoggedID'];
-
 
 try {
 	$conn = connectdb();
@@ -37,3 +36,4 @@ try {
 } catch (Exception $e) {
 	header("Location: ../index.php?err=db");
 }
+

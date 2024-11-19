@@ -1,11 +1,12 @@
-<?php 
+<?php
+
 /**
  * fetch info (parameters) of a given test
  */
 session_start();
 
-require_once "dbconnect.php";
-require_once "dbCommonFunctions.php";
+require_once "db_connect.php";
+require_once "helpers/database_functions.php";
 
 $testId = $_SESSION['currentLoggedID'];
 $testCount = $_POST['testCount'];
@@ -22,7 +23,5 @@ try {
 
 } catch (Exception $e) {
     error_log($e, 3, "errors_log.txt");
-	header("Location: ../index.php?err=db");
+    header("Location: ../index.php?err=db");
 }
-
-?>

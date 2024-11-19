@@ -50,3 +50,5 @@ php/test_common_functions.php
 .VSCodeCounter/2024-10-12_21-13-00/results.md
 .VSCodeCounter/2024-10-12_21-13-00/results.txt
 errors_log.txt
+php/logs/events/events_log_11-2024.txt
+php/logs/traffic/traffic_log_11-2024.txt

@@ -1,15 +1,15 @@
 <?php
 
 /**
- * validate the usr and psw given to log User
+ * validate the usr and psw given to log User in
  */
 
 session_start();
 
-include_once "dbCommonFunctions.php";
+include_once "helpers/database_functions.php";
 include "config.php";
-include_once "dbconnect.php";
-include_once "utils.php";
+include_once "db_connect.php";
+include_once "helpers/utils.php";
 
 
 //verify any injection on POST data
@@ -19,12 +19,10 @@ if ($specialCharacters) {
 	exit;
 }
 
-//get usr and password from login form
 $usr = $_POST['usr'];
 $psw = $_POST['psw'];
 
 try {
-	//connect to Database
 	$conn = connectdb();
 
 	//check if the user actually exists
@@ -42,10 +40,10 @@ try {
 
 	$row = $result->fetch_assoc();
 
-
 	$_SESSION['currentLoggedUsername'] = $usr;
 	$_SESSION['currentLoggedID'] = $row['Guest_ID'];
 
+	logEvent("User #{$_SESSION['currentLoggedID']} logged in");
 	header('Location: ../index.php');
 	$conn->close();
 	

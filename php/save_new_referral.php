@@ -1,11 +1,12 @@
 <?php
+
 /**
  * creates new referral test in userSettings.php
  */
 session_start();
-include_once "dbconnect.php";
-include_once "utils.php";
-include_once "dbCommonFunctions.php";
+include_once "db_connect.php";
+include_once "helpers/utils.php";
+include_once "helpers/database_functions.php";
 
 
 $id = $_SESSION['currentLoggedID'];
@@ -25,17 +26,19 @@ try {
 	$count = getLastTestCount($id, $conn);
 
 	//new test number is test taken + 1
-	$count = $row['count'] + 1;
+	$count++;
 
-	insertTest( $id,
-				$count,
-				$refName, 
-				$testType, 
-				$testParameters, 
-				null, 
-				null, //the referral test is just a test without results
-				null, 
-				$conn); 
+	insertTest(
+		$id,
+		$count,
+		$refName,
+		$testType,
+		$testParameters,
+		null,
+		null, //the referral test is just a test without results
+		null,
+		$conn
+	);
 
 	//the referral is identified by the $count number in the account table
 	$sql = "UPDATE account 
@@ -43,9 +46,11 @@ try {
 			WHERE Username = '{$_SESSION['currentLoggedUsername']}' ";
 	$conn->query($sql);
 
-	unset($_SESSION['updatingSavedSettings']);
+	unset($_SESSION['creatingNewReferral']);
 
+	logEvent("User #$id created a new referral test");
 	header("Location: ../userSettings.php?err=4");
+
 } catch (Exception $e) {
 	error_log($e, 3, "errors_log.txt");
 	header("Location: ../index.php?err=db");

@@ -1,9 +1,9 @@
-
 <?php
 
 include_once "config.php";
 
-function connectdb(){
+function connectdb()
+{
     global $host, $user, $password, $dbname;
     $conn = new mysqli($host, $user, $password, $dbname);
     if ($conn->connect_errno)
@@ -11,4 +11,3 @@ function connectdb(){
     mysqli_set_charset($conn, "utf8");
     return $conn;
 }
-?>

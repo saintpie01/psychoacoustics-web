@@ -37,7 +37,7 @@
 
                     <h2>Login</h2>
 
-                    <form method="post" action="php/logAuthenticate.php">
+                    <form method="post" action="php/login_authentication.php">
                         
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Username</span>

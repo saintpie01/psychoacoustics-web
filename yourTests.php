@@ -1,10 +1,11 @@
 <?php
 session_start();
 include "php/config.php";
-include_once "php/dbconnect.php";
+include_once "php/db_connect.php";
+include_once "php/helpers/utils.php";
 
 //check if there is a user logged
-if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLoggedID']))
+if (!isUserLogged())
     header("Location: index.php");
 
 ?>
@@ -42,7 +43,7 @@ if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLogge
             <!-- download all your data Button -->
             <div class="col d-grid">
                 <button type='button' class='btn btn-primary btn-lg btn-red'
-                    onclick='location.href="php/downloadYours.php?all=1"'>
+                    onclick='location.href="php/download_yours.php?all=1"'>
                     Download all your data
                 </button>
             </div>
@@ -50,7 +51,7 @@ if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLogge
             <!-- Download all your guest's data Button -->
             <div class="col d-grid">
                 <button type='button' class='btn btn-primary btn-lg btn-red'
-                    onclick='location.href="php/downloadYours.php?all=0"'>
+                    onclick='location.href="php/download_yours.php?all=0"'>
                     Download all your guest's data
                 </button>
             </div>
@@ -70,7 +71,7 @@ if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLogge
                 if ($row['Type'] == 1) { ?>
                     <div class="col d-grid">
                         <button type='button' class='btn btn-primary btn-lg btn-red'
-                            onclick='location.href="php/downloadAll.php"'>
+                            onclick='location.href="php/download_all.php"'>
                             Download all the data in the database
                         </button>
                     </div>
@@ -107,7 +108,7 @@ if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLogge
                             <?php $TestCount = (int)$row['Test_count'] ?>
 
                             <td class="text-end">
-                                <form method="post" action="php/deleteRecord.php">
+                                <form method="post" action="php/delete_record.php">
                                     <input type="hidden" name="testId" value="<?php echo $TestId; ?>">
                                     <input type="hidden" name="testCount" value="<?php echo $TestCount; ?>">
                                     <button type="submit" class="btn btn-link text-danger p-0"
@@ -154,7 +155,7 @@ if (!isset($_SESSION['currentLoggedUsername']) || !isset($_SESSION['currentLogge
                             <?php $TestCount = (int)$row['Test_count'] ?>
 
                             <td class="text-end">
-                                <form method="post" action="php/deleteRecord.php">
+                                <form method="post" action="php/delete_record.php">
                                     <input type="hidden" name="testId" value="<?php echo $TestId; ?>">
                                     <input type="hidden" name="testCount" value="<?php echo $TestCount; ?>">
                                     <button type="submit" class="btn btn-link text-danger p-0"

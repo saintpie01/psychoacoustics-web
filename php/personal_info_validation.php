@@ -8,9 +8,9 @@
 session_start();
 
 include "config.php";
-include_once('dbconnect.php');
-include_once('dbCommonFunctions.php');
-include_once "utils.php";
+include_once('db_connect.php');
+include_once('helpers/database_functions.php');
+include_once "helpers/utils.php";
 
 /*
  * @var int contains the id of the test taker weather it is a guest or a logged user
@@ -37,8 +37,6 @@ if (isset($_POST["ref"]) &&  (($_POST["ref"]) != "")){
     $ref = "&ref=" . $referralCode;
 }
    
-
-
 
 $_SESSION['saveSettings'] = 0; //this is useless but if you remove it the program breaks because it is written wery well and i dont want to go through javascript hell so here it stays
 
@@ -127,9 +125,11 @@ try {
     $_SESSION['idGuestTest'] = $row['id']; //the test take's ID is the new user created
     $_SESSION['name'] = $_POST["name"];
 
+    logEvent("Guest #{$_SESSION['idGuestTest']} created");
     header($redirection);
 
 } catch (Exception $e) {
     error_log($e, 3, "errors_log.txt");
     header("Location: ../index.php?err=db");
 }
+

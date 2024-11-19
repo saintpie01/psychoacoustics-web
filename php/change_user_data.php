@@ -1,12 +1,13 @@
 <?php
+
 /**
  * update demographic data of the logged user from userSettings.php
  */
 session_start();
 include_once "config.php";
-include_once "dbconnect.php";
-include_once "dbCommonFunctions.php";
-include_once "utils.php";
+include_once "db_connect.php";
+include_once "helpers/database_functions.php";
+include_once "helpers/utils.php";
 
 //check for injection on post data
 $specialCharacters = checkSpecialCharacter(['usr', 'email', "name", "surname", "notes"]);
@@ -27,8 +28,8 @@ try {
 
 	$somethingChanged = false;
 	$username = $_SESSION['currentLoggedUsername'];
-	
-	$sql = "UPDATE account SET ";	
+
+	$sql = "UPDATE account SET ";
 
 	if ($_POST['email'] != $row['email']) {
 		$sql .= "email = '{$_POST['email']}', ";
@@ -44,7 +45,7 @@ try {
 	$sql .= "WHERE username='$username';";
 	if ($somethingChanged)
 		$conn->query($sql);
-	
+
 
 	$somethingChanged = false;
 	$sql = "UPDATE guest SET ";
@@ -74,6 +75,8 @@ try {
 	if ($somethingChanged)
 		$conn->query($sql);
 
+
+	logEvent("User #{$_SESSION['currentLoggedID']} changed his user data");
 	header("Location: ../userSettings.php");
 
 } catch (Exception $e) {

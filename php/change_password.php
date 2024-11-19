@@ -1,14 +1,15 @@
 <?php
+
 /**
-* updates user password from setting page
-*/
+ * updates user password from setting page
+ */
 
 session_start();
 
 include_once "config.php";
-include "dbconnect.php";
-include "dbCommonFunctions.php";
-include_once "utils.php";
+include "db_connect.php";
+include "helpers/database_functions.php";
+include_once "helpers/utils.php";
 
 //verify any injection on POST data
 $specialCharacters = checkSpecialCharacter(['oldPsw', 'newPsw']);
@@ -17,7 +18,6 @@ if ($specialCharacters) {
 	exit;
 }
 
-//takes new and old psw received from form
 $oldPsw = $_POST['oldPsw'];
 $newPsw = $_POST['newPsw'];
 
@@ -38,18 +38,19 @@ try {
 		$conn->close();
 		exit;
 	}
-	
+
 	//update password
 	$sql = "UPDATE account 
 			SET password = SHA2('$newPsw', 256)  
 			WHERE username= '" . $_SESSION['currentLoggedUsername'] . "'";
 	$conn->query($sql);
-	
-	$row = $result->fetch_assoc(); 
+
+	$row = $result->fetch_assoc();
 	//send confirmation email to fetched email
 	$email = $row['email'];
 	mail($email, 'Password changing', 'you have correctly changed the password');
-	
+
+	logEvent("User #{$_SESSION['currentLoggedID']} changed his password");
 	header('Location: ../userSettings.php?err=3'); //this is not an error
 	$conn->close();
 

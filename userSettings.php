@@ -1,8 +1,8 @@
 <?php
 session_start();
-include_once "php/dbCommonFunctions.php";
-include_once "php/dbconnect.php";
-include_once "php/utils.php";
+include_once "php/helpers/database_functions.php";
+include_once "php/db_connect.php";
+include_once "php/helpers/utils.php";
 
 if (!isUserLogged()) {
     header("Location: index.php?err=2");
@@ -50,18 +50,20 @@ try {
 }
 
 
+//fetch all the user's created referral
 try {
-    //fetch all the user's created referral
+
     $sql = "SELECT * 
             FROM test 
-            WHERE Guest_ID = '{$_SESSION['currentLoggedID']}' AND Ref_name != ''";
+            WHERE Guest_ID = '{$_SESSION['currentLoggedID']}' AND Ref_name != ''
+            ORDER BY Timestamp DESC";
     $allRefTest = $conn->query($sql);
 } catch (Exception $e) {
     header("Location: index.php?err=db");
     exit;
 }
 
-//param array for info button, comes from php/testInfo.php
+//param array for info button, comes from php/info_test.php
 $param = null;
 if (isset($_SESSION['testInfoParameters'])) {
     $param = $_SESSION['testInfoParameters'];
@@ -128,7 +130,7 @@ if (isset($_SESSION['testInfoParameters'])) {
         <!-- Create New Referral -->
         <div class="container-fluid p-4 border rounded-4 bg-light">
             <h4 class="mb-3">Create New Referral</h4>
-            <form action="php/updateSavedSettings.php" method="POST" class="settingForm ref">
+            <form action="php/create_new_referral.php" method="POST" class="settingForm ref">
                 <div class="row row-cols-1 row-cols-lg-2 g-3 justify-content-center align-items-center">
 
                     <!-- invite code box -->
@@ -156,7 +158,7 @@ if (isset($_SESSION['testInfoParameters'])) {
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <span class="input-group-text">Ref. Name</span>
-                                    <input type="text" class="form-control" placeholder="Insert a test name" name="refn">
+                                    <input type="text" class="form-control" placeholder="Insert a test name" name="referralName">
                                 </div>
                             </div>
 
@@ -238,11 +240,13 @@ if (isset($_SESSION['testInfoParameters'])) {
                 <!-- test card -->
                 <div class="container-fluid p-3 border rounded-4 mt-2 d-flex justify-content-between align-items-center shadow-sm bg-body rounded <?php echo $borderStyle ?>" <?php echo $color; ?>>
 
+                    
+                     <!-- Info + test name div -->
                     <div class="d-flex align-items-center">
 
                         <!-- Info button -->
 
-                        <form action="php/testInfo.php" method="POST">
+                        <form action="php/info_test.php" method="POST">
                             <div class="me-5">
                                 <!-- Hidden input fields -->
                                 <input type="hidden" name="testId" value="<?php echo $row['Guest_ID']; ?>">
@@ -266,16 +270,17 @@ if (isset($_SESSION['testInfoParameters'])) {
 
                     </div>
 
-
                     <!-- test type -->
                     <p class="fs-6 mb-0 d-none d-sm-block"><?php echo $row['Type']; ?></p>
+
+
 
                     <!-- Div for delete and load button -->
                     <div class="d-flex justify-content-center">
 
                         <!-- Form for Delete Button -->
                         <div class="me-2"> <!-- Adds margin to the right -->
-                            <form method="post" action="php/deleteRecord.php">
+                            <form method="post" action="php/delete_record.php">
                                 <input type="hidden" name="testId" value="<?php echo $row['Guest_ID']; ?>">
                                 <input type="hidden" name="testCount" value="<?php echo $row['Test_count']; ?>">
 
@@ -290,7 +295,7 @@ if (isset($_SESSION['testInfoParameters'])) {
 
                         <!-- Form for Load Button -->
                         <div>
-                            <form method="post" action="php/loadTest.php">
+                            <form method="post" action="php/change_referral.php">
                                 <input type="hidden" name="testId" value="<?php echo $row['Guest_ID']; ?>">
                                 <input type="hidden" name="testCount" value="<?php echo $row['Test_count']; ?>">
 
@@ -311,7 +316,7 @@ if (isset($_SESSION['testInfoParameters'])) {
         <!-- change password section -->
         <div class="container-fluid p-4 border rounded-4 bg-light mt-5">
             <h4 class="mb-3">Change password</h4>
-            <form action="php/changePsw.php" method="post" class="settingForm">
+            <form action="php/change_password.php" method="post" class="settingForm">
                 <div class="row row-cols-1 row-cols-lg-3 g-3 justify-content-center align-items-center">
 
                     <!-- old psw form -->
@@ -341,7 +346,7 @@ if (isset($_SESSION['testInfoParameters'])) {
         <!-- change user settings section -->
         <div class="container-fluid p-4 border rounded-4 bg-light mt-5">
             <h4 class="mb-3">Change user settings</h4>
-            <form method="post" action="php/changeUserData.php" class="settingForm">
+            <form method="post" action="php/change_user_data.php" class="settingForm">
                 <div class="row row-cols-1 row-cols-lg-2 g-3 justify-content-center align-items-center">
                     <div class="col">
                         <div class="input-group">
@@ -410,27 +415,28 @@ if (isset($_SESSION['testInfoParameters'])) {
                         </div>
                         <div class="modal-body">
                             <ul style="list-style: none; padding: 0; margin: 0;">
-                                <?php echo isset($param['Type']) && $param['Type'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Type: <strong>" . htmlspecialchars($param['Type'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['amplitude']) && $param['amplitude'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Amplitude: <strong>" . htmlspecialchars($param['amplitude'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['frequency']) && $param['frequency'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Frequency: <strong>" . htmlspecialchars($param['frequency'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['duration']) && $param['duration'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Duration: <strong>" . htmlspecialchars($param['duration'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['onRamp']) && $param['onRamp'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>On Ramp: <strong>" . htmlspecialchars($param['onRamp'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['offRamp']) && $param['offRamp'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Off Ramp: <strong>" . htmlspecialchars($param['offRamp'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['modAmplitude']) && $param['modAmplitude'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Modulation Amplitude: <strong>" . htmlspecialchars($param['modAmplitude'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['modFrequency']) && $param['modFrequency'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Modulation Frequency: <strong>" . htmlspecialchars($param['modFrequency'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['modPhase']) && $param['modPhase'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Modulation Phase: <strong>" . htmlspecialchars($param['modPhase'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['blocks']) && $param['blocks'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Blocks: <strong>" . htmlspecialchars($param['blocks'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['nAFC']) && $param['nAFC'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>nAFC: <strong>" . htmlspecialchars($param['nAFC'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['ITI']) && $param['ITI'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>ITI: <strong>" . htmlspecialchars($param['ITI'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['ISI']) && $param['ISI'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>ISI: <strong>" . htmlspecialchars($param['ISI'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['delta']) && $param['delta'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Delta: <strong>" . htmlspecialchars($param['delta'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['checkFb']) && $param['checkFb'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Check Feedback: <strong>" . htmlspecialchars($param['checkFb'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['factor']) && $param['factor'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Factor: <strong>" . htmlspecialchars($param['factor'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['secFactor']) && $param['secFactor'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Sec Factor: <strong>" . htmlspecialchars($param['secFactor'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['reversals']) && $param['reversals'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Reversals: <strong>" . htmlspecialchars($param['reversals'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['secReversals']) && $param['secReversals'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Sec Reversals: <strong>" . htmlspecialchars($param['secReversals'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['threshold']) && $param['threshold'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Threshold: <strong>" . htmlspecialchars($param['threshold'] ?? '') . "</strong></li>" : ''; ?>
-                                <?php echo isset($param['algorithm']) && $param['algorithm'] !== NULL ? "<li style='display:block; margin-bottom: 2px;'>Algorithm: <strong>" . htmlspecialchars($param['algorithm'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['Type']) && $param['Type'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Type: <strong>" . htmlspecialchars($param['Type'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['creationDate']) && $param['creationDate'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Creation Date: <strong>" . htmlspecialchars($param['creationDate'] ?? '') . "</strong></li>" : '';  ?> 
+                                <?php echo isset($param['amplitude']) && $param['amplitude'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Amplitude: <strong>" . htmlspecialchars($param['amplitude'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['frequency']) && $param['frequency'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Frequency: <strong>" . htmlspecialchars($param['frequency'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['duration']) && $param['duration'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Duration: <strong>" . htmlspecialchars($param['duration'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['onRamp']) && $param['onRamp'] !== null ? "<li style='display:block; margin-bottom: 2px;'>On Ramp: <strong>" . htmlspecialchars($param['onRamp'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['offRamp']) && $param['offRamp'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Off Ramp: <strong>" . htmlspecialchars($param['offRamp'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['modAmplitude']) && $param['modAmplitude'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Modulation Amplitude: <strong>" . htmlspecialchars($param['modAmplitude'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['modFrequency']) && $param['modFrequency'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Modulation Frequency: <strong>" . htmlspecialchars($param['modFrequency'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['modPhase']) && $param['modPhase'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Modulation Phase: <strong>" . htmlspecialchars($param['modPhase'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['blocks']) && $param['blocks'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Blocks: <strong>" . htmlspecialchars($param['blocks'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['nAFC']) && $param['nAFC'] !== null ? "<li style='display:block; margin-bottom: 2px;'>nAFC: <strong>" . htmlspecialchars($param['nAFC'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['ITI']) && $param['ITI'] !== null ? "<li style='display:block; margin-bottom: 2px;'>ITI: <strong>" . htmlspecialchars($param['ITI'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['ISI']) && $param['ISI'] !== null ? "<li style='display:block; margin-bottom: 2px;'>ISI: <strong>" . htmlspecialchars($param['ISI'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['delta']) && $param['delta'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Delta: <strong>" . htmlspecialchars($param['delta'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['checkFb']) && $param['checkFb'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Check Feedback: <strong>" . htmlspecialchars($param['checkFb'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['factor']) && $param['factor'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Factor: <strong>" . htmlspecialchars($param['factor'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['secFactor']) && $param['secFactor'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Sec Factor: <strong>" . htmlspecialchars($param['secFactor'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['reversals']) && $param['reversals'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Reversals: <strong>" . htmlspecialchars($param['reversals'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['secReversals']) && $param['secReversals'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Sec Reversals: <strong>" . htmlspecialchars($param['secReversals'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['threshold']) && $param['threshold'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Threshold: <strong>" . htmlspecialchars($param['threshold'] ?? '') . "</strong></li>" : ''; ?>
+                                <?php echo isset($param['algorithm']) && $param['algorithm'] !== null ? "<li style='display:block; margin-bottom: 2px;'>Algorithm: <strong>" . htmlspecialchars($param['algorithm'] ?? '') . "</strong></li>" : ''; ?>
                             </ul>
                         </div>
                     </div>

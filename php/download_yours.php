@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-include_once "dbconnect.php";
-include_once "utils.php";
+include_once "db_connect.php";
+include_once "helpers/utils.php";
 
 //this func should be in a separate file, but it's only used in this page
 function writeResults($txt, $firstValues, $results, $score, $geometricScore)
@@ -43,6 +43,7 @@ function writeTest($row, $age, $txt)
 		. $row["time"] . ";" . $row["sampleRate"] . ";" . $row["deviceInfo"] . ";";
 	$firstValues .= $row["amp"] . ";" . $row["freq"] . ";" . $row["dur"] . ";" . $row["onRamp"] . ";" . $row["offRamp"] . ";" . $row["modAmp"] . ";" . $row["modFreq"] . ";" . $row["modPhase"] . ";" . $row["blocks"] . ";" . $row["nafc"] . ";" . $row["isi"] . ";" . $row["iti"] . ";";
 	$firstValues .= $row["fact"] . ";" . $row["rev"] . ";" . $row["secfact"] . ";" . $row["secrev"] . ";" . $row["thr"] . ";" . $row["alg"];
+	
 	$results = explode(",", $row["results"]);
 	$score = explode(";", $row["score"]);
 	$geometricScore = explode(";", $row["geometricScore"]);
@@ -69,10 +70,9 @@ try {
 
 	fwrite($txt, $line);
 
-
 	if (isset($_GET['all']) && $_GET['all'] == 1) {
 
-		//take the loggeduser's tests
+		//take the logged user's tests
 		$sql = "SELECT guest.ID as guestID, guest.Name as name, guest.Surname as surname, guest.Gender as gender, 
 				test.Test_count as count, test.Type as type, test.Timestamp as time, test.Amplitude as amp, test.Frequency as freq, test.Duration as dur, test.OnRamp as onRamp, test.OffRamp as offRamp,
 				test.ModAmplitude as modAmp, test.ModFrequency as modFreq, test.ModPhase as modPhase,
@@ -136,7 +136,8 @@ try {
 	header("Content-Type: text/plain");
 	readfile($path);
 
-	unlink($path); //elimino il file dal server
+	unlink($path); 
 } catch (Exception $e) {
 	header("Location: ../index.php?err=db");
 }
+

@@ -14,7 +14,7 @@ function writeResults($txt, $firstValues, $results) {
 
 //apro la connessione con la sessione e col db
 include "config.php";
-include "dbconnect.php";
+include "db_connect.php";
 include_once "utils.php";
 session_start();
 
@@ -92,7 +92,7 @@ try {
 
 		$txt = fopen("files/log.txt", "a") or die("Unable to open file!");
 
-		fwrite($txt, "Attempt to access downloadAll.php without permission - timestamp: " . $date);
+		fwrite($txt, "Attempt to access download_all.php without permission - timestamp: " . $date);
 		if (isset($_SESSION['currentLoggedUsername']))
 			fwrite($txt, " - username: " . $_SESSION['currentLoggedUsername']);
 		fwrite($txt, "\n");
@@ -103,3 +103,4 @@ try {
 } catch (Exception $e) {
 	header("Location: ../index.php?err=db");
 }
+

@@ -1,7 +1,8 @@
  <!-- Navigation Bar -->
  <nav class="navbar navbar-dark bg-dark shadow-lg text-white">
 
-     <div class="container">
+    <!-- main div -->
+    <div class="container">
 
          <!-- Site title -->
          <a class="navbar-brand" href="index.php">
@@ -14,7 +15,7 @@
 
              <?php
                 //if the user is not logged show the login buttons
-                if (!isset($_SESSION['currentLoggedUsername'])) {
+                if (!isUserLogged()) {
                 ?>
                  <div class="text-center me-4">
                      <a class="settings navbar-text d-flex flex-column align-items-center" href="register.php" style="text-decoration: none;">
@@ -34,7 +35,7 @@
                     //if the user is logged show the welcome message and the 'your test' and 'logout' buttons
                 } else { ?>
 
-                 <div class="me-5"> <!-- Add a margin to the right -->
+                 <div class="d-none d-md-block me-5"> <!-- Add a margin to the right -->
                      <label id="menuWelcome" class='text-white navbar-text d-none d-md-inline'>
                          Welcome <?php echo $_SESSION['currentLoggedUsername'];
                                     echo '   #' . $_SESSION['currentLoggedID']; ?>

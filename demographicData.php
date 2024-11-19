@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once "php/dbconnect.php";
+include_once "php/db_connect.php";
 include "php/config.php";
 //if no  test has been selected or no referral link is present in the url, return
 //to the index page
@@ -108,7 +108,7 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
     <div class="container my-5 p-4 p-sm-5 border rounded rounded-4 bg-light">
         <h2>Personal Informations</h2>
 
-        <form name="staircase" method="post" action="php/personalInfoValidation.php<?php
+        <form name="staircase" method="post" action="php/personal_info_validation.php<?php
                                                                                     if (isset($_GET["test"]))
                                                                                         echo "?test=" . $_GET["test"];
                                                                                     ?>">

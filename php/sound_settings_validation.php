@@ -5,10 +5,10 @@
  */
 session_start();
 
-require_once "dbconnect.php";
+require_once "db_connect.php";
 require 'error_codes/soundSettingsErrorCodes.php';
-include_once "utils.php";
-include_once "dbCommonFunctions.php";
+include_once "helpers/utils.php";
+include_once "helpers/database_functions.php";
 
 
 unset($_SESSION['currentBlock']);
@@ -19,7 +19,7 @@ $_SESSION['score'] = '';
 $_SESSION['geometric_score'] = '';
 $_SESSION['results'] = '';
 /**
- *contains the test type in compact form
+ *contains the test type in compact form of the test it's going to be taken
  */
 unset($_SESSION['testTypeCmp']);
 
@@ -32,7 +32,6 @@ if (isset($_SESSION['referralTest'])) { //referral present
 
         $conn = connectdb();
         $row = getTestParameters($refId, $refCount, $conn);
-
     } catch (Exception $e) {
         error_log($e, 3, "errors_log.txt");
         header("Location: ../index.php?err=db");
@@ -42,15 +41,15 @@ if (isset($_SESSION['referralTest'])) { //referral present
     //select the test type to perform
     if ($row['Type'] == 'PURE_TONE_INTENSITY')
         $type = "amp";
-    else if ($row['Type'] == 'PURE_TONE_FREQUENCY')
+    elseif ($row['Type'] == 'PURE_TONE_FREQUENCY')
         $type = "freq";
-    else if ($row['Type'] == 'PURE_TONE_DURATION')
+    elseif ($row['Type'] == 'PURE_TONE_DURATION')
         $type = "dur";
-    else if ($row['Type'] == 'WHITE_NOISE_GAP')
+    elseif ($row['Type'] == 'WHITE_NOISE_GAP')
         $type = "gap";
-    else if ($row['Type'] == 'WHITE_NOISE_DURATION')
+    elseif ($row['Type'] == 'WHITE_NOISE_DURATION')
         $type = "ndur";
-    else if ($row['Type'] == 'WHITE_NOISE_MODULATION')
+    elseif ($row['Type'] == 'WHITE_NOISE_MODULATION')
         $type = "nmod";
 
 

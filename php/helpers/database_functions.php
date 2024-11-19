@@ -3,7 +3,8 @@
 /**
  *this file contains all the common functions where a database interaction is required
  */
-include_once "dbconnect.php";
+
+include_once __DIR__ . '/../db_connect.php';
 
 
 /**
@@ -12,7 +13,8 @@ include_once "dbconnect.php";
  * @param \mysqli $conn connection to the database
  * @return array $refrow contains the test key  (fk_GuestTest, fk_TestCount)
  */
-function getReferralKeyFromInviteCode($referral, $conn) {
+function getReferralKeyFromInviteCode($referral, $conn)
+{
 
 	$refSQL = "SELECT 
 					Username, 
@@ -33,7 +35,8 @@ function getReferralKeyFromInviteCode($referral, $conn) {
 }
 
 //ignore
-function selectFromTable($columns, $table, $conditions, $conn) {
+function selectFromTable($columns, $table, $conditions, $conn)
+{
 
 	// Prepare the columns part
 	$columnsList = implode(", ", $columns);
@@ -63,7 +66,8 @@ function selectFromTable($columns, $table, $conditions, $conn) {
  * @param string $geometricScore contains the threshold geoemetric score
  * @param \mysqli $conn contains connnection with the database
  */
-function insertTest($id, $count, $referralName, $testTypeCmp, $param, $results, $score, $geometricScore, $conn) {
+function insertTest($id, $count, $referralName, $testTypeCmp, $param, $results, $score, $geometricScore, $conn)
+{
 
 	$type = getExtfromCmpType($testTypeCmp);
 	$deviceInfo = str_replace(";", " ", $_SERVER['HTTP_USER_AGENT']);	//take user device info
@@ -78,11 +82,11 @@ function insertTest($id, $count, $referralName, $testTypeCmp, $param, $results, 
 
 
 	//these are strings, inserting null is like inserting an empty string
-	$results =	$results = isset($results) ? $results : NULL;
+	$results =	$results = isset($results) ? $results : null;
 	$algorithm = (string) $param['algorithm'];
-	$referralName = isset($referralName) ? $referralName : NULL;
-	$score = $score = isset($score) ? $score : NULL;
-	$geometricScore = isset($geometricScore) ? $geometricScore : NULL;
+	$referralName = isset($referralName) ? $referralName : null;
+	$score = $score = isset($score) ? $score : null;
+	$geometricScore = isset($geometricScore) ? $geometricScore : null;
 
 
 
@@ -131,9 +135,11 @@ function insertTest($id, $count, $referralName, $testTypeCmp, $param, $results, 
  * this function fetch all the test parameters assigning them the correct naming
  * (naming in the DB and PHP program are different)
  */
-function getTestParameters($id, $count, $conn) {
+function getTestParameters($id, $count, $conn)
+{
 
 	$sql = "SELECT 
+				Timestamp AS creationDate,  #extra, might be handy
 				Type, 
 				Amplitude AS amplitude, 
 				Frequency AS frequency, 
@@ -155,6 +161,7 @@ function getTestParameters($id, $count, $conn) {
 				ModAmplitude AS modAmplitude, 
 				ModFrequency AS modFrequency, 
 				ModPhase AS modPhase
+
 		
 			FROM test
 		
@@ -173,7 +180,8 @@ function getTestParameters($id, $count, $conn) {
  * @param \msqli $conn connection to db
  * @return int $count number of tests taken by that id
  */
-function getLastTestCount($id, $conn){
+function getLastTestCount($id, $conn)
+{
 
 	$sql = "SELECT Max(Test_count) as count 
 			FROM test 
@@ -185,3 +193,4 @@ function getLastTestCount($id, $conn){
 	$count = $row['count'];
 	return $count;
 }
+

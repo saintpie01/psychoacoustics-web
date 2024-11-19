@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "php/config.php";
-include_once "php/dbconnect.php";
+include_once "php/db_connect.php";
 if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
     header("Location: index.php");
 
@@ -148,7 +148,7 @@ if ($row['Type'] == 'PURE_TONE_INTENSITY') {
             </div>
         </div>
 
-        <form action="php/soundSettingsValidation.php" name="Settings" method="post">
+        <form action="php/sound_settings_validation.php" name="Settings" method="post">
             <div class="container">
                 <div class="row gy-2">
 

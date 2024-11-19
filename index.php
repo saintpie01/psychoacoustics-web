@@ -1,9 +1,13 @@
 <?php
 session_start();
+include_once "php/config.php";
+include_once "php/helpers/utils.php";
+
+
 $_SESSION['version'] = 1; //change this number to force cache update
 
 //session gets destroyed to clear cached data but logged user data is kept
-if (isset($_SESSION['currentLoggedID'])) {
+if (isUserLogged()) {
     $CLID  = $_SESSION['currentLoggedID'];
     $CLUN = $_SESSION['currentLoggedUsername'];
 }
@@ -154,6 +158,11 @@ if (isset($CLID)) { //account data are preserved
 
         </div>
     </div>
+
+
+    <?php 
+    //comment this function to stop collecting traffic data
+    trackCountryTraffic() ?>
 </body>
 
 </html>

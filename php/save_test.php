@@ -1,13 +1,14 @@
 <?php
+
 /**
  * saves the data of the test when all blocks are executed
  */
 session_start();
 
 include "config.php";
-require_once "dbconnect.php";
-require_once "dbCommonFunctions.php";
-include_once "utils.php";
+require_once "db_connect.php";
+require_once "helpers/database_functions.php";
+include_once "helpers/utils.php";
 
 
 if ((!(isset($_GET['blocks'])
@@ -20,8 +21,8 @@ if ((!(isset($_GET['blocks'])
 }
 
 //compose the score of each block
-$_SESSION["geometric_score"] .= $_GET['geometric_score'] . ";" ;
-$_SESSION["score"] .= $_GET['score'] . ";" ;
+$_SESSION["geometric_score"] .= $_GET['geometric_score'] . ";";
+$_SESSION["score"] .= $_GET['score'] . ";";
 $_SESSION["results"] .= $_GET['result'];
 
 $_SESSION["blocks"] = $_GET['blocks'];
@@ -34,11 +35,11 @@ if ($_GET['currentBlock'] < $_GET['blocks']) {
 }
 
 
-//readabilityù
-//the score ersults might have ah semicolon at the end of the sting in the DB,
+//readability
+//the score results might have a semicolon at the end of the sting in the DB,
 //that does not change anything since we access them with indexes and not with string handling
 $score = $_SESSION['score'];
-$finalResults = $_SESSION['results']; 
+$finalResults = $_SESSION['results'];
 $geometricScore = $_SESSION['geometric_score'];
 
 //better not to touch this
@@ -52,41 +53,45 @@ if (!$_SESSION["saveData"]) {
 	}
 }
 
-
-//is this check necessary?
-/*if (!isset($_SESSION['idGuestTest'])) {
-	header("Location: ../index.php?err=2");
-	exit;
-}*/
-
 //initialize some variables needed for test insertion
 $id = $_SESSION['idGuestTest'];
 $testTypeCmp = $_SESSION['testTypeCmp'];
 $_SESSION['sampleRate'] = $_GET['sampleRate'];
 
+$testTypeExt = getExtfromCmpType($testTypeCmp);
 
 try {
 	$conn = connectdb();
 
 	//find the number of tests taken by the user
 	$count = getLastTestCount($id, $conn);
-
 	//new test count is the number of test taken + 1
-	$count = $count + 1;
+	$count++;
 
-	insertTest( $id, 
-				$count, 
-				null, //this field is only for referral tests
-				$testTypeCmp,
-				$_SESSION, 
-				$finalResults, 
-				$score, 
-				$geometricScore, 
-				$conn);
+
+	insertTest(
+		$id,
+		$count,
+		null, //this field is only for referral tests
+		$testTypeCmp,
+		$_SESSION,
+		$finalResults,
+		$score,
+		$geometricScore,
+		$conn
+	);
+
+
+
+	//log usage
+	$referrerString = "";
+	if (isset($_SESSION['referralTest']))
+		$referrerString = " referred by user #{$_SESSION['referralTest']['guest']}";
+
+	logEvent("User #$id completed a $testTypeExt test" . $referrerString);
 
 	header("Location: ../results.php?continue=0");
 	exit;
-
 } catch (Exception $e) {
 	header("Location: ../index.php?err=db");
 	error_log($e, 3, "errors_log.txt");

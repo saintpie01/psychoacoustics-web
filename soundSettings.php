@@ -2,7 +2,7 @@
 
 session_start();
 
-include_once("php/dbconnect.php");
+include_once("php/db_connect.php");
 include_once("php/error_codes/soundSettingsErrorValidation.php");
 include "php/config.php";
 
@@ -49,7 +49,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
     //**update this functionality has been removed, the code remains here just in case and because
     //the rest of this html page would be a pain to fix. It wouldnt make any difference anyway*/
 
-    
+
 
     /*if (isset($_SESSION['currentLoggedUsername'])) {
         try {
@@ -72,7 +72,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
             error_log($e, 3, "errors_log.txt");
         }
     } else*/
-        $row = false;
+    $row = false;
     ?>
 
 
@@ -80,13 +80,13 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
     <div class="container my-5 p-4 p-sm-5 border rounded rounded-4 bg-light">
         <h2>Set the characteristics of the experiment</h2>
         <form action="<?php
-                        if (isset($_SESSION['updatingSavedSettings']) && $_SESSION['updatingSavedSettings'] == true)
-                            echo "php/updatingSavedSettings.php?test=" . $type . "&refn=" . $refName;
+                        if (isset($_SESSION['creatingNewReferral']) && $_SESSION['creatingNewReferral'] == true)
+                            echo "php/save_new_referral.php?test=" . $type . "&refn=" . $refName;
                         else
-                            echo "php/soundSettingsValidation.php?test=" . $type;
+                            echo "php/sound_settings_validation.php?test=" . $type;
                         ?>" name="Settings" method="post">
 
-            <!-- Primo slot di setting -->
+            <!-- first settings slot -->
             <div class="container mt-3 p-3 border rounded-4 bg-light">
                 <?php
                 if ($type == "gap" || $type == "ndur") echo "<h5>Set the characteristics of the standard noise</h5>";
@@ -277,7 +277,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
                 <?php } ?>
             </div>
 
-            <!-- Secondo slot di setting -->
+            <!-- second setting slot -->
             <div class="container mt-3 p-3 border rounded-4 bg-light">
                 <h5>Set the characteristics of the experiment</h5>
                 <div class="row row-cols-1 row-cols-lg-3 gy-3">
@@ -464,7 +464,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
                                         Feedback after response
                                     </label>
                                 </div>
-                                <?php if (isset($_SESSION['currentLoggedUsername']) && !(isset($_SESSION['updatingSavedSettings']) && $_SESSION['updatingSavedSettings'] == true)) { ?>
+                                <?php /* if (isset($_SESSION['currentLoggedUsername']) && !(isset($_SESSION['creatingNewReferral']) && $_SESSION['creatingNewReferral'] == true)) { ?>
                                     <div class="form-check"
                                         title="if checked the settings will be saved and used as default for the next tests">
                                         <input class="form-check-input" type="checkbox" id="saveSettings"
@@ -473,7 +473,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
                                             Save settings
                                         </label>
                                     </div>
-                                <?php } ?>
+                                <?php }*/ ?>
                             </div>
                         </div>
                     </div>
@@ -550,19 +550,19 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
                 </div>
             </div>
 
-            <!-- i bottoni sono fuori dal terzo slot -->
+            <!-- navigation buttons -->
             <div class="row row-cols-2 gy-2 mt-3">
                 <div class="col d-grid">
                     <button type="button" class="btn btn-primary btn-lg btn-red"
-                        onclick="location.href='<?php if (isset($_SESSION['updatingSavedSettings']) && $_SESSION['updatingSavedSettings'] == true) echo 'userSettings.php'; else echo 'demographicData.php';?>'" 
-                         >BACK
+                        onclick="location.href='<?php if (isset($_SESSION['creatingNewReferral']) && $_SESSION['creatingNewReferral'] == true) echo 'userSettings.php';
+                                                else echo 'demographicData.php'; ?>'">BACK
                     </button>
                 </div>
                 <div class="col d-grid">
                     <button type="submit" class="btn btn-primary btn-lg btn-red">
                         <?php
-                        if (isset($_SESSION['updatingSavedSettings']) && $_SESSION['updatingSavedSettings'] == true)
-                            echo "SAVE SETTINGS";
+                        if (isset($_SESSION['creatingNewReferral']) && $_SESSION['creatingNewReferral'] == true)
+                            echo "CREATE REFERRAL";
                         else
                             echo "START";
                         ?>

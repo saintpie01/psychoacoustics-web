@@ -74,14 +74,14 @@ if (isset($_SESSION['score'])) {
                                 //only logged user can download the complete csv
                                 if (isset($_SESSION['currentLoggedUsername'])) { ?>
                                     <div class="col d-grid">
-                                        <button type='button' class='btn btn-primary btn-lg btn-red' onclick='location.href="php/download.php?format=complete"'>
+                                        <button type='button' class='btn btn-primary btn-lg btn-red' onclick='location.href="php/quick_download.php?format=complete"'>
                                             Download data
                                         </button>
                                     </div>
                                 <?php } ?>
 
                                 <div class="col d-grid">
-                                    <button type='button' class='btn btn-primary btn-lg btn-red' onclick='location.href="php/download.php?format=reduced"'>
+                                    <button type='button' class='btn btn-primary btn-lg btn-red' onclick='location.href="php/quick_download.php?format=reduced"'>
                                         Download data (thresholds only)
                                     </button>
                                 </div>

@@ -124,13 +124,13 @@ function select(button) {
 
         console.log('results = ' + result);
         //pass the datas to the php file
-        //location.href = "php/saveData.php?result=" + result + "&timestamp=" + timestamp + "&type=freq" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
-        //var location = "php/saveData.php?timestamp=" + timestamp + "&type=freq" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
+        //location.href = "php/save_test.php?result=" + result + "&timestamp=" + timestamp + "&type=freq" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
+        //var location = "php/save_test.php?timestamp=" + timestamp + "&type=freq" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
         
         //sendDataToPHP(location, result);
 
         //pass the datas to the php file
-        location.href = "php/saveData.php?result=" + result + "&timestamp=" + timestamp + "&type=nmod" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
+        location.href = "php/save_test.php?result=" + result + "&timestamp=" + timestamp + "&type=nmod" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
    
     
     
