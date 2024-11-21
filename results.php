@@ -46,7 +46,10 @@ if (isset($_SESSION['score'])) {
         <div class="row justify-content-center align-items-center">
             <div class="col-12 col-md-7 border bg-light rounded-4 p-5">
 
-                <h1>Your user ID is: #<?php echo $_SESSION['idGuestTest'] ?></h1>
+                <h1>Your user ID is: #<?php if (isset($_SESSION['idGuestTest'] ))
+                                                    echo $_SESSION['idGuestTest'];
+                                            else echo "anonymous";
+                                            ?></h1>
 
                 <h2>Your threshold is:</h2>
                 <p></p>
