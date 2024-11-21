@@ -44,7 +44,7 @@ if (!isUserLogged())
             <div class="col d-grid">
                 <button type='button' class='btn btn-primary btn-lg btn-red'
                     onclick='location.href="php/download_yours.php?all=1"'>
-                    Download all your data
+                    Download all data
                 </button>
             </div>
 
@@ -52,7 +52,7 @@ if (!isUserLogged())
             <div class="col d-grid">
                 <button type='button' class='btn btn-primary btn-lg btn-red'
                     onclick='location.href="php/download_yours.php?all=0"'>
-                    Download all your guest's data
+                    Download all your partecipants' data
                 </button>
             </div>
 
@@ -130,7 +130,7 @@ if (!isUserLogged())
 
 
         <!-- Guest's results Table -->
-        <h3 class="mt-5">Your guest's results</h3>
+        <h3 class="mt-5">Partecipants' results</h3>
         <table class="table table-striped table-hover">
             <thead>
                 <tr>

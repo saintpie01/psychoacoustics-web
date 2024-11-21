@@ -562,7 +562,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
                     <button type="submit" class="btn btn-primary btn-lg btn-red">
                         <?php
                         if (isset($_SESSION['creatingNewReferral']) && $_SESSION['creatingNewReferral'] == true)
-                            echo "CREATE REFERRAL";
+                            echo "CREATE EXPERIMENT";
                         else
                             echo "START";
                         ?>

@@ -129,7 +129,7 @@ if (isset($_SESSION['testInfoParameters'])) {
 
         <!-- Create New Referral -->
         <div class="container-fluid p-4 border rounded-4 bg-light">
-            <h4 class="mb-3">Create New Referral</h4>
+            <h4 class="mb-3">Create New Experiment</h4>
             <form action="php/create_new_referral.php" method="POST" class="settingForm ref">
                 <div class="row row-cols-1 row-cols-lg-2 g-3 justify-content-center align-items-center">
 
@@ -165,12 +165,12 @@ if (isset($_SESSION['testInfoParameters'])) {
                             <div class="col-md-6">
                                 <select name="testType" class="form-select" onchange="updateLink('<?php echo $inviteCode; ?>')" id="testType">
                                     <option selected disabled value=''>Select a Test Type</option>
-                                    <option value='amp'>Pure tone intensity</option>
-                                    <option value='freq'>Pure tone frequency</option>
-                                    <option value='dur'>Pure tone duration</option>
-                                    <option value='gap'>Noise Gap</option>
-                                    <option value='ndur'>Noise Duration</option>
-                                    <option value='nmod'>Noise Modulation</option>
+                                    <option value='amp'>Pure tone intensity discrimination</option>
+                                    <option value='freq'>Pure tone frequency discrimination</option>
+                                    <option value='dur'>Pure tone duration discrimination</option>
+                                    <option value='gap'>White noise gap detection</option>
+                                    <option value='ndur'>White noise duration discriminaiton</option>
+                                    <option value='nmod'>White noise AM detection</option>
                                 </select>
                             </div>
 
@@ -183,7 +183,7 @@ if (isset($_SESSION['testInfoParameters'])) {
 
                             <div class="col d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary btn-red w-100">
-                                    Create Test
+                                    Create Experiment
                                 </button>
                             </div>
                         </div>
@@ -224,7 +224,7 @@ if (isset($_SESSION['testInfoParameters'])) {
 
         <!-- Your Referral Section -->
         <div class="container-fluid p-4 border rounded-4 bg-light mt-5 ">
-            <h4 class="mb-3">Your Referrals</h4>
+            <h4 class="mb-3">Your Experiments</h4>
 
             <?php while ($row = $allRefTest->fetch_assoc()) {
                 $borderStyle = ''; //to give blue border on selected test
@@ -265,7 +265,7 @@ if (isset($_SESSION['testInfoParameters'])) {
                         <!-- Paragraph with name and selected status -->
                         <p class="fw-bold fs-5 mb-0 px-2">
                             <?php echo $row['Ref_name']; ?>
-                            <?php if ($selected) echo '<span class="text-primary ms-1 fw-normal d-inline d-sm-none"><i class="fas fa-star"></i></span><span class="text-primary ms-1 fw-normal d-none d-sm-inline">selected <i class="fas fa-star"></i></span>'; ?>
+                            <?php if ($selected) echo '<span class="text-primary ms-1 fw-normal d-inline d-sm-none"><i class="fas fa-star"></i></span><span class="text-primary ms-1 fw-normal d-none d-sm-inline">Active <i class="fas fa-star"></i></span>'; ?>
                         </p>
 
                     </div>
@@ -303,7 +303,7 @@ if (isset($_SESSION['testInfoParameters'])) {
                                     <button type="submit" class="btn btn-primary btn-sm rounded-circle p-2" style="width: 40px; height: 40px;">
                                         <i class="fas fa-arrow-up"></i>
                                     </button>
-                                    <small class="d-block text-muted mt-2">Load</small>
+                                    <small class="d-block text-muted mt-2">Activate</small>
                                 </div>
                             </form>
                         </div>
