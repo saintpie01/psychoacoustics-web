@@ -1,5 +1,6 @@
 <?php
 session_start();
+include_once "php/helpers/utils.php";
 
 $currentBlock = $_SESSION['currentBlock'];
 
@@ -46,7 +47,7 @@ if (isset($_SESSION['score'])) {
         <div class="row justify-content-center align-items-center">
             <div class="col-12 col-md-7 border bg-light rounded-4 p-5">
 
-                <h1>Your user ID is: #<?php if (isset($_SESSION['idGuestTest'] ))
+                <h1>Your user ID is: #<?php if (isUserLogged())
                                                     echo $_SESSION['idGuestTest'];
                                             else echo "anonymous";
                                             ?></h1>
@@ -75,7 +76,7 @@ if (isset($_SESSION['score'])) {
                             if ($_GET['continue'] == 0) {
 
                                 //only logged user can download the complete csv
-                                if (isset($_SESSION['currentLoggedUsername'])) { ?>
+                                if (isUserLogged()) { ?>
                                     <div class="col d-grid">
                                         <button type='button' class='btn btn-primary btn-lg btn-red' onclick='location.href="php/quick_download.php?format=complete"'>
                                             Download data

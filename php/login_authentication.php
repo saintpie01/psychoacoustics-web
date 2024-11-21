@@ -42,12 +42,10 @@ try {
 
 	$_SESSION['currentLoggedUsername'] = $usr;
 	$_SESSION['currentLoggedID'] = $row['Guest_ID'];
-
-	logEvent("User #{$_SESSION['currentLoggedID']} logged in");
-	header('Location: ../index.php');
-	$conn->close();
-	
 } catch (Exception $e) {
+	error_log($e, 3, "errors_log.txt");
 	header("Location: ../index.php?err=db");
-	$conn->close();
 }
+
+logEvent("User #{$_SESSION['currentLoggedID']} logged in");
+header('Location: ../index.php');

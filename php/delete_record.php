@@ -23,12 +23,11 @@ try {
             WHERE Guest_ID = '{$testId}' AND Test_count = '{$testCount}'";
 
     $conn->query($sql);
-
-    logEvent("User #$testId deleted test $testCount of user #$testId");
-    header("Location: $returnPage");
-
 } catch (Exception $e) {
     error_log($e, 3, "errors_log.txt");
     header("Location: ../index.php?err=db");
 }
+
+logEvent("User #$testId deleted test $testCount of user #$testId");
+header("Location: $returnPage");
 

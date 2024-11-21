@@ -2,6 +2,7 @@
 session_start();
 include_once "php/db_connect.php";
 include "php/config.php";
+include_once "php/helpers/utils.php";
 //if no  test has been selected or no referral link is present in the url, return
 //to the index page
 if (!isset($_GET['ref']) && !isset($_GET["test"]))
@@ -31,7 +32,7 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
          */
         function verifyRef() {
             var display = true;
-            var logged = <?php if (isset($_SESSION['currentLoggedUsername'])) echo "true";
+            var logged = <?php if (isUserLogged()) echo "true";
                             else echo "false"; ?>;
 
             if (document.getElementById("ref").value != "" && logged) { //if the user is logged
@@ -42,6 +43,7 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
             if (document.getElementById("ref").value == "" && logged) {
                 display = false;
             }
+
             if (!document.getElementById("checkSave").checked) {
                 display = false;
                 console.log("The checkbox is not checked.");
@@ -53,7 +55,7 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
 
         function insertRef() {
             <?php
-            if (isset($_SESSION['currentLoggedUsername'])) {
+            if (isUserLogged()) {
                 try {
 
                     $conn = connectdb();
@@ -68,7 +70,7 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
             }
             ?>
             document.getElementById("ref").value = <?php //get the user referral to add with "ADD MINE"-button only if the user is logged
-                                                    if (isset($_SESSION['currentLoggedUsername'])) {
+                                                    if (isUserLogged()) {
                                                         echo "'" . $row['ref'] . "'";
                                                     } else
                                                         echo "''";
@@ -215,7 +217,7 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
                     <div class="row align-items-center g-4">
                         <div class="col-12">
                             <div class="col-lg-6">
-                                <?php if (!isset($_SESSION['currentLoggedUsername'])) { ?>
+                                <?php if (!isUserLogged()) { ?>
                                     <div class="col-12 ">
                                         <p style="color: black;"><strong>Warning:</strong> if you press “NEXT” you accept the “Terms and conditions" written below.</p>
                                     </div>

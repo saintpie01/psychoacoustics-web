@@ -16,12 +16,11 @@ try {
 
     $row = getTestParameters($testId, $testCount, $conn);
 
-    //put everythin in a session array
+    //put everything in a session array
     $_SESSION['testInfoParameters'] = $row;
-
-    header("Location: ../userSettings.php");
-
 } catch (Exception $e) {
     error_log($e, 3, "errors_log.txt");
     header("Location: ../index.php?err=db");
 }
+
+header("Location: ../userSettings.php");

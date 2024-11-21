@@ -124,11 +124,10 @@ try {
     $_SESSION['idGuestTest'] = $row['id']; //the test taker's ID is the new user created
     $_SESSION['name'] = $_POST["name"];
 
-    logEvent("Guest #{$_SESSION['idGuestTest']} created");
-    header($redirection);
-
 } catch (Exception $e) {
     error_log($e, 3, "errors_log.txt");
     header("Location: ../index.php?err=db");
 }
 
+logEvent("Guest #{$_SESSION['idGuestTest']} created");
+header($redirection);

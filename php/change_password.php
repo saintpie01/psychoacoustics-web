@@ -50,11 +50,11 @@ try {
     $email = $row['email'];
     mail($email, 'Password changing', 'you have correctly changed the password');
 
-    logEvent("User #{$_SESSION['currentLoggedID']} changed his password");
-    header('Location: ../userSettings.php?err=3'); //this is not an error
-    $conn->close();
-
 } catch (Exception $e) {
     header("Location: ../index.php?err=db");
     error_log($e, 3, "errors_log.txt");
 }
+
+logEvent("User #{$_SESSION['currentLoggedID']} changed his password");
+header('Location: ../userSettings.php?err=3'); //this is not an error
+

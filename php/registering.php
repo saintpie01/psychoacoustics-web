@@ -99,11 +99,10 @@ try {
 	$_SESSION['currentLoggedID'] = $id;
 
 	$conn->close();
-
-	logEvent("New account created #$id");
-	header('Location: ../index.php');
-	
 } catch (Exception $e) {
 	header("Location: ../index.php?err=db");
 }
 
+logEvent("New account created #$id");
+header('Location: ../index.php');
+	

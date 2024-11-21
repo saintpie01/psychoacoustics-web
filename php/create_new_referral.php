@@ -17,8 +17,6 @@ if ($specialCharacter) {
 }
 
 $referralName = $_POST['referralName'];
-
-
 if (!isset($referralName) || $referralName == "") { //IF NO TEST NAME GIVEN
 	header('Location: ../userSettings.php?err=8');
 	exit;
@@ -30,13 +28,15 @@ if (!isset($testType) || $testType == "") { //IF NO TEST TYPE HAS BEEN SELECTED
 	exit;
 }
 
+$id = $_SESSION['currentLoggedID'];
+
 try {
 	$conn = connectdb();
 
 	//check if the referral test already exist
 	$sql = "SELECT COUNT(*) 
 			FROM test 
-			WHERE Ref_name='$referralName' AND Guest_ID = '{$_SESSION['currentLoggedID']}'";
+			WHERE Ref_name='$referralName' AND Guest_ID = '$id'";
 
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
@@ -50,7 +50,5 @@ try {
 	exit;
 }
 
-
 $_SESSION['creatingNewReferral'] = true; //used to redirect to php/save_new_referral.php from soundSettings.php
-
 header("Location: ../soundSettings.php?test=" . $testType . "&refn=" . $referralName);

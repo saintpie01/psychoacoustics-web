@@ -68,7 +68,6 @@ try {
 	//new test count is the number of test taken + 1
 	$count++;
 
-
 	insertTest(
 		$id,
 		$count,
@@ -81,17 +80,16 @@ try {
 		$conn
 	);
 
-
-	//log usage
-	$referrerString = "";
-	if (isset($_SESSION['referralTest']))
-		$referrerString = " referred by user #{$_SESSION['referralTest']['guest']}";
-
-	logEvent("User #$id completed a $testTypeExt test" . $referrerString);
-
-	header("Location: ../results.php?continue=0");
-	exit;
 } catch (Exception $e) {
 	header("Location: ../index.php?err=db");
 	error_log($e, 3, "errors_log.txt");
 }
+
+//log usage
+$referrerString = "";
+if (isset($_SESSION['referralTest']))
+	$referrerString = " referred by user #{$_SESSION['referralTest']['guest']}";
+logEvent("User #$id completed a $testTypeExt test" . $referrerString);
+
+header("Location: ../results.php?continue=0");
+
