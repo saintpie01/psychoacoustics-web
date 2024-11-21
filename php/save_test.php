@@ -82,7 +82,6 @@ try {
 	);
 
 
-
 	//log usage
 	$referrerString = "";
 	if (isset($_SESSION['referralTest']))

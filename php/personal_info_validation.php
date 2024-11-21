@@ -13,7 +13,7 @@ include_once('helpers/database_functions.php');
 include_once "helpers/utils.php";
 
 /*
- * @var int contains the id of the test taker weather it is a guest or a logged user
+ * @var int contains the id of the test taker whether it is a guest or a logged user
  */
 unset($_SESSION['idGuestTest']); 
 /*
@@ -22,7 +22,7 @@ unset($_SESSION['idGuestTest']);
  */
 unset($_SESSION['name']); 
 /*
- * @var array contains the key of the referral test if present
+ * @var array contains the key of the referral test if present in the link
  */
 unset($_SESSION['referralTest']); 
 
@@ -55,7 +55,7 @@ if (($referralCode) != "") { //check if a referral code in the link is present a
 
     try {
         $conn = connectdb();
-        $refrow = getReferralKeyFromInviteCode($_POST['ref'], $conn); //return an array with referral data
+        $refrow = getReferralKeyFromInviteCode($_POST['ref'], $conn); //return an array with referral key
 
     } catch (Exception $e) { //if invalid
         header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");
@@ -67,8 +67,6 @@ if (($referralCode) != "") { //check if a referral code in the link is present a
         "count" => $refrow['fk_TestCount']
     );
 
-    error_log('referral username = '.$refrow['Username'] .'\n', 3, "errors_log.txt");
-
     $redirection = "Location: ../info.php"; //all referral tests get redirected to info.php page
 }
 
@@ -78,6 +76,7 @@ if (!isset($_POST["checkSave"])) { //no data to save, no user to create, skip ah
     exit;
 }
 $_SESSION["saveData"] = true;
+
 
 if (isUserLogged()) { 
     $_SESSION['idGuestTest'] = $_SESSION['currentLoggedID']; 
@@ -122,7 +121,7 @@ try {
     $result = $conn->store_result();
     $row = $result->fetch_assoc();
 
-    $_SESSION['idGuestTest'] = $row['id']; //the test take's ID is the new user created
+    $_SESSION['idGuestTest'] = $row['id']; //the test taker's ID is the new user created
     $_SESSION['name'] = $_POST["name"];
 
     logEvent("Guest #{$_SESSION['idGuestTest']} created");

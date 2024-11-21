@@ -66,7 +66,7 @@ try {
 	//columns names
 	$line = "Guest_ID;Name;Surname;Age;Gender;Notes;Test Count;Test Type;Timestamp;Sample Rate;Device Info;Amplitude;Frequency;Duration;Onset Ramp;Offset Ramp;Modulator Amplitude;ModulatorFrequency;Modulator Phase;n. of blocks;";
 	$line .= "nAFC;ISI;ITI;First factor;First reversals;Second factor;Second reversals;reversal threshold;algorithm;";
-	$line .= "block;trials;delta;variable;Variable Position;Pressed button;correct?;reversals,threshold (arithmetic mean);threshold (geometric mean)\n";
+	$line .= "block;trials;delta;variable;Variable Position;Pressed button;correct?;reversals;threshold (arithmetic mean);threshold (geometric mean)\n";
 
 	fwrite($txt, $line);
 
@@ -107,7 +107,8 @@ try {
 				test.Test_count as count, test.Type as type, test.Timestamp as time, test.Amplitude as amp, test.Frequency as freq, test.Duration as dur, test.OnRamp as onRamp, test.OffRamp as offRamp,
 				test.ModAmplitude as modAmp, test.ModFrequency as modFreq, test.ModPhase as modPhase,
 				test.SampleRate as sampleRate, test.blocks as blocks, test.nAFC as nafc, test.ISI as isi, test.ITI as iti, test.Factor as fact, test.Reversal as rev,
-				test.SecFactor as secfact, test.SecReversal as secrev, test.Threshold as thr, test.Algorithm as alg, test.Result as results, test.DeviceInfo as deviceInfo, guest.Notes as notes
+				test.SecFactor as secfact, test.SecReversal as secrev, test.Threshold as thr, test.Algorithm as alg, test.Result as results, test.DeviceInfo as deviceInfo, guest.Notes as notes,
+				test.Score as score, test.GeometricScore as geometricScore
 
 				FROM guest
 				INNER JOIN test ON guest.ID=test.Guest_ID

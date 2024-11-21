@@ -21,21 +21,28 @@ try {
     $conn = connectdb();
 
     //select demographic data of the user who performed the test
-    if (!(isUserLogged()))
+    if (!(isUserLogged()) || isset($_SESSION['referralTest'])) {
         $sql = "SELECT ID, name, surname, age, gender, notes FROM guest WHERE ID='$id'";
-    else
+    } else {
         $sql = "SELECT ID, name, surname, gender, notes, date FROM guest INNER JOIN account ON account.Guest_ID = guest.ID WHERE ID='$id'";
+    }
+
     $result = $conn->query($sql);
     $row = $result->fetch_assoc();
 
-    //se il test è stato fatto dal guest dell'account loggato, la sua età viene calcolata dalla data di nascita
     $age = "";
-    /*if ($row['age'] != null) {
-        if (!isset($_SESSION['name']))
-            $age = date_diff(date_create($row['date']), date_create('now'))->y;
-        else
-            $age = $row['age'];
-    }*/
+    if ($row['age'] != null)
+        $age = $row['age'];
+
+    if (isset($row['date'])) {
+        // Create DateTime objects
+        $birthDate = new DateTime($row['date']);
+        $currentDate = new DateTime();
+
+        // Calculate the difference
+        $age = $birthDate->diff($currentDate)->y;
+    }
+
 
 
     //create and open the csv file, unique for every ID
@@ -60,7 +67,7 @@ try {
     fwrite($txt, $line);
 
 
-    //values of the firts csv segment that remains constant every line
+    //values of the firts csv segment that is constant every line
     $firstValues = $row["ID"] . ";" . $row["name"] . ";" . $row["surname"] . ";" . $age . ";" . $row["gender"] . ";" . $row["notes"] . ";" . $_SESSION["testTypeCmp"] . ";" . $_SESSION["time"] . ";" . $_SESSION["sampleRate"] . ";" . $_SESSION["amplitude"] . ";" . $_SESSION["frequency"] . ";" . $_SESSION["duration"] . ";" . $_SESSION["onRamp"] . ";" . $_SESSION["offRamp"] . ";";
     if ($testTypeExt == "WHITE_NOISE_MODULATION")
         $firstValues .= $_SESSION["modAmplitude"] . ";" . $_SESSION["modFrequency"] . ";" . $_SESSION["modPhase"] . ";";
