@@ -96,7 +96,7 @@ if (!isUserLogged())
             <tbody>
                 <?php
                 try {
-                    $sql = "SELECT Guest_ID, Test_count, Timestamp, Type FROM test WHERE Guest_ID='$id' AND ref_name != ''";
+                    $sql = "SELECT Guest_ID, Test_count, Timestamp, Type FROM test WHERE Guest_ID='$id' AND ref_name = ''";
                     $result = $conn->query($sql);
                     while ($row = $result->fetch_assoc()) { ?>
                         <tr>
