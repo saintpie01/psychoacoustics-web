@@ -1,16 +1,9 @@
 
-//not used!!, send longstring with POST method to fullUrl page
-function sendDataToPHP(fullUrl, longString) {
-    fetch(fullUrl, {
-
-        method: 'POST', // Use POST to send the data
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-
-        body: 'result=' + encodeURIComponent(longString) // Send the data via POST
-    });
-}
+const algorithmMapping = {
+    SimpleUpDown: 1,
+    TwoDownOneUp: 2,
+    ThreeDownOneUp: 3,
+};
 
 
 function timer() {
@@ -33,49 +26,27 @@ function start() {
     //window.setTimeout("random()", ITI); //test starts after interTrialInterval ms
 }
 
+//test
+function start_2() {
+    document.getElementById("StartingWindow").style.display = "none"; //starting window becomes invisible
+    document.getElementById("PlayForm").style.display = "inherit"; //test interface becomes visible
+    // document.getElementById("downloadData").style.display = "inherit"; //test interface becomes visible
 
-//funzione per implementare l'algoritmo nD1U
-function nDOWNoneUP(n) {
-    delta = modAmp;
+    // take the timestamp when the test starts
+    var currentdate = new Date();
+    timestamp = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
 
-    if (pressedButton == swap) { //correct answer
-        history[i] = 1;
-        correctAnsw += 1;
-        if (correctAnsw == n) { //if there are n consegutive correct answers
-            modAmp /= currentFactor;
+    //window.setTimeout("random()", ITI); //test starts after interTrialInterval ms
+}
 
-            correctAnsw = 0;
-            if (positiveStrike == 0) {
-                //there was a reversal
-                reversalsPositions[countRev] = i - (n - 1);//save the position of that reversal
-                countRev++;
-            }
-            positiveStrike = 1;
-        }
-        if (feedback) {
-            document.getElementById("correct").style.display = "inherit";
-            document.getElementById("wrong").style.display = "none";
-            window.setTimeout("timer()", 500);
-        }
 
-    } else { //wrong answer
-        history[i] = 0;
-        correctAnsw = 0;
-        modAmp *= currentFactor;
-
-        if (positiveStrike == 1) {
-            //there was a reversal
-            reversalsPositions[countRev] = i;//save the position of that reversal
-            countRev++;
-        }
-        positiveStrike = 0;
-
-        if (feedback) {
-            document.getElementById("correct").style.display = "none";
-            document.getElementById("wrong").style.display = "inherit";
-            window.setTimeout("timer()", 500);
+document.addEventListener('keypress', function keypress(event) {
+    if (!document.getElementById("button1").disabled) {
+        if ((event.code >= 'Digit1' && event.code <= 'Digit' + nAFC) ||
+            (event.code >= 'Numpad1' && event.code <= 'Numpad' + nAFC)) {
+            select(event.key);
+            console.log('You pressed ' + event.key + ' button');
         }
     }
-    // document.getElementById("downloadData").disabled = true;
-    stimulus = []; // debug
-}
+});
+

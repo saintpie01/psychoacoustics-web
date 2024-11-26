@@ -25,7 +25,7 @@ var i = 0;						// next index of the array
 var countRev = 0;				// count of reversals 
 var results = [[], [], [], [], [], [], [], []];		// block, trial, delta, variable value, variable position, pressed button, correct answer?, reversals
 var score = 0					// final score
-var geometric_score = 1			
+var geometric_score = 1
 var positiveStrike = -1;		// -1 = unsetted, 0 = negative strike, 1 = positive strike
 var result = "";				// final results that will be saved on the db
 
@@ -51,7 +51,7 @@ function random() {
     }
 }
 
-function saveResults() {
+/*function saveResults() {
     //save new data
     results[0][i] = currentBlock;				// block
     results[1][i] = i + 1;						// trial
@@ -60,12 +60,18 @@ function saveResults() {
     results[4][i] = swap;						// variable position
     results[5][i] = pressedButton; 				// pressed button
     results[6][i] = pressedButton == swap ? 1 : 0;	// is the answer correct? 1->yes, 0->no
-}
+}*/
 
 //funzione per implementare l'algoritmo SimpleUpDown
 function select(button) {
     pressedButton = button;
-    saveResults();
+
+    results[0][i] = currentBlock;				// block
+    results[1][i] = i + 1;						// trial
+    results[2][i] = parseFloat(parseInt((varAmp - stdAmp) * 1000) / 1000); 	// approximated delta
+    results[3][i] = parseFloat(parseInt(varAmp * 1000) / 1000);				// approximated variable value
+    results[4][i] = swap;						// variable position
+
 
     switch (algorithm) {
         case 'SimpleUpDown':
@@ -82,14 +88,15 @@ function select(button) {
             break;
     }
 
+
+    results[5][i] = pressedButton; 				// pressed button
+    results[6][i] = pressedButton == swap ? 1 : 0;	// is the answer correct? 1->yes, 0->no
     results[7][i] = countRev; // reversals counter is updated in nDOWNoneUP() function and saved after it
 
     //increment counter
     i++;
 
-    //use the second factor from now
-    if (countRev == reversals)
-        currentFactor = secondFactor;
+
 
     //end of the test
     if (countRev == reversals + secondReversals) {
@@ -107,7 +114,7 @@ function select(button) {
             score += (deltaBefore + deltaAfter) / 2; //average delta of the reversal
             geometric_score *= (deltaBefore + deltaAfter) / 2;
         }
-        geometric_score = Math.pow(geometric_score, 1/reversalThreshold);
+        geometric_score = Math.pow(geometric_score, 1 / reversalThreshold);
         geometric_score = parseFloat(parseInt(geometric_score * 100) / 100);
         score /= reversalThreshold; //average deltas of every reversal
         score = parseFloat(parseInt(score * 100) / 100); //approximate to 2 decimal digits
@@ -118,7 +125,7 @@ function select(button) {
         description += "&fact=" + factor + "&secFact=" + secondFactor + "&rev=" + reversals + "&secRev=" + secondReversals + "&threshold=" + reversalThreshold + "&alg=" + algorithm + "&sampleRate=" + context.sampleRate;
 
         //pass the datas to the php file
-        location.href = "php/save_test.php?result=" + result + "&timestamp=" + timestamp + "&type=amp" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score +  "&saveSettings=" + saveSettings;
+        location.href = "php/save_test.php?result=" + result + "&timestamp=" + timestamp + "&type=amp" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
     }
     //if the test is not ended
     else {
@@ -134,14 +141,14 @@ function select(button) {
     }
 }
 
-document.addEventListener('keypress', function keypress(event) {
+/*document.addEventListener('keypress', function keypress(event) {
     if (!document.getElementById("button1").disabled) {
         if ((event.code >= 'Digit1' && event.code <= 'Digit' + nAFC) || (event.code >= 'Numpad1' && event.code <= 'Numpad' + nAFC)) {
             select(event.key)
             console.log('You pressed ' + event.key + ' button');
         }
     }
-});
+});*/
 
 //funzione per implementare l'algoritmo nD1U
 function nDOWNoneUP(n) {
@@ -152,43 +159,51 @@ function nDOWNoneUP(n) {
         correctAnsw += 1;
         if (correctAnsw == n) { //if there are n consegutive correct answers
 
-            varAmp = stdAmp + (delta / currentFactor);
             correctAnsw = 0;
-
             if (positiveStrike == 0) {
                 //there was a reversal
                 reversalsPositions[countRev] = i - (n - 1);//save the position of that reversal
+
                 countRev++;
+                if (countRev > reversals)
+                    currentFactor = secondFactor;
+
             }
+
+            varAmp = stdAmp + (delta / currentFactor);
             positiveStrike = 1;
         }
         if (feedback) {
             document.getElementById("correct").style.display = "inherit";
             document.getElementById("wrong").style.display = "none";
-            window.setTimeout("timer()", 500);
+
         }
 
     } else { //wrong answer
         history[i] = 0;
         correctAnsw = 0;
-        if (stdAmp + (delta * currentFactor) <= 0)// varAmp can't be more than 0
-            varAmp = stdAmp + (delta * currentFactor);
+
 
         if (positiveStrike == 1) {
             //there was a reversal
             reversalsPositions[countRev] = i;//save the position of that reversal
             countRev++;
+
+            if (countRev > reversals)
+                currentFactor = secondFactor;
         }
+
+        if (stdAmp + (delta * currentFactor) <= 0)// varAmp can't be more than 0
+            varAmp = stdAmp + (delta * currentFactor);
         positiveStrike = 0;
 
         if (feedback) {
             document.getElementById("correct").style.display = "none";
             document.getElementById("wrong").style.display = "inherit";
-            window.setTimeout("timer()", 500);
+
         }
     }
-    // document.getElementById("downloadData").disabled = true; // debug
-    stimulus = []; // debug
+    window.setTimeout("timer()", 500);
 }
 
 //starting function

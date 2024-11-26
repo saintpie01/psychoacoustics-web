@@ -51,7 +51,7 @@ function random() {
         // document.getElementById("downloadData").disabled = false;
     }
 }
-
+/*
 function saveResults() {
     //save new data
     results[0][i] = currentBlock;				// block
@@ -61,12 +61,17 @@ function saveResults() {
     results[4][i] = swap;						// variable position
     results[5][i] = pressedButton; 				// pressed button
     results[6][i] = pressedButton == swap ? 1 : 0;	// is the answer correct? 1->yes, 0->no
-}
+}*/
 
 //funzione per implementare l'algoritmo SimpleUpDown
 function select(button) {
     pressedButton = button;
-    saveResults();
+
+    results[0][i] = currentBlock;				// block
+    results[1][i] = i + 1;						// trial
+    results[2][i] = parseFloat(parseInt(delta * 1000) / 1000); 	// approximated delta
+    results[3][i] = parseFloat(parseInt(delta * 1000) / 1000);				// approximated variable value
+    results[4][i] = swap;
 
     switch (algorithm) {
         case 'SimpleUpDown':
@@ -83,14 +88,14 @@ function select(button) {
             break;
     }
 
+
+    results[5][i] = pressedButton; 				// pressed button
+    results[6][i] = pressedButton == swap ? 1 : 0;	// is the answer correct? 1->yes, 0->no
     results[7][i] = countRev; // reversals counter is updated in nDOWNoneUP() function and saved after it
 
     //increment counter
     i++;
 
-    //use the second factor from now
-    if (countRev == reversals)
-        currentFactor = secondFactor;
 
     //end of the test
     if (countRev == reversals + secondReversals) {
@@ -108,7 +113,7 @@ function select(button) {
             score += (deltaBefore + deltaAfter) / 2; //average delta of the reversal
             geometric_score *= (deltaBefore + deltaAfter) / 2;
         }
-        geometric_score = Math.pow(geometric_score, 1/reversalThreshold);
+        geometric_score = Math.pow(geometric_score, 1 / reversalThreshold);
         geometric_score = parseFloat(parseInt(geometric_score * 100) / 100);
         score /= reversalThreshold; //average deltas of every reversal
         score = parseFloat(parseInt(score * 100) / 100); //approximate to 2 decimal digits
@@ -134,55 +139,62 @@ function select(button) {
     }
 }
 
-document.addEventListener('keypress', function keypress(event) {
-    if (!document.getElementById("button1").disabled) {
-        if ((event.code >= 'Digit1' && event.code <= 'Digit' + nAFC) || (event.code >= 'Numpad1' && event.code <= 'Numpad' + nAFC)) {
-            select(event.key)
-            console.log('You pressed ' + event.key + ' button');
-        }
-    }
-});
+
 
 //funzione per implementare l'algoritmo nD1U
 function nDOWNoneUP(n) {
+
+
     if (pressedButton == swap) { //correct answer
         history[i] = 1;
         correctAnsw += 1;
         if (correctAnsw == n) { //if there are n consegutive correct answers
-            delta = delta / currentFactor;
+
+
             correctAnsw = 0;
             if (positiveStrike == 0) {
                 //there was a reversal
                 reversalsPositions[countRev] = i - (n - 1);//save the position of that reversal
+
                 countRev++;
+                if (countRev > reversals)
+                    currentFactor = secondFactor;
+
             }
+            delta = delta / currentFactor;
             positiveStrike = 1;
         }
         if (feedback) {
             document.getElementById("correct").style.display = "inherit";
             document.getElementById("wrong").style.display = "none";
-            window.setTimeout("timer()", 500);
         }
     } else { //wrong answer
         history[i] = 0;
         correctAnsw = 0;
-        delta = delta * currentFactor;
+
 
         if (positiveStrike == 1) {
             //there was a reversal
             reversalsPositions[countRev] = i;//save the position of that reversal
             countRev++;
+
+            if (countRev > reversals)
+                currentFactor = secondFactor;
         }
+
+
+
+        delta = delta * currentFactor;
         positiveStrike = 0;
 
         if (feedback) {
             document.getElementById("correct").style.display = "none";
             document.getElementById("wrong").style.display = "inherit";
-            window.setTimeout("timer()", 500);
+
         }
     }
-    // document.getElementById("downloadData").disabled = true;
-    stimulus = []; // debug
+
+    window.setTimeout("timer()", 500);
 }
 
 //starting function

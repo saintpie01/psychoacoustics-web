@@ -35,6 +35,8 @@ var result = "";				// final results that will be saved on the db
 var timestamp = 0;				// timestamp of the starting of the test
 var pressedButton;
 
+const parameter = algorithmMapping[algorithm] || 2; //decide which parameter to pass on nDOWNoneUP based on alg passed
+
 //funzione per randomizzare l'output
 function random() {
     var rand = Math.floor(Math.random() * nAFC);// the variable sound will be the rand-th sound played
@@ -55,89 +57,32 @@ function random() {
     }
 }
 
-function saveResults() {
-    //save new data
+
+
+//funzione per implementare l'algoritmo SimpleUpDown
+function select(button) {
+    pressedButton = button;
+
     results[0][i] = currentBlock;				// block
     results[1][i] = i + 1;						// trial
     results[2][i] = parseFloat(parseInt((varFreq - stdFreq) * 1000) / 1000); 	// approximated delta
     results[3][i] = parseFloat(parseInt(varFreq * 1000) / 1000);			// approximated variable value
     results[4][i] = swap;						// variable position
+
+
+    //apply the algorithm to check for reversals, modify the delta parameter if needed
+    nDOWNoneUP(parameter); 
+
+
     results[5][i] = pressedButton; 				// pressed button
     results[6][i] = pressedButton == swap ? 1 : 0;	// is the answer correct? 1->yes, 0->no
-}
-
-//funzione per implementare l'algoritmo SimpleUpDown
-function select(button) {
-    pressedButton = button;
-    saveResults();
-
-    switch (algorithm) {
-        case 'SimpleUpDown':
-            nDOWNoneUP(1);
-            break;
-        case 'TwoDownOneUp':
-            nDOWNoneUP(2);
-            break;
-        case 'ThreeDownOneUp':
-            nDOWNoneUP(3);
-            break;
-        default:
-            nDOWNoneUP(2);
-            break;
-    }
-
     results[7][i] = countRev; // reversals counter is updated in nDOWNoneUP() function and saved after it
 
-    //increment counter
+    //prepare for new trial
     i++;
 
-    //use the second factor from now
-    if (countRev == reversals)
-        currentFactor = secondFactor;
 
-    //end of the test
-    if (countRev == reversals + secondReversals) {
-        //format datas as a csv file
-        //format: block;trials;delta;variableValue;variablePosition;button;correct;reversals;";
-        for (var j = 0; j < i; j++) {
-            result += results[0][j] + ";" + results[1][j] + ";" + results[2][j] + ";" + results[3][j] + ";"
-            result += results[4][j] + ";" + results[5][j] + ";" + results[6][j] + ";" + results[7][j] + ",";
-        }
-
-        //calculate score
-        for (var j = countRev - reversalThreshold; j < countRev; j++) {
-            deltaBefore = results[2][reversalsPositions[j] - 1]; //delta before the reversal
-            deltaAfter = results[2][reversalsPositions[j]]; //delta after the reversal
-            score += (deltaBefore + deltaAfter) / 2; //average delta of the reversal
-            geometric_score *= (deltaBefore + deltaAfter) / 2;
-        }
-        geometric_score = Math.pow(geometric_score, 1/reversalThreshold);
-        geometric_score = parseFloat(parseInt(geometric_score * 100) / 100);
-        score /= reversalThreshold; //average deltas of every reversal
-        score = parseFloat(parseInt(score * 100) / 100); //approximate to 2 decimal digits
-
-        //format description as a csv file
-        //prima tutti i nomi, poi tutti i dati
-        var description = "&amp=" + amp + "&freq=" + freq + "&dur=" + dur + "&onRamp=" + onRamp + "&offRamp=" + offRamp +/*"&phase="+phase+*/"&blocks=" + blocks + "&delta=" + startingDelta + "&nAFC=" + nAFC + "&ISI=" + ISI + "&ITI=" + ITI;
-        description += "&fact=" + factor + "&secFact=" + secondFactor + "&rev=" + reversals + "&secRev=" + secondReversals + "&threshold=" + reversalThreshold + "&alg=" + algorithm + "&sampleRate=" + context.sampleRate;
-
-
-        console.log('results = ' + result);
-        //pass the datas to the php file
-        //location.href = "php/save_test.php?result=" + result + "&timestamp=" + timestamp + "&type=freq" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
-        //var location = "php/save_test.php?timestamp=" + timestamp + "&type=freq" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
-        
-        //sendDataToPHP(location, result);
-
-        //pass the datas to the php file
-        location.href = "php/save_test.php?result=" + result + "&timestamp=" + timestamp + "&type=nmod" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
-   
-    
-    
-    
-    }
-    //if the test is not ended
-    else {
+    if (countRev < reversals + secondReversals) {
 
         // disable the response buttons until the new sounds are heared
         for (var j = 1; j <= nAFC; j++)
@@ -146,17 +91,16 @@ function select(button) {
         //randomize and play the next sounds
         random();
         //window.setTimeout("random()", ITI); //next sounds after interTrialInterval ms
+
+    } else {
+        //test ended
+        createResults();
+
     }
 }
 
-document.addEventListener('keypress', function keypress(event) {
-    if (!document.getElementById("button1").disabled) {
-        if ((event.code >= 'Digit1' && event.code <= 'Digit' + nAFC) || (event.code >= 'Numpad1' && event.code <= 'Numpad' + nAFC)) {
-            select(event.key)
-            console.log('You pressed ' + event.key + ' button');
-        }
-    }
-});
+
+
 
 
 //funzione per implementare l'algoritmo nD1U
@@ -167,59 +111,90 @@ function nDOWNoneUP(n) {
         history[i] = 1;
         correctAnsw += 1;
         if (correctAnsw == n) { //if there are n consegutive correct answers
-            varFreq = stdFreq + (delta / currentFactor);
+
             correctAnsw = 0;
             if (positiveStrike == 0) {
                 //there was a reversal
+                //varFreq = stdFreq + (delta / currentFactor);
                 reversalsPositions[countRev] = i - (n - 1);//save the position of that reversal
+
                 countRev++;
+                if (countRev > reversals)
+                    currentFactor = secondFactor;
+
             }
+
+            varFreq = stdFreq + (delta / currentFactor);
             positiveStrike = 1;
         }
+
         if (feedback) {
             document.getElementById("correct").style.display = "inherit";
             document.getElementById("wrong").style.display = "none";
-            window.setTimeout("timer()", 500);
         }
 
     } else { //wrong answer
         history[i] = 0;
         correctAnsw = 0;
-        varFreq = stdFreq + (delta * currentFactor);
+
 
         if (positiveStrike == 1) {
             //there was a reversal
             reversalsPositions[countRev] = i;//save the position of that reversal
             countRev++;
+
+            if (countRev > reversals)
+                currentFactor = secondFactor;
+
+
         }
+        varFreq = stdFreq + (delta * currentFactor);
         positiveStrike = 0;
 
         if (feedback) {
             document.getElementById("correct").style.display = "none";
             document.getElementById("wrong").style.display = "inherit";
-            window.setTimeout("timer()", 500);
         }
     }
-    // document.getElementById("downloadData").disabled = true;
-    stimulus = []; // debug
+
+    window.setTimeout("timer()", 500);
+
 }
 
-//starting function
-/*function start() {
-    document.getElementById("StartingWindow").style.display = "none"; //starting window becomes invisible
-    document.getElementById("PlayForm").style.display = "inherit"; //test interface becomes visible
-    // document.getElementById("downloadData").style.display = "inherit"; //test interface becomes visible
 
-    // take the timestamp when the test starts
-    var currentdate = new Date();
-    timestamp = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+function createResults() {
 
-    random();
-    //window.setTimeout("random()", ITI); //test starts after interTrialInterval ms
-}*/
+    //format datas as a csv file
+    //format: block;trials;delta;variableValue;variablePosition;button;correct;reversals;";
+    for (var j = 0; j < i; j++) {
+        result += results[0][j] + ";" + results[1][j] + ";" + results[2][j] + ";" + results[3][j] + ";"
+        result += results[4][j] + ";" + results[5][j] + ";" + results[6][j] + ";" + results[7][j] + ",";
+    }
 
-/*function timer() {
-    document.getElementById("wrong").style.display = "none";
-    document.getElementById("correct").style.display = "none";
-}*/
+    //calculate score
+    for (var j = countRev - reversalThreshold; j < countRev; j++) {
+        deltaBefore = results[2][reversalsPositions[j] - 1]; //delta before the reversal
+        deltaAfter = results[2][reversalsPositions[j]]; //delta after the reversal
+        score += (deltaBefore + deltaAfter) / 2; //average delta of the reversal
+        geometric_score *= (deltaBefore + deltaAfter) / 2;
+    }
+    geometric_score = Math.pow(geometric_score, 1 / reversalThreshold);
+    geometric_score = parseFloat(parseInt(geometric_score * 100) / 100);
+    score /= reversalThreshold; //average deltas of every reversal
+    score = parseFloat(parseInt(score * 100) / 100); //approximate to 2 decimal digits
+
+    //format description as a csv file
+    //prima tutti i nomi, poi tutti i dati
+    var description = "&amp=" + amp + "&freq=" + freq + "&dur=" + dur + "&onRamp=" + onRamp + "&offRamp=" + offRamp +/*"&phase="+phase+*/"&blocks=" + blocks + "&delta=" + startingDelta + "&nAFC=" + nAFC + "&ISI=" + ISI + "&ITI=" + ITI;
+    description += "&fact=" + factor + "&secFact=" + secondFactor + "&rev=" + reversals + "&secRev=" + secondReversals + "&threshold=" + reversalThreshold + "&alg=" + algorithm + "&sampleRate=" + context.sampleRate;
+
+
+    console.log('results = ' + result);
+
+
+    //pass the datas to the php file
+    location.href = "php/save_test.php?result=" + result + "&timestamp=" + timestamp + "&type=nmod" + description + "&currentBlock=" + currentBlock + "&score=" + score + "&geometric_score=" + geometric_score + "&saveSettings=" + saveSettings;
+
+}
+
 
