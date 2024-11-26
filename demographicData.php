@@ -20,10 +20,12 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
     <link rel="icon" type="image/x-icon" href="files/logo.png">
 
     <!-- Bootstrap CSS -->
+
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/staircaseStyle.css<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>">
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="js/funzioni.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"></script>
-
+    
     <title>Psychoacoustics-web - Personal info</title>
 
     <script>
@@ -111,9 +113,9 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
         <h2>Personal Informations</h2>
 
         <form name="staircase" method="post" action="php/personal_info_validation.php<?php
-                                                                                    if (isset($_GET["test"]))
-                                                                                        echo "?test=" . $_GET["test"];
-                                                                                    ?>">
+                                                                                        if (isset($_GET["test"]))
+                                                                                            echo "?test=" . $_GET["test"];
+                                                                                        ?>">
             <!-- this box contains all the page main buttons and content -->
             <div class="row align-items-center g-4">
 
@@ -267,8 +269,15 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
             </p>
         </div>
     <?php } ?>
-    <script type="text/javascript" src="js/funzioni.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</body>
+
+    <script>
+        // Ensure the setup is called when the DOM is fully loaded
+        document.addEventListener("DOMContentLoaded", () => {
+            setupVolumeControl(); // Initialize volume control function
+        });
+    </script>
+
+
+    </body>
 
 </html>
