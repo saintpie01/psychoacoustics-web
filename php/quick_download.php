@@ -33,29 +33,30 @@ try {
     $age = "";
     if ($row['age'] != null)
         $age = $row['age'];
-
+       
+    $currentDate = new DateTime();
     if (isset($row['date'])) {
         // Create DateTime objects
         $birthDate = new DateTime($row['date']);
-        $currentDate = new DateTime();
+
 
         // Calculate the difference
         $age = $birthDate->diff($currentDate)->y;
     }
 
-
-
+    $dateString = $currentDate->format('Y-m-d H-i'); // Example format: "2024-11-25 14:30:00"
+    $testTypeExt = getExtfromCmpType($_SESSION["testTypeCmp"]);
     //create and open the csv file, unique for every ID
+    $path = $id . '-' . $testTypeExt . $dateString;
     if ($_GET['format'] == "complete")
-        $path = $id . "results.csv";
+        $path .= "results.csv";
     else
-        $path = $id . "reducedResults.csv";
+        $path .= "reducedResults.csv";
     $txt = fopen($path, "w") or die("Unable to open file!");
     fwrite($txt, chr(0xEF) . chr(0xBB) . chr(0xBF)); //utf8 encoding
 
     //define columns name
     $line = "Guest_ID;Name;Surname;Age;Gender;Notes;Test Type;Timestamp;Sample Rate;Amplitude;Frequency;Duration;Onset Ramp;Offset Ramp;";
-    $testTypeExt = getExtfromCmpType($_SESSION["testTypeCmp"]);
     if ($testTypeExt == "WHITE_NOISE_MODULATION")
         $line .= "Modulator Amplitude;Modulator frequency;Modulator Phase;";
     $line .= "n. of blocks;nAFC;ISI;ITI;First factor;First reversals;Second factor;Second reversals;reversal threshold;algorithm;";
