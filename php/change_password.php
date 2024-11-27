@@ -28,7 +28,7 @@ try {
     //look for user with credentials given, takes email
     $sql = "SELECT email 
             FROM account 
-            WHERE Username ='" . $_SESSION['currentLoggedUsername'] . "' 
+            WHERE Username ='" . $_SESSION['loggedUser']['username'] . "' 
                   AND 
                   password = SHA2('$oldPsw', 256)";
     $result = $conn->query($sql);
@@ -42,7 +42,7 @@ try {
     //update password
     $sql = "UPDATE account 
             SET password = SHA2('$newPsw', 256)  
-            WHERE username= '" . $_SESSION['currentLoggedUsername'] . "'";
+            WHERE username= '" . $_SESSION['loggedUser']['username'] . "'";
     $conn->query($sql);
 
     $row = $result->fetch_assoc();
@@ -55,6 +55,6 @@ try {
     error_log($e, 3, "errors_log.txt");
 }
 
-logEvent("User #{$_SESSION['currentLoggedID']} changed his password");
+logEvent("User #{$_SESSION['loggedUser']['id']} changed his password");
 header('Location: ../userSettings.php?err=3'); //this is not an error
 

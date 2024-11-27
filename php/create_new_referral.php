@@ -28,7 +28,7 @@ if (!isset($testType) || $testType == "") { //IF NO TEST TYPE HAS BEEN SELECTED
 	exit;
 }
 
-$id = $_SESSION['currentLoggedID'];
+$id = $_SESSION['loggedUser']['id'];
 
 try {
 	$conn = connectdb();

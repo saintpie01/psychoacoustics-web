@@ -14,11 +14,11 @@ include_once "helpers/utils.php";
 /*
  * @var string contains the name of the logged user
  */
-$_SESSION['currentLoggedUsername'] = "";
+$_SESSION['loggedUser']['username'] = "";
 /*
  * @var int contains the id of the logged user
  */
-$_SESSION['currentLoggedID'] = 0;
+$_SESSION['loggedUser']['id'] = 0;
 
 
 //sql injections handling
@@ -95,8 +95,8 @@ try {
 	$sql .= ",'$id', '0', '" . base64_encode($usr) . "', NULL, NULL, '$email');";
 	$conn->query($sql);
 
-	$_SESSION['currentLoggedUsername'] = $usr;
-	$_SESSION['currentLoggedID'] = $id;
+	$_SESSION['loggedUser']['username'] = $usr;
+	$_SESSION['loggedUser']['id'] = $id;
 
 	$conn->close();
 } catch (Exception $e) {

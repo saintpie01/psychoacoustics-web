@@ -62,7 +62,7 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
 
                     $conn = connectdb();
 
-                    $sql = "SELECT Referral as ref FROM account WHERE Username='{$_SESSION['currentLoggedUsername']}'";
+                    $sql = "SELECT Referral as ref FROM account WHERE Username='{$_SESSION['loggedUser']['username']}'";
 
                     $result = $conn->query($sql);
                     $row = $result->fetch_assoc();
@@ -122,7 +122,7 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
                 <!--name form -->
                 <div class="col-12 col-lg-3">
                     <div class="input-group flex-nowrap conditionalDisplay">
-                        <span class="input-group-text" id="name">Name<?php if (!isset($_SESSION['currentLoggedUsername'])) echo "*"; ?></span>
+                        <span class="input-group-text" id="name">Name<?php if (!isset($_SESSION['loggedUser']['username'])) echo "*"; ?></span>
                         <input type="text" class="form-control" id="inputName" placeholder="Name" name="name">
                     </div>
                 </div>
@@ -204,7 +204,7 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
                             </div>
                         </div>
                         <div class="col-12 col-lg-6 d-grid">
-                            <?php if (isset($_SESSION['currentLoggedUsername'])) { ?>
+                            <?php if (isset($_SESSION['loggedUser']['username'])) { ?>
                                 <button type="button" class="btn btn-primary btn-red refButton" onclick="insertRef()">
                                     USE MINE
                                 </button>
@@ -247,7 +247,7 @@ if (!isset($_GET['ref']) && !isset($_GET["test"]))
         </form>
     </div>
 
-    <?php if (!isset($_SESSION['currentLoggedUsername'])) { ?>
+    <?php if (!isset($_SESSION['loggedUser']['username'])) { ?>
         <div class="container my-5 p-4 p-sm-5 border rounded rounded-4 bg-light">
             <p style="color: black;"> TERMS AND CONDITION
                 PSYCHOACOUSTICS-WEB is a research tool designed by Andrei Senyuva, Giulio Contemori, Andrea Felline, Gnana Prakash Goli, Mauro Migliardi, Niccolò Orlandi, Mattia Toffanin under the supervision and responsibility of Massimo Grassi. The responsible person and referent person of PSYCHOACOUSTICS-WEB (hereafter referred to as “referent person”) is Massimo Grassi, Department of General Psychology, University of Padua, via Venezia 8, 35134, Padua, Italy, email: massimo.grassi@unipd.it, phone (office): +39 0498277494. PSYCHOACOUSTICS-WEB complies with the current pertinent regulations related to research ethics and professional deontology, such as: The General Data Protection Regulation (EU) 2016/679 ("GDPR"), the decree “Regole deontologiche per trattamenti a fini statistici o di ricerca scientifica pubblicate ai sensi dell’art. 20, comma 4, del d.lgs. 10 agosto 2018, n. 101 - 19 dec 2018”.

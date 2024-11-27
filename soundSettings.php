@@ -51,7 +51,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
 
 
 
-    /*if (isset($_SESSION['currentLoggedUsername'])) {
+    /*if (isset($_SESSION['loggedUser']['username'])) {
         try {
 
             $conn = connectdb();
@@ -64,7 +64,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
 								FROM test
 								INNER JOIN account ON account.fk_GuestTest=test.Guest_ID AND account.fk_TestCount=test.Test_count
 								
-								WHERE account.Username='{$_SESSION['currentLoggedUsername']}'";
+								WHERE account.Username='{$_SESSION['loggedUser']['username']}'";
             $result = $conn->query($sql);
             $row = $result->fetch_assoc();
         } catch (Exception $e) {
@@ -464,7 +464,7 @@ if (!isset($_GET["test"]) && !isset($_SESSION['referralTest']))
                                         Feedback after response
                                     </label>
                                 </div>
-                                <?php /* if (isset($_SESSION['currentLoggedUsername']) && !(isset($_SESSION['creatingNewReferral']) && $_SESSION['creatingNewReferral'] == true)) { ?>
+                                <?php /* if (isset($_SESSION['loggedUser']['username']) && !(isset($_SESSION['creatingNewReferral']) && $_SESSION['creatingNewReferral'] == true)) { ?>
                                     <div class="form-check"
                                         title="if checked the settings will be saved and used as default for the next tests">
                                         <input class="form-check-input" type="checkbox" id="saveSettings"

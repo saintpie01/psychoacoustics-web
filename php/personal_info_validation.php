@@ -79,7 +79,7 @@ $_SESSION["saveData"] = true;
 
 
 if (isUserLogged()) { 
-    $_SESSION['idGuestTest'] = $_SESSION['currentLoggedID']; 
+    $_SESSION['idGuestTest'] = $_SESSION['loggedUser']['id']; 
 
     if ($referralCode == "") { //no referral is present, go ahead
         header($redirection);

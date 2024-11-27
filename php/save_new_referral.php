@@ -8,7 +8,7 @@ include_once "db_connect.php";
 include_once "helpers/utils.php";
 include_once "helpers/database_functions.php";
 
-$id = $_SESSION['currentLoggedID'];
+$id = $_SESSION['loggedUser']['id'];
 
 //takes all the useful test parameters given in POST
 $testParameters = initializeTestParameter($_POST);
@@ -42,7 +42,7 @@ try {
 	//the referral is identified by the $count number in the account table
 	$sql = "UPDATE account 
 			SET fk_TestCount = '$count'  
-			WHERE Username = '{$_SESSION['currentLoggedUsername']}' ";
+			WHERE Username = '{$_SESSION['loggedUser']['username']}' ";
 	$conn->query($sql);
 
 } catch (Exception $e) {

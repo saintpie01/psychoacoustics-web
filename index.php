@@ -8,17 +8,15 @@ $_SESSION['version'] = 1; //change this number to force cache update
 
 //session gets destroyed to clear cached data but logged user data is kept
 if (isUserLogged()) {
-    $CLID  = $_SESSION['currentLoggedID'];
-    $CLUN = $_SESSION['currentLoggedUsername'];
+    $logged = $_SESSION['loggedUser'];
 }
 
 $_SESSION = array(); //session get resetted
 session_destroy();
 session_start();
 
-if (isset($CLID)) { //account data are preserved
-    $_SESSION['currentLoggedID'] = $CLID;
-    $_SESSION['currentLoggedUsername'] = $CLUN;
+if (isset($logged)) { //account data are preserved
+    $_SESSION['loggedUser'] = $logged;
 }
 
 ?>
@@ -61,7 +59,7 @@ if (isset($CLID)) { //account data are preserved
         $errorCode = $_GET['err'] ;
 
         if ($errorCode == 1)
-            echo "<div class='alert alert-danger'>Access denied, attempt logged</div>";
+            echo "<div class='alert alert-danger'>Access denied, this function is exclusive to Administrators</div>";
         if ($errorCode == 2)
             echo "<div class='alert alert-danger'>Something went wrong</div>";
         if ($errorCode == "db")

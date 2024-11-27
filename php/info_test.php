@@ -8,7 +8,7 @@ session_start();
 require_once "db_connect.php";
 require_once "helpers/database_functions.php";
 
-$testId = $_SESSION['currentLoggedID'];
+$testId = $_SESSION['loggedUser']['id'];
 $testCount = $_POST['testCount'];
 
 try {

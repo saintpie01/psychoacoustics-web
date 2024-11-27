@@ -10,7 +10,7 @@ require_once "db_connect.php";
 include_once "helpers/utils.php";
 
 $testCount = $_POST['testCount'];
-$id = $_SESSION['currentLoggedUsername'];
+$id = $_SESSION['loggedUser']['username'];
 
 try {
     $conn = connectdb();
@@ -24,6 +24,6 @@ try {
     header("Location: ../index.php?err=db");
 }
 
-logEvent("User #{$_SESSION['currentLoggedID']} changed his referral test");
+logEvent("User #{$_SESSION['loggedUser']['id']} changed his referral test");
 header("Location: ../userSettings.php");
 

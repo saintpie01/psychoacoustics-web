@@ -40,12 +40,12 @@ try {
 
 	$row = $result->fetch_assoc();
 
-	$_SESSION['currentLoggedUsername'] = $usr;
-	$_SESSION['currentLoggedID'] = $row['Guest_ID'];
+	$_SESSION['loggedUser']['username'] = $usr;
+	$_SESSION['loggedUser']['id'] = $row['Guest_ID'];
 } catch (Exception $e) {
 	error_log($e, 3, "errors_log.txt");
 	header("Location: ../index.php?err=db");
 }
 
-logEvent("User #{$_SESSION['currentLoggedID']} logged in");
+logEvent("User #{$_SESSION['loggedUser']['id']} logged in");
 header('Location: ../index.php');

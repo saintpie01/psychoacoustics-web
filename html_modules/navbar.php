@@ -37,8 +37,8 @@
 
                  <div class="d-none d-md-block me-5"> <!-- Add a margin to the right -->
                      <label id="menuWelcome" class='text-white navbar-text d-none d-md-inline'>
-                         Welcome <?php echo $_SESSION['currentLoggedUsername'];
-                                    echo '   #' . $_SESSION['currentLoggedID']; ?>
+                         Welcome <?php echo $_SESSION['loggedUser']['username'];
+                                    echo '   #' . $_SESSION['loggedUser']['id']; ?>
                      </label>
                  </div>
 

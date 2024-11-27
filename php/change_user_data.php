@@ -22,12 +22,12 @@ try {
 	//fetch all user data
 	$sql = "SELECT username, date, email, name, surname, notes, gender 
 			FROM account INNER JOIN guest ON account.Guest_ID = guest.ID
-			WHERE username='{$_SESSION['currentLoggedUsername']}';";
+			WHERE username='{$_SESSION['loggedUser']['username']}';";
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 
 	$somethingChanged = false;
-	$username = $_SESSION['currentLoggedUsername'];
+	$username = $_SESSION['loggedUser']['username'];
 
 	$sql = "UPDATE account SET ";
 
@@ -71,12 +71,12 @@ try {
 	}
 
 	$sql = substr($sql, 0, -2);
-	$sql .= "WHERE ID='{$_SESSION['currentLoggedID']}';";
+	$sql .= "WHERE ID='{$_SESSION['loggedUser']['id']}';";
 	if ($somethingChanged)
 		$conn->query($sql);
 
 
-	logEvent("User #{$_SESSION['currentLoggedID']} changed his user data");
+	logEvent("User #{$_SESSION['loggedUser']['id']} changed his user data");
 	header("Location: ../userSettings.php");
 
 } catch (Exception $e) {
