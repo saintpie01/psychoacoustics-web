@@ -15,7 +15,7 @@ try {
 
     $sql = "SELECT referral, name, surname, date, gender, notes, email 
                 FROM account INNER JOIN guest ON account.Guest_ID = guest.ID 
-                WHERE username='" . $_SESSION['currentLoggedUsername'] . "'";
+                WHERE username='" . $_SESSION['loggedUser']['username'] . "'";
 
     $result = $conn->query($sql);
     $row = $result->fetch_assoc();
@@ -55,7 +55,7 @@ try {
 
     $sql = "SELECT * 
             FROM test 
-            WHERE Guest_ID = '{$_SESSION['currentLoggedID']}' AND Ref_name != ''
+            WHERE Guest_ID = '{$_SESSION['loggedUser']['id']}' AND Ref_name != ''
             ORDER BY Timestamp DESC";
     $allRefTest = $conn->query($sql);
 } catch (Exception $e) {
@@ -193,34 +193,7 @@ if (isset($_SESSION['testInfoParameters'])) {
         </div>
 
 
-        <?php
-        //this section is active only is a Superuser is logged --ignore
-        try {
-            $sql = "SELECT Type FROM account WHERE Guest_ID='{$_SESSION['currentLoggedID']}' AND Username='{$_SESSION['currentLoggedUsername']}'";
-            $result = $conn->query($sql);
-            $row = $result->fetch_assoc();
-            if (isset($row['Type']) && $row['Type'] == 1) { ?>
-                <div class="container-fluid p-4 border rounded-4 bg-light mt-5">
-                    <h4 class="mb-3">Create new superuser</h4>
-                    <form action="php/newUsername.php" method="POST" class="settingForm ref">
-                        <div class="row row-cols-1 row-cols-lg-2 g-3 justify-content-center align-items-center">
-                            <div class="col">
-                                <div class="input-group">
-                                    <span class="input-group-text title" onclick="copy('ref')" title="Username">Username</span>
-                                    <input type="text" class="form-control" placeholder="Username" name="username">
-                                </div>
-                            </div>
-                            <div class="col d-grid">
-                                <button type="submit" class="btn btn-primary btn-red">Create new Superuser</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-        <?php }
-        } catch (Exception $e) {
-            header("Location: index.php?err=db");
-        }
-        ?>
+
 
         <!-- Your Referral Section -->
         <div class="container-fluid p-4 border rounded-4 bg-light mt-5 ">
@@ -313,6 +286,36 @@ if (isset($_SESSION['testInfoParameters'])) {
 
         </div>
 
+
+        <?php
+        //this section is active only is a Superuser is logged --ignore
+        try {
+            $sql = "SELECT Type FROM account WHERE Guest_ID='{$_SESSION['loggedUser']['id']}' AND Username='{$_SESSION['loggedUser']['username']}'";
+            $result = $conn->query($sql);
+            $row = $result->fetch_assoc();
+            if (isset($row['Type']) && $row['Type'] == 1) { ?>
+                <div class="container-fluid p-4 border rounded-4 bg-light mt-5">
+                    <h4 class="mb-3">Create new superuser</h4>
+                    <form action="php/newUsername.php" method="POST" class="settingForm ref">
+                        <div class="row row-cols-1 row-cols-lg-2 g-3 justify-content-center align-items-center">
+                            <div class="col">
+                                <div class="input-group">
+                                    <span class="input-group-text title" onclick="copy('ref')" title="Username">Username</span>
+                                    <input type="text" class="form-control" placeholder="Username" name="username">
+                                </div>
+                            </div>
+                            <div class="col d-grid">
+                                <button type="submit" class="btn btn-primary btn-red">Create new Superuser</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+        <?php }
+        } catch (Exception $e) {
+            header("Location: index.php?err=db");
+        }
+        ?>
+
         <!-- change password section -->
         <div class="container-fluid p-4 border rounded-4 bg-light mt-5">
             <h4 class="mb-3">Change password</h4>
@@ -351,7 +354,7 @@ if (isset($_SESSION['testInfoParameters'])) {
                     <div class="col">
                         <div class="input-group">
                             <span class="input-group-text">Username</span>
-                            <input type="text" class="form-control" name="usr" value="<?php echo $_SESSION['currentLoggedUsername']; ?>" readonly>
+                            <input type="text" class="form-control" name="usr" value="<?php echo $_SESSION['loggedUser']['username']; ?>" readonly>
                         </div>
                     </div>
                     <div class="col">
