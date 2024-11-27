@@ -51,7 +51,7 @@ if ($specialCharacters) {
 
 $redirection = "Location: ../soundSettings.php?" . $type; //redirection string based on the presence of referal code
 
-if (($referralCode) != "") { //check if a referral code in the link is present and valid
+if (isset($referralCode) && ($referralCode != "")) { //check if a referral code in the link is present and valid
 
     try {
         $conn = connectdb();
@@ -81,7 +81,7 @@ $_SESSION["saveData"] = true;
 if (isUserLogged()) { 
     $_SESSION['idGuestTest'] = $_SESSION['loggedUser']['id']; 
 
-    if ($referralCode == "") { //no referral is present, go ahead
+    if (!isset($referralCode)) { //no referral is present, go ahead
         header($redirection);
         exit;
     } else 
@@ -108,7 +108,7 @@ $sql .= ($_POST["age"] == "") ? "NULL, " : "'" . $_POST["age"] . "', ";
 $sql .= (!isset($_POST["gender"])) ? "NULL, " : "'" . $_POST["gender"] . "', ";
 $sql .= ($_POST["notes"] == "") ? "NULL, " : "'" . $_POST["notes"] . "', ";
 
-if (($referralCode) == "") {
+if (!isset($referralCode)) {
     $sql .= "NULL);SELECT LAST_INSERT_ID() as id;"; //no referral
 } else {
     $sql .= "'" . $refrow['Username'] . "');SELECT LAST_INSERT_ID() as id;"; //if referral present i must insert the referrer Username

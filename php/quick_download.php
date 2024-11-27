@@ -31,21 +31,27 @@ try {
     $row = $result->fetch_assoc();
 
     $age = "";
-    if ($row['age'] != null)
+
+    //if user not logged age is taken from guest if given
+    if (isset($row['age']))
         $age = $row['age'];
        
+    
+    //if loggged is calculate from birthdate
     $currentDate = new DateTime();
     if (isset($row['date'])) {
         // Create DateTime objects
         $birthDate = new DateTime($row['date']);
 
-
         // Calculate the difference
         $age = $birthDate->diff($currentDate)->y;
     }
 
-    $dateString = $currentDate->format('Y-m-d H-i'); // Example format: "2024-11-25 14:30:00"
-    $testTypeExt = getExtfromCmpType($_SESSION["testTypeCmp"]);
+    $dateString = $currentDate->format('Y-m-d H-i'); // Example format: "2024-11-25 14-00"
+    
+    $testTypeExt = getExtfromCmpType($_SESSION["testTypeCmp"]);//takes full test type to insert in filename.csv
+    
+    
     //create and open the csv file, unique for every ID
     $path = $id . '-' . $testTypeExt . $dateString;
     if ($_GET['format'] == "complete")
@@ -69,7 +75,7 @@ try {
 
 
     //values of the firts csv segment that is constant every line
-    $firstValues = $row["ID"] . ";" . $row["name"] . ";" . $row["surname"] . ";" . $age . ";" . $row["gender"] . ";" . $row["notes"] . ";" . $_SESSION["testTypeCmp"] . ";" . $_SESSION["time"] . ";" . $_SESSION["sampleRate"] . ";" . $_SESSION["amplitude"] . ";" . $_SESSION["frequency"] . ";" . $_SESSION["duration"] . ";" . $_SESSION["onRamp"] . ";" . $_SESSION["offRamp"] . ";";
+    $firstValues = $row["ID"] . ";" . $row["name"] . ";" . $row["surname"] . ";" . $age . ";" . $row["gender"] . ";" . $row["notes"] . ";" . $_SESSION["testTypeCmp"] . ";" . $dateString . ";" . $_SESSION["sampleRate"] . ";" . $_SESSION["amplitude"] . ";" . $_SESSION["frequency"] . ";" . $_SESSION["duration"] . ";" . $_SESSION["onRamp"] . ";" . $_SESSION["offRamp"] . ";";
     if ($testTypeExt == "WHITE_NOISE_MODULATION")
         $firstValues .= $_SESSION["modAmplitude"] . ";" . $_SESSION["modFrequency"] . ";" . $_SESSION["modPhase"] . ";";
     $firstValues .= $_SESSION["blocks"] . ";" . $_SESSION["nAFC"] . ";" . $_SESSION["ISI"] . ";" . $_SESSION["ITI"] . ";";
@@ -99,7 +105,7 @@ try {
 
         $results = explode(";", $_SESSION["score"]);
         $results_geometricsore = explode(";", $_SESSION["geometric_score"]);
-        for ($i = 0; $i < count($results); $i++) {
+        for ($i = 0; $i < count($results)- 1; $i++) {
             fwrite($txt, $firstValues . ";"); //fixed values
             fwrite($txt, ($i + 1) . ";"); //block number
             fwrite($txt, $results[$i] . ";"); //block score
