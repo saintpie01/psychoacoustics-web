@@ -14,7 +14,7 @@ include_once __DIR__ . '/../db_connect.php';
  * @param \mysqli $conn connection to the database
  * @return array $refrow contains the test key  (fk_GuestTest, fk_TestCount)
  */
-function getReferralKeyFromInviteCode($referral, $conn)
+function getReferralKeyFromInviteCode($referral, $conn): array
 {
 
     $refSQL = "SELECT 
@@ -67,7 +67,7 @@ function selectFromTable($columns, $table, $conditions, $conn)
  * @param string $geometricScore contains the threshold geoemetric score
  * @param \mysqli $conn contains connnection with the database
  */
-function insertTest($id, $count, $referralName, $testTypeCmp, $param, $results, $score, $geometricScore, $conn)
+function insertTest($id, $count, $referralName, $testTypeCmp, $param, $results, $score, $geometricScore, $conn): void
 {
 
     $type = getExtfromCmpType($testTypeCmp);
@@ -136,7 +136,7 @@ function insertTest($id, $count, $referralName, $testTypeCmp, $param, $results, 
  * this function fetch all the test parameters assigning them the correct naming
  * (naming in the DB and PHP program are different)
  */
-function getTestParameters($id, $count, $conn)
+function getTestParameters($id, $count, $conn): array
 {
 
     $sql = "SELECT 
@@ -181,7 +181,7 @@ function getTestParameters($id, $count, $conn)
  * @param \msqli $conn connection to db
  * @return int $count number of tests taken by that id
  */
-function getLastTestCount($id, $conn)
+function getLastTestCount($id, $conn): int
 {
 
     $sql = "SELECT Max(Test_count) as count 
@@ -192,6 +192,9 @@ function getLastTestCount($id, $conn)
     $row = $result->fetch_assoc();
 
     $count = $row['count'];
-    return $count;
+
+    if (isset($count))
+        return $count;
+    return 0;
 }
 

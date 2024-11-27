@@ -10,7 +10,7 @@
  * @param array $formElements Array containin the name of the post variables to sanitize
  * @return bool return false if the variables are ok to insert in sql
  */
-function checkSpecialCharacter($formElements)
+function checkSpecialCharacter($formElements): bool
 {
     $elements = $formElements;
     $characters = [
@@ -51,7 +51,7 @@ function checkSpecialCharacter($formElements)
  * @param string $testTypeCmp contains compact string test type
  * @return string contains string containin extended test type
  */
-function getExtfromCmpType($testTypeCmp)
+function getExtfromCmpType($testTypeCmp): string
 {
 
     switch ($testTypeCmp) {
@@ -90,7 +90,7 @@ function getExtfromCmpType($testTypeCmp)
  * @param array $rawParameters contains an array with miscellaneous data extracted from a test
  * @return array $newParam contains all and only the parametes needed to perform and save the test
  */
-function initializeTestParameter($rawParameters)
+function initializeTestParameter($rawParameters): array
 {
 
     $newParam = [];
@@ -122,9 +122,9 @@ function initializeTestParameter($rawParameters)
 /*
  * self explaining
  */
-function isUserLogged()
+function isUserLogged(): bool
 {
-    if (isset($_SESSION["currentLoggedID"]) && isset($_SESSION["currentLoggedUsername"]))
+    if (isset($_SESSION['loggedUser']))
         return true;
     return false;
 }
@@ -135,7 +135,7 @@ function isUserLogged()
  *
  * @param string $message The message to log.
  */
-function logEvent($message)
+function logEvent($message): void
 {
     $logDir = __DIR__ . '/../logs/events/'; // Centralized log file path
     $currentMonth = date('m-Y'); // Format: YYYY-MM
@@ -149,7 +149,7 @@ function logEvent($message)
 }
 
 
-function trackCountryTraffic()
+function trackCountryTraffic(): void
 {
     $logDir = __DIR__ . '/../logs/traffic/'; // Centralized log file path
     $currentMonth = date('m-Y'); // Format: YYYY-MM
