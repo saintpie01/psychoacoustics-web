@@ -51,16 +51,7 @@ function random() {
     }
 }
 
-/*function saveResults() {
-    //save new data
-    results[0][i] = currentBlock;				// block
-    results[1][i] = i + 1;						// trial
-    results[2][i] = parseFloat(parseInt((varAmp - stdAmp) * 1000) / 1000); 	// approximated delta
-    results[3][i] = parseFloat(parseInt(varAmp * 1000) / 1000);				// approximated variable value
-    results[4][i] = swap;						// variable position
-    results[5][i] = pressedButton; 				// pressed button
-    results[6][i] = pressedButton == swap ? 1 : 0;	// is the answer correct? 1->yes, 0->no
-}*/
+
 
 //funzione per implementare l'algoritmo SimpleUpDown
 function select(button) {
@@ -141,14 +132,7 @@ function select(button) {
     }
 }
 
-/*document.addEventListener('keypress', function keypress(event) {
-    if (!document.getElementById("button1").disabled) {
-        if ((event.code >= 'Digit1' && event.code <= 'Digit' + nAFC) || (event.code >= 'Numpad1' && event.code <= 'Numpad' + nAFC)) {
-            select(event.key)
-            console.log('You pressed ' + event.key + ' button');
-        }
-    }
-});*/
+
 
 //funzione per implementare l'algoritmo nD1U
 function nDOWNoneUP(n) {
@@ -205,22 +189,3 @@ function nDOWNoneUP(n) {
     }
     window.setTimeout("timer()", 500);
 }
-
-//starting function
-/*function start() {
-    document.getElementById("StartingWindow").style.display = "none"; //starting window becomes invisible
-    document.getElementById("PlayForm").style.display = "inherit"; //test interface becomes visible
-    // document.getElementById("downloadData").style.display = "inherit"; //test interface becomes visible (debug)
-
-    // take the timestamp when the test starts
-    var currentdate = new Date();
-    timestamp = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-
-    random();
-    //window.setTimeout("random()", ITI); //test starts after interTrialInterval ms
-}*/
-/*
-function timer() {
-    document.getElementById("wrong").style.display = "none";
-    document.getElementById("correct").style.display = "none";
-}*/

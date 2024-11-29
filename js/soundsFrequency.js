@@ -101,8 +101,6 @@ function select(button) {
 
 
 
-
-
 //funzione per implementare l'algoritmo nD1U
 function nDOWNoneUP(n) {
     delta = varFreq - stdFreq;
@@ -115,7 +113,6 @@ function nDOWNoneUP(n) {
             correctAnsw = 0;
             if (positiveStrike == 0) {
                 //there was a reversal
-                //varFreq = stdFreq + (delta / currentFactor);
                 reversalsPositions[countRev] = i - (n - 1);//save the position of that reversal
 
                 countRev++;
