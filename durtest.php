@@ -37,9 +37,9 @@
         var currentBlock = parseInt(<?php if (isset($_SESSION["currentBlock"])) echo $_SESSION["currentBlock"] + 1; else echo "1"?>);
     </script>
     <script type="text/javascript"
-            src="js/generatorSoundAndNoise.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
+            src="js/test_common/generatorSoundAndNoise.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
             defer></script>
-    <script  src="js/test_common/testUtils.js"></script>
+    <script  src="js/test_common/test_shared.js"></script>
     <script type="text/javascript"
             src="js/soundsDuration.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
             defer></script>

@@ -94,7 +94,7 @@ if ($row['Type'] == 'PURE_TONE_INTENSITY') {
 
     </script>
     <script type="text/javascript"
-        src="js/generatorSoundAndNoise.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
+        src="js/test_common/generatorSoundAndNoise.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
         defer></script>
     <script type="text/javascript"
         src="js/testPreview.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
