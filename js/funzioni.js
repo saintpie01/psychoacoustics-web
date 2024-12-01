@@ -19,10 +19,6 @@ function copy(id){
 	alert('copied to clipboard');
 }
 
-function updateLink(ref){
-	var test = document.getElementById('testType').value;
-	document.getElementById('link').innerHTML = "https://psychoacoustics.dpg.psy.unipd.it/optim/newsite/acoustic-web2/userSettings.php?ref="+ref+"&test="+test;
-}
 
 function updatePage(display){
 	var elems = document.getElementsByClassName("conditionalDisplay");
@@ -33,7 +29,6 @@ function updatePage(display){
 			elems[j].style.display = "none";
 	}
 }
-
 
 
 function setupVolumeControl() {
