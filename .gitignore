@@ -52,3 +52,5 @@ php/test_common_functions.php
 errors_log.txt
 php/logs/events/events_log_11-2024.txt
 php/logs/traffic/traffic_log_11-2024.txt
+.VSCodeCounter
+php/logs

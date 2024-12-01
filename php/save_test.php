@@ -10,7 +10,7 @@ require_once "db_connect.php";
 require_once "helpers/database_functions.php";
 include_once "helpers/utils.php";
 
-
+//i don't know how useful this is
 if ((!(isset($_GET['blocks'])
 	&& isset($_GET['score'])
 	&& isset($_GET['geometric_score'])
@@ -39,18 +39,13 @@ if ($_GET['currentBlock'] < $_GET['blocks']) {
 //the score results might have a semicolon at the end of the sting in the DB,
 //that does not change anything since we access them with indexes and not with string handling
 $score = $_SESSION['score'];
-$finalResults = $_SESSION['results'];
 $geometricScore = $_SESSION['geometric_score'];
+$finalResults = $_SESSION['results'];
 
 //better not to touch this
 if (!$_SESSION["saveData"]) {
-	if ($_GET['saveSettings']) {
-		header("Location: ../results.php?continue=0&err=1");
-		exit;
-	} else {
-		header("Location: ../results.php?continue=0");
-		exit;
-	}
+	header("Location: ../results.php?continue=0");
+	exit;
 }
 
 //initialize some variables needed for test insertion
@@ -79,7 +74,6 @@ try {
 		$geometricScore,
 		$conn
 	);
-
 } catch (Exception $e) {
 	header("Location: ../index.php?err=db");
 	error_log($e, 3, "errors_log.txt");
@@ -92,4 +86,3 @@ if (isset($_SESSION['referralTest']))
 logEvent("User #$id completed a $testTypeExt test" . $referrerString);
 
 header("Location: ../results.php?continue=0");
-

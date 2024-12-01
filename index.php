@@ -46,7 +46,7 @@ if (isset($logged)) { //account data are preserved
 </head>
 
 <body>
-    <img src="files/wallpaper1.jpg" class="wallpaper">
+    <img src="html_modules/serve_image.php" class="wallpaper">
 
     <!-- Navigation Bar -->
     <?php include_once 'html_modules/navbar.php'; ?>
