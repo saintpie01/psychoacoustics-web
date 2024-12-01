@@ -25,6 +25,7 @@ var swap = -1;						// position of variable sound
 var correctAnsw = 0;				// number of correct answers
 var currentFactor = factor;			// first or second factor, depending on the number of reversals
 var checkReversal = 0;
+var description;
 
 
 
@@ -37,8 +38,7 @@ function start() {
     var currentdate = new Date();
     timestamp = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
 
-    random();
-    //window.setTimeout("random()", ITI); //test starts after interTrialInterval ms
+    createRandomizedOutput();
 }
 
 
@@ -52,14 +52,13 @@ document.addEventListener('keypress', function keypress(event) {
     if (!document.getElementById("button1").disabled) {
         if ((event.code >= 'Digit1' && event.code <= 'Digit' + nAFC) ||
             (event.code >= 'Numpad1' && event.code <= 'Numpad' + nAFC)) {
-            select(event.key);
+            computeResponse(event.key);
             console.log('You pressed ' + event.key + ' button');
         }
     }
 });
 
 
-//funzione per implementare l'algoritmo nD1U
 function nDOWNoneUPTest(n) {
     revDirection = 0 //'0->no reversal' '1->reversal up' '-1->reversal down'
 
@@ -133,19 +132,54 @@ function createResults() {
     geometric_score = parseFloat(parseInt(geometric_score * 100) / 100);
     score /= reversalThreshold; //average deltas of every reversal
     score = parseFloat(parseInt(score * 100) / 100); //approximate to 2 decimal digits
+    description = "&blocks=" + blocks + "&sampleRate=" + context.sampleRate;
+
 }
 
 
-function activateButtons() {
-
+function enableResponseButtons() {
     //after playing the sound, the response buttons are reactivated
-    source.onended = () => { //quando l'oscillatore sta suonando il programma non si ferma, quindi serve questo per riattivare i pulsanti solo quando finisce
+    source.onended = () => { //waiting for the sound to ends
         for (var j = 1; j <= nAFC; j++)
             document.getElementById("button" + j).disabled = false;
-        // document.getElementById("downloadData").disabled = false;
     }
 }
 
+
+function disableResponseButtons() {
+    for (var j = 1; j <= nAFC; j++)
+        document.getElementById("button" + j).disabled = true;
+}
+
+
+//this function could be written as monolithic with only createRandomizedOutput as a function
+//but i find it's more clear this way, other than more reusable
+//i know this is dangerously close to spaghetticode but i'm not rewriting every single line of this code
+//since it's kinda acceptable now
+function continueTest() {
+    if (countRev < reversals + secondReversals) {
+        // disable the response buttons until the new sounds are heared
+        disableResponseButtons();
+        //randomize and play the next sounds
+        createRandomizedOutput();
+
+    } else {
+        //test ended
+        createResults();
+        //pass the data to the php file
+        endTest()
+    }
+}
+
+
+function endTest() {
+    location.href =
+        "php/save_test.php?result=" + result + description +
+        "&timestamp=" + timestamp +
+        "&currentBlock=" + currentBlock +
+        "&score=" + score +
+        "&geometric_score=" + geometric_score;
+}
 
 
 

@@ -1,4 +1,4 @@
-//import {sendDataToPHP} from 'test_common/testUtils.js';
+//import {sendDataToPHP} from 'test_common/test_shared.js';
 
 
 //contesto e dichiarazione variabili da cambiare durante il test, probabilmente andranno tolte molte variabili globali da qui una volta terminato l'algoritmo
