@@ -163,7 +163,7 @@ if (isset($_SESSION['testInfoParameters'])) {
                             </div>
 
                             <div class="col-md-6">
-                                <select name="testType" class="form-select" onchange="updateLink('<?php echo $inviteCode; ?>')" id="testType">
+                                <select name="testType" class="form-select" id="testType">
                                     <option selected disabled value=''>Select a Test Type</option>
                                     <option value='amp'>Pure tone intensity discrimination</option>
                                     <option value='freq'>Pure tone frequency discrimination</option>
