@@ -97,7 +97,7 @@ try {
 	fwrite($txt, $line);
 
 
-	if ($typeCode == 0) {
+	if ($typeCode == 0) { ///PERSONAL TESTS
 
 		//take the logged user's tests
 		$sql = "SELECT guest.ID as guestID, guest.Name as name, guest.Surname as surname, guest.Gender as gender, 
@@ -127,8 +127,11 @@ try {
 			$age = $birthDate->diff($currentDate)->y;
 
 			writeTest($row, $age, $txt);
+			
 		}
-	} elseif ($typeCode == 1) {
+		$logString = "user #$id downloaded his Personal tests";
+
+	} elseif ($typeCode == 1) { //PARTECIPANT TESTS
 
 		//data of user's guest
 		$sql = "SELECT guest.ID as guestID, guest.Name as name, guest.Surname as surname, guest.Age as age, guest.Gender as gender, guest.Notes as notes,
@@ -149,8 +152,12 @@ try {
 			$age = $row['age'];
 
 			writeTest($row, $age, $txt);
+			
 		}
-	} elseif ($typeCode == 2) {
+		$logString = "user #$id downloaded his Partecipant's tests";
+
+	} elseif ($typeCode == 2) { //EVERYONE'S TESTS
+
 		//take all the tests in the Database
 		$sql = "SELECT guest.ID as guestID, guest.Name as name, guest.Surname as surname, guest.Age as age, guest.Gender as gender, 
 				test.Test_count as count, test.Type as type, test.Timestamp as time, test.Amplitude as amp, 
@@ -172,6 +179,7 @@ try {
 
 			writeTest($row, $age, $txt);
 		}
+		$logString = "user #$id downloaded ALL THE SITE'S tests";
 	}
 
 
@@ -189,7 +197,9 @@ try {
 	readfile($fullPath);
 
 	unlink($fullPath);
-} catch (Exception $e) {
+	logEvent($logString);
 
+} catch (Exception $e) {
+	error_log($e, 3, "errors_log.txt");
 	header("Location: ../index.php?err=db");
 }

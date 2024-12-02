@@ -51,5 +51,5 @@ try {
 }
 
 unset($_SESSION['creatingNewReferral']);
-logEvent("User #$id created a new referral test");
+logEvent("User #$id created a new Referral test");
 header("Location: ../userSettings.php?err=4");
