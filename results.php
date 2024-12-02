@@ -2,6 +2,10 @@
 session_start();
 include_once "php/helpers/utils.php";
 
+if(!isset($_SESSION['idGuestTest']))
+    header("Location: index.php");
+
+
 $currentBlock = $_SESSION['currentBlock'];
 
 if (isset($_SESSION['geometric_score'])) {
