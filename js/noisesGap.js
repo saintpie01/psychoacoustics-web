@@ -31,9 +31,13 @@ function computeResponse(button) {
 
     results[0][i] = currentBlock;				// block
     results[1][i] = i + 1;						// trial
+    results[4][i] = swap;
+    results[5][i] = pressedButton; 				// pressed button
+    results[6][i] = pressedButton == swap ? 1 : 0;	// is the answer correct? 1->yes, 0->no
+
+
     results[2][i] = parseFloat(parseInt(delta * 1000) / 1000); 	// approximated delta
     results[3][i] = parseFloat(parseInt(delta * 1000) / 1000);				// approximated variable value
-    results[4][i] = swap;
 
     checkReversal = nDOWNoneUPTest(upDownParam);
     
@@ -42,8 +46,6 @@ function computeResponse(button) {
     else if (checkReversal == -1)
         delta *= currentFactor;
 
-    results[5][i] = pressedButton; 				// pressed button
-    results[6][i] = pressedButton == swap ? 1 : 0;	// is the answer correct? 1->yes, 0->no
     results[7][i] = countRev; // reversals counter is updated in nDOWNoneUP() function and saved after it
 
     //increment counter

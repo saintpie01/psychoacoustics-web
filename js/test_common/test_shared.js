@@ -132,7 +132,8 @@ function createResults() {
     geometric_score = parseFloat(parseInt(geometric_score * 100) / 100);
     score /= reversalThreshold; //average deltas of every reversal
     score = parseFloat(parseInt(score * 100) / 100); //approximate to 2 decimal digits
-    description = "&blocks=" + blocks + "&sampleRate=" + context.sampleRate;
+
+
 
 }
 
@@ -152,10 +153,40 @@ function disableResponseButtons() {
 }
 
 
+//not used, generalization of the code written in the other test files
+function updateDelta(varParam, stdParam){
+    
+    results[0][i] = currentBlock;				// block
+    results[1][i] = i + 1;						// trial
+    results[4][i] = swap;						// variable position
+    results[5][i] = pressedButton; 				// pressed button
+    results[6][i] = pressedButton == swap ? 1 : 0;	// is the answer correct? 1->yes, 0->no
+
+
+    delta = varParam - stdParam;
+
+    results[2][i] = parseFloat(parseInt((delta) * 1000) / 1000); 	// approximated delta
+    results[3][i] = parseFloat(parseInt(varParam * 1000) / 1000);			// approximated variable value
+
+    //apply the algorithm to check for reversals, modify the delta parameter if needed
+    checkReversal = nDOWNoneUPTest(upDownParam);
+
+    if (checkReversal == 1)
+        delta /= currentFactor;
+    else if (checkReversal == -1)
+        delta *= currentFactor;
+
+    varParam = stdParam + delta;
+
+
+    results[7][i] = countRev; // reversals counter is updated in nDOWNoneUP() function and saved after it 
+
+}
+
+
 //this function could be written as monolithic with only createRandomizedOutput as a function
 //but i find it's more clear this way, other than more reusable
-//i know this is dangerously close to spaghetticode but i'm not rewriting every single line of this code
-//since it's kinda acceptable now
+
 function continueTest() {
     if (countRev < reversals + secondReversals) {
         // disable the response buttons until the new sounds are heared
@@ -173,6 +204,7 @@ function continueTest() {
 
 
 function endTest() {
+    description = "&blocks=" + blocks + "&sampleRate=" + context.sampleRate;
     location.href =
         "php/save_test.php?result=" + result + description +
         "&timestamp=" + timestamp +
