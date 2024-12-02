@@ -1,7 +1,14 @@
+<?php
+session_start();
+$testMsg = "Which is the longest tone?";
+?>
+
+
 <!doctype html>
 <html lang="en">
+
 <head>
-    <?php session_start(); ?>
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,54 +40,21 @@
         var secondReversals = parseInt(<?php echo $_SESSION["secReversals"]; ?>);
         var reversalThreshold = parseInt(<?php echo $_SESSION["threshold"]; ?>);
         var algorithm = <?php echo "'{$_SESSION["algorithm"]}'"; ?>;
-        var currentBlock = parseInt(<?php if (isset($_SESSION["currentBlock"])) echo $_SESSION["currentBlock"] + 1; else echo "1"?>);
+        var currentBlock = parseInt(<?php if (isset($_SESSION["currentBlock"])) echo $_SESSION["currentBlock"] + 1;
+                                    else echo "1" ?>);
     </script>
     <script type="text/javascript"
-            src="js/test_common/generatorSoundAndNoise.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
-            defer></script>
-    <script  src="js/test_common/test_shared.js"></script>
+        src="js/test_common/generatorSoundAndNoise.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
+        defer></script>
+    <script src="js/test_common/test_shared.js"></script>
     <script type="text/javascript"
-            src="js/soundsDuration.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
-            defer></script>
+        src="js/soundsDuration.js<?php if (isset($_SESSION['version'])) echo "?{$_SESSION['version']}"; ?>"
+        defer></script>
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
-<!-- Option 1: Bootstrap Bundle with Popper -->
-<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<div class="container">
-    <div class="row justify-content-center align-items-center">
-        <div class="col-12 col-md-4 bg-light p-5 rounded-4 border mt-5" id="StartingWindow">
-            <h2 class="text-center mb-5">Ready?</h2>
-            <div class="d-grid">
-                <button type="button" class="btn btn-lg btn-success btn-block" id="start" onclick="start()">
-                    Let's start!
-                </button>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6 bg-light p-5 rounded-4 border mt-5" id="PlayForm" style="display: none">
-            <div class="row gy-3 justify-content-between align-items-center">
-                <h2 class="col-12 text-center mb-3" id="answerPuretonedurationdiscrimination">Which is the longest tone?</h2>
-                <?php
-                $colors = ["#198754", "#dc3545", "#0d6efd", "#e0b000", "#a000a0", "#ff8010", "#50a0f0", "#703000", "#606090"];
-                for ($i = 1; $i <= intval($_SESSION['nAFC']); $i++) { ?>
-                    <div class="col-12 col-sm-4 d-grid">
-                        <?php echo "<button type='button' class='btn btn-lg btn-success' style='background-color:" . $colors[($i - 1) % count($colors)] . "; border-color: " . $colors[($i - 1) % count($colors)] . ";' id='button{$i}' onclick = 'select({$i})' disabled>{$i}° sound</button>"; ?>
-                    </div>
-                <?php }
-                ?>
-            </div>
-        </div>
-    </div>
-    <div class="row justify-content-center align-items-center">
-        <div class='col-12 col-md-6 alert alert-danger mt-5' id="wrong" style="display: none">Wrong!</div>
-        <div class='col-12 col-md-6 alert alert-success mt-5' id="correct" style="display: none">Correct!</div>
-    </div>
-<!--    <button type="button" class="btn btn-outline-secondary btn-lg rounded-4 position-fixed bottom-0 end-0 m-5"-->
-<!--            id="downloadData" onclick="downloadData('dur')" style="display: none" disabled>-->
-<!--        Download Data (only for debug!)-->
-<!--    </button>-->
-</div>
+    <?php include 'html_modules/test_dashboard.php'; ?>
 </body>
+
 </html>
