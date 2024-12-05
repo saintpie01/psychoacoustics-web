@@ -1,7 +1,6 @@
 
 var varFreq = freq + delta;			// frequency of the variable 
 var stdFreq = freq;					// frequency of the standard
-var startingDelta = delta;
 
 dur /= 1000;                        // convert to seconds
 var stdDur = dur;					// duration of the standard
@@ -13,9 +12,11 @@ var varAmp = amp;					// intensity of the variable
 
 //randomize output
 function createRandomizedOutput() {
-    var rand = Math.floor(Math.random() * nAFC);// the variable sound will be the rand-th sound played
+    //var rand = Math.floor(Math.random() * nAFC);// the variable sound will be the rand-th sound played
+    var rand = 0;
     for (var j = 0; j < nAFC; j++) {
         if (j == rand)
+            //variable sound
             playSound((ITI / 1000) + (j * varDur) + j * (ISI / 1000), varFreq, varAmp, varDur, onRamp / 1000, offRamp / 1000, false);
         else
             playSound((ITI / 1000) + (j * stdDur) + j * (ISI / 1000), stdFreq, stdAmp, stdDur, onRamp / 1000, offRamp / 1000);

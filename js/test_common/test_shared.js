@@ -28,7 +28,6 @@ var checkReversal = 0;
 var description;
 
 
-
 //starting function for all the tests
 function start() {
     document.getElementById("StartingWindow").style.display = "none"; //starting window becomes invisible
@@ -48,96 +47,6 @@ function timer() {
 }
 
 
-document.addEventListener('keypress', function keypress(event) {
-    if (!document.getElementById("button1").disabled) {
-        if ((event.code >= 'Digit1' && event.code <= 'Digit' + nAFC) ||
-            (event.code >= 'Numpad1' && event.code <= 'Numpad' + nAFC)) {
-            computeResponse(event.key);
-            console.log('You pressed ' + event.key + ' button');
-        }
-    }
-});
-
-
-function nDOWNoneUPTest(n) {
-    revDirection = 0 //'0->no reversal' '1->reversal up' '-1->reversal down'
-
-    if (pressedButton == swap) { //correct answer
-        history[i] = 1;
-        correctAnsw += 1;
-
-        if (correctAnsw == n) { //if there are n consegutive correct answers
-            correctAnsw = 0;
-
-            if (positiveStrike == 0) {
-                //there is a reversal
-                reversalsPositions[countRev] = i - (n - 1);//save the position of that 
-                countRev++;
-                if (countRev > reversals)
-                    currentFactor = secondFactor;
-
-            }
-            revDirection = 1;
-            positiveStrike = 1;
-        }
-
-        if (feedback) {
-            document.getElementById("correct").style.display = "inherit";
-            document.getElementById("wrong").style.display = "none";
-        }
-
-    } else { //wrong answer
-        history[i] = 0;
-        correctAnsw = 0;
-
-        if (positiveStrike == 1) {
-            //there was a reversal
-            reversalsPositions[countRev] = i;//save the position of that reversal
-            countRev++;
-            if (countRev > reversals)
-                currentFactor = secondFactor;
-
-        }
-        revDirection = -1;
-        positiveStrike = 0;
-
-        if (feedback) {
-            document.getElementById("correct").style.display = "none";
-            document.getElementById("wrong").style.display = "inherit";
-        }
-    }
-
-    window.setTimeout("timer()", 500);
-    return revDirection;
-}
-
-
-function createResults() {
-
-    //format datas as a csv file
-    //format: block;trials;delta;variableValue;variablePosition;button;correct;reversals;";
-    for (var j = 0; j < i; j++) {
-        result += results[0][j] + ";" + results[1][j] + ";" + results[2][j] + ";" + results[3][j] + ";"
-        result += results[4][j] + ";" + results[5][j] + ";" + results[6][j] + ";" + results[7][j] + ",";
-    }
-
-    //calculate score
-    for (var j = countRev - reversalThreshold; j < countRev; j++) {
-        deltaBefore = results[2][reversalsPositions[j] - 1]; //delta before the reversal
-        deltaAfter = results[2][reversalsPositions[j]]; //delta after the reversal
-        score += (deltaBefore + deltaAfter) / 2; //average delta of the reversal
-        geometric_score *= (deltaBefore + deltaAfter) / 2;
-    }
-    geometric_score = Math.pow(geometric_score, 1 / reversalThreshold);
-    geometric_score = parseFloat(parseInt(geometric_score * 100) / 100);
-    score /= reversalThreshold; //average deltas of every reversal
-    score = parseFloat(parseInt(score * 100) / 100); //approximate to 2 decimal digits
-
-
-
-}
-
-
 function enableResponseButtons() {
     //after playing the sound, the response buttons are reactivated
     source.onended = () => { //waiting for the sound to ends
@@ -154,14 +63,14 @@ function disableResponseButtons() {
 
 
 //not used, generalization of the code written in the other test files
-function updateDelta(varParam, stdParam){
-    
+function computeResponseGeneral(varParam, stdParam, button) {
+
+    pressedButton  = button;
     results[0][i] = currentBlock;				// block
     results[1][i] = i + 1;						// trial
     results[4][i] = swap;						// variable position
     results[5][i] = pressedButton; 				// pressed button
     results[6][i] = pressedButton == swap ? 1 : 0;	// is the answer correct? 1->yes, 0->no
-
 
     delta = varParam - stdParam;
 
@@ -178,15 +87,66 @@ function updateDelta(varParam, stdParam){
 
     varParam = stdParam + delta;
 
-
     results[7][i] = countRev; // reversals counter is updated in nDOWNoneUP() function and saved after it 
+    return varParam;
+}
 
+
+
+function nDOWNoneUPTest(n) {
+    revDirection = 0 //'0->no reversal' '1->reversal up' '-1->reversal down'
+    isReversal = false;
+
+    if (pressedButton == swap) { //correct answer
+        history[i] = 1;
+        correctAnsw += 1;
+
+        if (correctAnsw == n) { //if there are n consegutive correct answers
+            correctAnsw = 0;
+
+            if (positiveStrike == 0) {
+                isReversal = true;
+            }
+            revDirection = 1;
+            positiveStrike = 1;
+        }
+
+        if (feedback) {
+            document.getElementById("correct").style.display = "inherit";
+            document.getElementById("wrong").style.display = "none";
+        }
+    } else { //wrong answer
+        history[i] = 0;
+        correctAnsw = 0;
+
+        if (positiveStrike == 1) {
+            isReversal = true;
+        }
+        revDirection = -1;
+        positiveStrike = 0;
+
+        if (feedback) {
+            document.getElementById("correct").style.display = "none";
+            document.getElementById("wrong").style.display = "inherit";
+        }
+    }
+
+    if (isReversal) {
+        countRev++;
+        //reversalsPositions[countRev] = i - (n - 1);//save the position of that 
+        reversalsPositions[countRev] = i;
+
+        if (countRev > reversals)
+            currentFactor = secondFactor;
+    }
+
+    window.setTimeout("timer()", 500);
+    return revDirection;
 }
 
 
 //this function could be written as monolithic with only createRandomizedOutput as a function
 //but i find it's more clear this way, other than more reusable
-
 function continueTest() {
     if (countRev < reversals + secondReversals) {
         // disable the response buttons until the new sounds are heared
@@ -203,6 +163,44 @@ function continueTest() {
 }
 
 
+function createResults() {
+
+    //format datas as a csv file
+    //format: block;trials;delta;variableValue;variablePosition;button;correct;reversals;";
+    for (var j = 0; j < i; j++) {
+        result += results[0][j] + ";" + results[1][j] + ";" + results[2][j] + ";" + results[3][j] + ";"
+        result += results[4][j] + ";" + results[5][j] + ";" + results[6][j] + ";" + results[7][j] + ",";
+    }
+    //calculate score
+    score = 0;
+    startingReversal = countRev - reversalThreshold;
+
+    for (var j = startingReversal; j < countRev; j++) {
+        revPosition = reversalsPositions[j];
+        deltaBefore = results[2][revPosition]; //delta before the reversal
+        deltaAfter = results[2][revPosition + 1]; //delta after the reversal
+
+        partialScore = (deltaBefore + deltaAfter) / 2;
+
+        console.log(partialScore);
+        score += partialScore; //average delta of the reversal
+        console.log(j + 'score' + score);
+        geometric_score *= partialScore;
+    }
+
+    geometric_score = Math.pow(geometric_score, 1 / reversalThreshold);
+    geometric_score = parseFloat(parseInt(geometric_score * 1000) / 1000);
+
+    console.log('sum = ' + score);
+    console.log('revthreshld ' + reversalThreshold);
+
+    score /= reversalThreshold; //average deltas of every reversal
+    score = parseFloat(parseInt(score * 1000) / 1000); //approximate to 2 decimal digits
+    console.log('final score ' + score);
+}
+
+
+
 function endTest() {
     description = "&blocks=" + blocks + "&sampleRate=" + context.sampleRate;
     location.href =
@@ -213,6 +211,15 @@ function endTest() {
         "&geometric_score=" + geometric_score;
 }
 
+document.addEventListener('keypress', function keypress(event) {
+    if (!document.getElementById("button1").disabled) {
+        if ((event.code >= 'Digit1' && event.code <= 'Digit' + nAFC) ||
+            (event.code >= 'Numpad1' && event.code <= 'Numpad' + nAFC)) {
+            computeResponse(event.key);
+            console.log('You pressed ' + event.key + ' button');
+        }
+    }
+});
 
 
 

@@ -2,7 +2,7 @@
 // minimum initial variation
 var varFreq = freq;					// frequency of the variable 
 var stdFreq = freq;					// frequency of the standard
-var startingDelta = delta;
+
 
 dur /= 1000;
 var stdDur = dur;					// duration of the standard

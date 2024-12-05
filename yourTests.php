@@ -60,7 +60,7 @@ try {
 <body>
 
     <!-- Navigation Bar -->
-    <?php include_once 'html_modules/navbar.php'; ?>
+    <?php include_once 'view_modules/navbar.php'; ?>
 
 
     <div class="container">

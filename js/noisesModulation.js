@@ -3,7 +3,7 @@ var carAmp = carAmpDb;
 var modAmp = modAmpDb;
 
 // minimum initial variation
-var startingDelta = modAmp;
+
 delta = modAmp;
 
 carDur /= 1000;             // cambio unità di misura in secondi

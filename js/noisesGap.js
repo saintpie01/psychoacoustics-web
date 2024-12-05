@@ -1,7 +1,4 @@
 
-// minimum initial variation
-var startingDelta = delta;
-
 dur /= 1000;                        // cambio unità di misura in secondi
 var stdDur = dur;					// duration of the standard
 var varDur = dur;					// duration of the variable

@@ -98,7 +98,7 @@ if (isset($_SESSION['testInfoParameters'])) {
 <body>
 
     <!-- Navigation Bar -->
-    <?php include_once 'html_modules/navbar.php'; ?>
+    <?php include_once 'view_modules/navbar.php'; ?>
 
     <?php
     //se si sceglie un username già esistente verrà messo "?err=1" nell'url
