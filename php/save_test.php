@@ -42,8 +42,8 @@ $score = $_SESSION['score'];
 $geometricScore = $_SESSION['geometric_score'];
 $finalResults = $_SESSION['results'];
 
-//better not to touch this
-if (!$_SESSION["saveData"]) {
+
+if (!isset($_SESSION["saveData"])) {
 	header("Location: ../results.php?continue=0");
 	exit;
 }
@@ -51,9 +51,10 @@ if (!$_SESSION["saveData"]) {
 //initialize some variables needed for test insertion
 $id = $_SESSION['idGuestTest'];
 $testTypeCmp = $_SESSION['testTypeCmp'];
-$_SESSION['sampleRate'] = $_GET['sampleRate'];
+$_SESSION['testParameters']['sampleRate'] = $_GET['sampleRate'];
 
 $testTypeExt = getExtfromCmpType($testTypeCmp);
+$testParam = $_SESSION['testParameters'];
 
 try {
 	$conn = connectdb();
@@ -67,8 +68,8 @@ try {
 		$id,
 		$count,
 		null, //this field is only for referral tests
-		$testTypeCmp,
-		$_SESSION,
+		$testTypeExt,
+		$testParam,
 		$finalResults,
 		$score,
 		$geometricScore,

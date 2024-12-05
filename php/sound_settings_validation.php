@@ -18,6 +18,7 @@ unset($_SESSION['currentBlock']);
 $_SESSION['score'] = '';
 $_SESSION['geometric_score'] = '';
 $_SESSION['results'] = '';
+unset($_SESSION['testParameters']);
 /**
  *contains the test type in compact form of the test it's going to be taken
  */
@@ -58,7 +59,7 @@ if (isset($_SESSION['referralTest'])) { //referral present
     $testParameters = initializeTestParameter($row);
 
     //insert all the test parameters into session to retrieve later
-    $_SESSION = array_merge($testParameters, $_SESSION);
+    $_SESSION['testParameters'] = $testParameters;
 
     header("Location: ../{$type}test.php");
     exit;
@@ -76,6 +77,6 @@ if ($redirect != "") {
 $_SESSION['testTypeCmp'] = $_GET['test'];
 
 $testParameters = initializeTestParameter($_POST);
-$_SESSION = array_merge($testParameters, $_SESSION);
+$_SESSION['testParameters'] = $testParameters;
 
 header("Location: ../{$_GET['test']}test.php");

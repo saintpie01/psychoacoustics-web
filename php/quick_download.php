@@ -15,6 +15,7 @@ if (!isset($_GET['format']) || ($_GET['format'] != "complete" && $_GET['format']
 }
 
 $id = $_SESSION['idGuestTest'];
+$testParameters = $_SESSION['testParameters'];
 
 try {
 
@@ -75,11 +76,11 @@ try {
 
 
     //values of the firts csv segment that is constant every line
-    $firstValues = $row["ID"] . ";" . $row["name"] . ";" . $row["surname"] . ";" . $age . ";" . $row["gender"] . ";" . $row["notes"] . ";" . $_SESSION["testTypeCmp"] . ";" . $dateString . ";" . $_SESSION["sampleRate"] . ";" . $_SESSION["amplitude"] . ";" . $_SESSION["frequency"] . ";" . $_SESSION["duration"] . ";" . $_SESSION["onRamp"] . ";" . $_SESSION["offRamp"] . ";";
+    $firstValues = $row["ID"] . ";" . $row["name"] . ";" . $row["surname"] . ";" . $age . ";" . $row["gender"] . ";" . $row["notes"] . ";" . $_SESSION["testTypeCmp"] . ";" . $dateString . ";" . $testParameters["sampleRate"] . ";" . $testParameters["amplitude"] . ";" . $testParameters["frequency"] . ";" . $testParameters["duration"] . ";" . $testParameters["onRamp"] . ";" . $testParameters["offRamp"] . ";";
     if ($testTypeExt == "WHITE_NOISE_MODULATION")
-        $firstValues .= $_SESSION["modAmplitude"] . ";" . $_SESSION["modFrequency"] . ";" . $_SESSION["modPhase"] . ";";
-    $firstValues .= $_SESSION["blocks"] . ";" . $_SESSION["nAFC"] . ";" . $_SESSION["ISI"] . ";" . $_SESSION["ITI"] . ";";
-    $firstValues .= $_SESSION["factor"] . ";" . $_SESSION["reversals"] . ";" . $_SESSION["secFactor"] . ";" . $_SESSION["secReversals"] . ";" . $_SESSION["threshold"] . ";" . $_SESSION["algorithm"];
+        $firstValues .= $testParameters["modAmplitude"] . ";" . $testParameters["modFrequency"] . ";" . $testParameters["modPhase"] . ";";
+    $firstValues .= $testParameters["blocks"] . ";" . $testParameters["nAFC"] . ";" . $testParameters["ISI"] . ";" . $testParameters["ITI"] . ";";
+    $firstValues .= $testParameters["factor"] . ";" . $testParameters["reversals"] . ";" . $testParameters["secFactor"] . ";" . $testParameters["secReversals"] . ";" . $testParameters["threshold"] . ";" . $testParameters["algorithm"];
 
 
 
