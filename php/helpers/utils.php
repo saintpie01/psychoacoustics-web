@@ -137,7 +137,7 @@ function isUserLogged(): bool
  */
 function logEvent($message): void
 {
-    $logDir = __DIR__ . '/../logs/events/'; // Centralized log file path
+    $logDir = __DIR__ . '/../../logs/events/'; // Centralized log file path
     $currentMonth = date('m-Y'); // Format: YYYY-MM
     $logFile = $logDir . "events_log_$currentMonth.txt";
 
@@ -151,7 +151,7 @@ function logEvent($message): void
 
 function trackCountryTraffic(): void
 {
-    $logDir = __DIR__ . '/../logs/traffic/'; // Centralized log file path
+    $logDir = __DIR__ . '/../../logs/traffic/'; // Centralized log file path
     $currentMonth = date('m-Y'); // Format: YYYY-MM
     $logFile = $logDir . "traffic_log_$currentMonth.txt";
 
