@@ -103,7 +103,7 @@ if (isset($_SESSION['score'])) {
                             <?php
                             } else {
                                 //this display the CONTINUE button to procede with the next block
-                                $page = "$_SESSION[testTypeCmp]" . "test.php";
+                                $page = "takeTest.php?type={$_SESSION['testTypeCmp']}";
 
                             ?>
                                 <div class='col d-grid'>

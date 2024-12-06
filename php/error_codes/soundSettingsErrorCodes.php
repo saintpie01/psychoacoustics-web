@@ -82,7 +82,7 @@
         else if (($_POST["ITI"] == "") || ($_POST["ITI"] == "undefined"))
             return("Location: ../soundSettings.php?test={$_GET['test']}&err=ITI1");
     
-        else if (!is_numeric($_POST["ITI"]) || $_POST["ITI"] < 1000)
+        else if (!is_numeric($_POST["ITI"]) || $_POST["ITI"] < 1)
             return("Location: ../soundSettings.php?test={$_GET['test']}&err=ITI2");
     
         //controlli su ISI

@@ -4,6 +4,7 @@ $testParam = $_SESSION['testParameters'];
 
 <script>
     // pass info from php session to js
+    //this function is universal, parameters not set will be passed as null
     <?php
     // Define the variables with conditional checks
     $variables = [
@@ -31,7 +32,7 @@ $testParam = $_SESSION['testParameters'];
         "algorithm" => isset($testParam["algorithm"]) ? "'{$testParam["algorithm"]}'" : "null"
     ];
 
-    // Loop through the variables and output the JavaScript assignment
+    //loop through the variables and output the JavaScript assignment
     foreach ($variables as $key => $value) {
         echo "var {$key} = {$value};\n";
     }

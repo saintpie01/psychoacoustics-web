@@ -18,7 +18,7 @@ var results = [[], [], [], [], [], [], [], []];		// block, trial, delta, variabl
 var score = 0					// final score
 var geometric_score = 1
 var positiveStrike = -1;		// -1 = unsetted, 0 = negative strike, 1 = positive strike
-var result = "";				// final results that will be saved on the db
+var formattedResult = "";				// final results that will be saved on the db
 var timestamp = 0;				// timestamp of the starting of the test
 var pressedButton;
 var swap = -1;						// position of variable sound
@@ -37,6 +37,7 @@ function start() {
     var currentdate = new Date();
     timestamp = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
 
+    reversalsPositions[0] = 0;
     createRandomizedOutput();
 }
 
@@ -104,7 +105,7 @@ function nDOWNoneUPTest(n) {
         if (correctAnsw == n) { //if there are n consegutive correct answers
             correctAnsw = 0;
 
-            if (positiveStrike == 0) {
+            if (positiveStrike == 0) {//reversal up
                 isReversal = true;
             }
             revDirection = 1;
@@ -119,7 +120,7 @@ function nDOWNoneUPTest(n) {
         history[i] = 0;
         correctAnsw = 0;
 
-        if (positiveStrike == 1) {
+        if (positiveStrike == 1) { //reversal down
             isReversal = true;
         }
         revDirection = -1;
@@ -138,6 +139,8 @@ function nDOWNoneUPTest(n) {
 
         if (countRev > reversals)
             currentFactor = secondFactor;
+
+
     }
 
     window.setTimeout("timer()", 500);
@@ -168,20 +171,26 @@ function createResults() {
     //format datas as a csv file
     //format: block;trials;delta;variableValue;variablePosition;button;correct;reversals;";
     for (var j = 0; j < i; j++) {
-        result += results[0][j] + ";" + results[1][j] + ";" + results[2][j] + ";" + results[3][j] + ";"
-        result += results[4][j] + ";" + results[5][j] + ";" + results[6][j] + ";" + results[7][j] + ",";
+        formattedResult += results[0][j] + ";" + results[1][j] + ";" + results[2][j] + ";" + results[3][j] + ";"
+        formattedResult += results[4][j] + ";" + results[5][j] + ";" + results[6][j] + ";" + results[7][j] + ",";
     }
+    
     //calculate score
     score = 0;
     startingReversal = countRev - reversalThreshold;
-
-    for (var j = startingReversal; j < countRev; j++) {
+    deltaHistory = results[2];
+    
+    for (var j = countRev; j > countRev - reversalThreshold; j--) { //start from the last rev, going backwards      
         revPosition = reversalsPositions[j];
-        deltaBefore = results[2][revPosition]; //delta before the reversal
-        deltaAfter = results[2][revPosition + 1]; //delta after the reversal
 
-        partialScore = (deltaBefore + deltaAfter) / 2;
-
+        currentDelta = deltaHistory[revPosition]; //delta before the reversal
+        
+        deltaSeeker = revPosition-1;
+        while (deltaHistory[revPosition] == deltaHistory[deltaSeeker])
+            deltaSeeker--;
+        previousDelta = deltaHistory[deltaSeeker];
+        
+        partialScore = (currentDelta + previousDelta) / 2;
         console.log(partialScore);
         score += partialScore; //average delta of the reversal
         console.log(j + 'score' + score);
@@ -204,7 +213,7 @@ function createResults() {
 function endTest() {
     description = "&blocks=" + blocks + "&sampleRate=" + context.sampleRate;
     location.href =
-        "php/save_test.php?result=" + result + description +
+        "php/save_test.php?result=" + formattedResult + description +
         "&timestamp=" + timestamp +
         "&currentBlock=" + currentBlock +
         "&score=" + score +

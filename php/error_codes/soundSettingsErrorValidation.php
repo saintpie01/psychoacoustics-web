@@ -49,7 +49,7 @@ if (isset($_GET['err'])) {
     else if ($_GET['err'] == "ITI1")
         echo "<div class='alert alert-danger'>The ITI field is required</div>";
     else if ($_GET['err'] == "ITI2")
-        echo "<div class='alert alert-danger'>The ITI value must be a number greater than or equal to 1000</div>";
+        echo "<div class='alert alert-danger'>The ITI value must be a number greater than or equal to 1</div>";
     else if ($_GET['err'] == "ISI1")
         echo "<div class='alert alert-danger'>The ISI field is required</div>";
     else if ($_GET['err'] == "ISI2")
