@@ -54,3 +54,7 @@ php/logs/events/events_log_11-2024.txt
 php/logs/traffic/traffic_log_11-2024.txt
 .VSCodeCounter
 php/logs
+logs/events/events_log_11-2024.txt
+logs/events/events_log_12-2024.txt
+logs/traffic/traffic_log_11-2024.txt
+logs/traffic/traffic_log_12-2024.txt
