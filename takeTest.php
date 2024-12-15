@@ -31,7 +31,7 @@ switch ($type) {
     case 'nmod':
         $testMsg = "Which is the modulated noise?";
         $title = "Modulation test";
-        $script = "js/noisesMOdulation.js";
+        $script = "js/noisesModulation.js";
         break;
 }
 ?>

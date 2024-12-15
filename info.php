@@ -120,7 +120,7 @@ if ($row['Type'] == 'PURE_TONE_INTENSITY') {
 
         <div class="d-flex align-items-center">
             <h5 class="m-0">Test preview</h5>
-            <button id="playTest" class="btn btn-dark ms-4" onclick="random()">Start test preview</button>
+            <button id="playTest" class="btn btn-dark ms-4" onclick="createRandomizedOutput()">Start test preview</button>
         </div>
 
         <div class="container-fluid">
@@ -137,7 +137,7 @@ if ($row['Type'] == 'PURE_TONE_INTENSITY') {
                                 $colors = ["#198754", "#dc3545", "#0d6efd", "#e0b000", "#a000a0", "#ff8010", "#50a0f0", "#703000", "#606090"];
                                 for ($i = 1; $i <= intval($row['nAFC']); $i++) { ?>
                                     <div class="col-12 col-sm-4 d-grid">
-                                        <?php echo "<button type='button' class='btn btn-lg btn-success' style='background-color:" . $colors[($i - 1) % count($colors)] . "; border-color:" . $colors[($i - 1) % count($colors)] . "' id='button{$i}' onclick = 'select({$i})' disabled>{$i}° sound</button>"; ?>
+                                        <?php echo "<button type='button' class='btn btn-lg btn-success' style='background-color:" . $colors[($i - 1) % count($colors)] . "; border-color:" . $colors[($i - 1) % count($colors)] . "' id='button{$i}' onclick = 'computeResponse({$i})' disabled>{$i}° sound</button>"; ?>
                                     </div>
                                 <?php } ?>
                             </div>
