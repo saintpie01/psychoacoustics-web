@@ -55,25 +55,24 @@ if (isset($_SESSION['referralTest'])) { //referral present
 
 
     $_SESSION['testTypeCmp'] = $type;
-
     $testParameters = initializeTestParameter($row);
+    $_SESSION['testParameters'] = $testParameters;
 
-} else {
-    //this section calls a function to check all the forms inserted
-    //stored in soundSettinsValidation.php, if no redirect string is returned, it goes on
-    $redirect = "";
-    $redirect = checkSSEC();
-    if ($redirect != "") {
-        header($redirect);
-        exit;
-    }
-
-    $_SESSION['testTypeCmp'] = $_GET['test'];
-
-    $testParameters = initializeTestParameter($_POST);
+    header("Location: ../takeTest.php?type={$type}");
+    exit;
 }
 
+//this section calls a function to check all the forms inserted
+//stored in soundSettinsValidation.php, if no redirect string is returned, it goes on
+$redirect = "";
+$redirect = checkSSEC();
+if ($redirect != "") {
+    header($redirect);
+    exit;
+}
 
+$_SESSION['testTypeCmp'] = $_GET['test'];
+$testParameters = initializeTestParameter($_POST);
 $_SESSION['testParameters'] = $testParameters;
 
 header("Location: ../takeTest.php?type={$_GET['test']}");

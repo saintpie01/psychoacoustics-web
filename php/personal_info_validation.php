@@ -50,7 +50,7 @@ if ($specialCharacters) {
 $redirection = "Location: ../soundSettings.php?" . $type; //redirection string based on the presence of referal code
 
 if (isset($referralCode) && ($referralCode != "")) { //check if a referral code in the link is present and valid
-
+    
     try {
         $conn = connectdb();
         $refrow = getReferralKeyFromInviteCode($_POST['ref'], $conn); //return an array with referral key
@@ -58,13 +58,12 @@ if (isset($referralCode) && ($referralCode != "")) { //check if a referral code 
         header("Location: ../demographicData.php?" . $type . $ref . "&ref=&err=3");
         exit;
     }
-
     $_SESSION['referralTest'] = array( //gather referral key
         "guest" => $refrow['fk_GuestTest'],
         "count" => $refrow['fk_TestCount']
     );
 
-    $redirection = "Location: ../info.php"; //all referral tests get redirected to info.php page
+    $redirection = "Location: ../info.php?".$type; //all referral tests get redirected to info.php page
 }
 
 if (!isset($_POST["checkSave"])) { //no data to save, no user to create, skip ahead

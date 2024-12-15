@@ -83,6 +83,3 @@ if (isset($_GET['err'])) {
     else if ($_GET['err'] == "threshold3")
         echo "<div class='alert alert-danger'>The reversal threshold value can't be more than the sum of 'Reversals' value and 'Second reversal' value</div>";
 }
-
-
-?>
