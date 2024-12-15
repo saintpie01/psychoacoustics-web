@@ -28,7 +28,6 @@ function checkSpecialCharacter($formElements): bool
         "(",
         ")",
         "$",
-        "=",
         "&",
         "|",
         "<",
