@@ -53,7 +53,6 @@ $id = $_SESSION['idGuestTest'];
 $testTypeCmp = $_SESSION['testTypeCmp'];
 $_SESSION['testParameters']['sampleRate'] = $_GET['sampleRate'];
 
-$testTypeExt = getExtfromCmpType($testTypeCmp);
 $testParam = $_SESSION['testParameters'];
 
 try {
@@ -68,7 +67,7 @@ try {
 		$id,
 		$count,
 		null, //this field is only for referral tests
-		$testTypeExt,
+		$testTypeCmp,
 		$testParam,
 		$finalResults,
 		$score,

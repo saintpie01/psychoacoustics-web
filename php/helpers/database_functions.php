@@ -67,9 +67,9 @@ function selectFromTable($columns, $table, $conditions, $conn)
  * @param string $geometricScore contains the threshold geoemetric score
  * @param \mysqli $conn contains connnection with the database
  */
-function insertTest($id, $count, $referralName, $testType, $param, $results, $score, $geometricScore, $conn): void
+function insertTest($id, $count, $referralName, $testTypeCmp, $param, $results, $score, $geometricScore, $conn): void
 {
-
+    $testType = getExtfromCmpType($testTypeCmp);
     $deviceInfo = str_replace(";", " ", $_SERVER['HTTP_USER_AGENT']);	//take user device info
 
     //depending on the type of test is going to be saved, these parameters
