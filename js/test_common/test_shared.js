@@ -7,7 +7,9 @@ const algorithmMapping = {
 
 
 const upDownParam = algorithmMapping[algorithm] || 2; //decide which parameter to pass on nDOWNoneUP based on alg passed
-var context = new AudioContext();
+var context = new AudioContext({
+    sampleRate: 48000,
+});
 
 // array and variables for data storage
 var history = [];				// will have the answers ('1' if right, '0' if wrong)
@@ -66,7 +68,7 @@ function disableResponseButtons() {
 //not used, generalization of the code written in the other test files
 function computeResponseGeneral(varParam, stdParam, button) {
 
-    pressedButton  = button;
+    pressedButton = button;
     results[0][i] = currentBlock;				// block
     results[1][i] = i + 1;						// trial
     results[4][i] = swap;						// variable position
@@ -174,22 +176,22 @@ function createResults() {
         formattedResult += results[0][j] + ";" + results[1][j] + ";" + results[2][j] + ";" + results[3][j] + ";"
         formattedResult += results[4][j] + ";" + results[5][j] + ";" + results[6][j] + ";" + results[7][j] + ",";
     }
-    
+
     //calculate score
     score = 0;
     startingReversal = countRev - reversalThreshold;
     deltaHistory = results[2];
-    
+
     for (var j = countRev; j > countRev - reversalThreshold; j--) { //start from the last rev, going backwards      
         revPosition = reversalsPositions[j];
 
         currentDelta = deltaHistory[revPosition]; //delta before the reversal
-        
-        deltaSeeker = revPosition-1;
+
+        deltaSeeker = revPosition - 1;
         while (deltaHistory[revPosition] == deltaHistory[deltaSeeker])
             deltaSeeker--;
         previousDelta = deltaHistory[deltaSeeker];
-        
+
         partialScore = (currentDelta + previousDelta) / 2;
         console.log(partialScore);
         score += partialScore; //average delta of the reversal

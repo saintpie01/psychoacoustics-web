@@ -12,8 +12,8 @@ var varAmp = amp;					// intensity of the variable
 
 //randomize output
 function createRandomizedOutput() {
-    //var rand = Math.floor(Math.random() * nAFC);// the variable sound will be the rand-th sound played
-    var rand = 0;
+    var rand = Math.floor(Math.random() * nAFC);// the variable sound will be the rand-th sound played
+    //var rand = 0;
     for (var j = 0; j < nAFC; j++) {
         if (j == rand)
             //variable sound

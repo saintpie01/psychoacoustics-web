@@ -48,7 +48,7 @@ function checkSpecialCharacter($formElements): bool
 /**
  * convert compact test type to extended test type
  * @param string $testTypeCmp contains compact string test type
- * @return string contains string containin extended test type
+ * @return string contains string with extended test type
  */
 function getExtfromCmpType($testTypeCmp): string
 {

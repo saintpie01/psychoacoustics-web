@@ -2,7 +2,7 @@
 session_start();
 include_once "php/helpers/utils.php";
 
-if(!isset($_SESSION['idGuestTest']))
+if (!isset($_SESSION['idGuestTest']))
     header("Location: index.php");
 
 
@@ -10,12 +10,12 @@ $currentBlock = $_SESSION['currentBlock'];
 
 if (isset($_SESSION['geometric_score'])) {
     $score = explode(";", $_SESSION['geometric_score']);
-    $geometricScore = $score[$currentBlock-1];
+    $geometricScore = $score[$currentBlock - 1];
 }
 
 if (isset($_SESSION['score'])) {
     $score = explode(";", $_SESSION['score']);
-    $score = $score[$currentBlock-1];
+    $score = $score[$currentBlock - 1];
 }
 
 ?>
@@ -51,24 +51,24 @@ if (isset($_SESSION['score'])) {
         <div class="row justify-content-center align-items-center">
             <div class="col-12 col-md-7 border bg-light rounded-4 p-5">
 
-                <h1>Your user ID is: #<?php if (isUserLogged())
-                                                    echo $_SESSION['idGuestTest'];
+                <h1>Your user ID is: #<?php if (isset($_SESSION["saveData"]))
+                                                echo $_SESSION['idGuestTest'];
                                             else echo "anonymous";
-                                            ?></h1>
+                                        ?></h1>
 
                 <h2>Your threshold is:</h2>
                 <p></p>
 
                 <h2>
                     <?php
-                        echo $geometricScore
+                    echo $geometricScore
                     ?> (Geometric Mean)
                 </h2>
-                
+
                 <p></p>
                 <h2>
                     <?php
-                        echo $score;
+                    echo $score;
                     ?> (Arithmetic Mean)
                 </h2>
 

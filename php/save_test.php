@@ -80,6 +80,7 @@ try {
 }
 
 //log usage
+$testTypeExt = getExtfromCmpType($testTypeCmp);
 $referrerString = "";
 if (isset($_SESSION['referralTest']))
 	$referrerString = " referred by user #{$_SESSION['referralTest']['guest']}";
